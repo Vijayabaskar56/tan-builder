@@ -43,6 +43,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 					"Help you Quickly Scaffold a Form for your TanStack Using TanStack Forms",
 			},
 			{ property: "og:type", content: "website" },
+<<<<<<< HEAD
 			{
 				property: "og:image",
 				content: "https://tan-form-builder.baskar.dev/assets/og-image.avif",
@@ -51,6 +52,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 				property: "og:image:secure_url",
 				content: "https://tan-form-builder.baskar.dev/assets/og-image.avif",
 			},
+=======
+			{ property: "og:image", content: "https://tan-form-builder.baskar.dev/assets/og-image.avif" },
+			{ property: "og:image:secure_url", content: "https://tan-form-builder.baskar.dev/assets/og-image.avif" },
+>>>>>>> 1b32628 (chore: update png to avif impage for performance)
 			{ property: "og:image:width", content: "1200" },
 			{ property: "og:image:height", content: "630" },
 			{
@@ -67,10 +72,14 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 				content:
 					"Help you Quickly Scaffold a Form for your TanStack Using TanStack Forms",
 			},
+<<<<<<< HEAD
 			{
 				name: "twitter:image",
 				content: "https://tan-form-builder.baskar.dev/assets/og-image.avif",
 			},
+=======
+			{ name: "twitter:image", content: "https://tan-form-builder.baskar.dev/assets/og-image.avif" },
+>>>>>>> 1b32628 (chore: update png to avif impage for performance)
 			{
 				name: "twitter:image:alt",
 				content: "TanStack Form Builder - Visual Form Builder for React",
