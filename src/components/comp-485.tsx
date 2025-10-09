@@ -33,11 +33,10 @@ import type { JsonData } from "@/types/table-types";
 
 export default function Component485() {
 	const tableData = useTableStore();
-	console.log("🚀 ~ Component485 ~ tableData:", tableData);
 	const [data, setData] = useState<JsonData[]>([]);
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: 0,
-		pageSize: 10,
+		pageSize: 8,
 	});
 
 	const [sorting, setSorting] = useState<SortingState>([]);

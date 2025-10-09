@@ -100,7 +100,7 @@ export const Route = createFileRoute("/r/$id.json")({
 						},
 					);
 				} catch (error: unknown) {
-					console.error(error);
+					logger(error);
 					return new Response(
 						JSON.stringify({
 							data: null,

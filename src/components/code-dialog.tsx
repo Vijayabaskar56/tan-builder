@@ -37,7 +37,7 @@ import { Separator } from "./ui/separator";
 import { Spinner } from "./ui/spinner";
 import { revalidateLogic, useAppForm } from "./ui/tanstack-form";
 import { TerminalIcon } from "./ui/terminal";
-
+import { logger } from "@/lib/utils";
 const formSchema = z.object({
 	formName: z.string().min(1, { message: "Form name is required" }),
 });
@@ -182,11 +182,7 @@ function CodeDialog() {
 			onChangeDebounceMs: 300,
 			onChange: ({ fieldApi }) => {
 				logger(fieldApi.state.value);
-				fieldApi.state.value = fieldApi.state.value
-					.toLowerCase()
-					.replace(/[^a-z0-9]/g, "")
-					.replace(/_+/g, "")
-					.replace(/^_|_$/g, "");
+				fieldApi.state.value = fieldApi.state.value.toLowerCase().replace(/[^a-z0-9]/g, "").replace(/_+/g, "").replace(/^_|_$/g, "");
 				actions.setFormName(fieldApi.state.value as string);
 			},
 		},
