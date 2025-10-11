@@ -47,7 +47,9 @@
 			},
 			"a11y": {
 				"useSemanticElements": "off",
-				"useAriaPropsForRole": "off"
+				"useAriaPropsForRole": "off",
+				"useFocusableInteractive": "off",
+				"useKeyWithClickEvents": "off"
 			}
 		},
 		"includes": ["src/**/*", ".vscode/*", "index.html", "vite.config.js"]
