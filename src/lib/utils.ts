@@ -157,15 +157,13 @@ export const updatePreferredPackageManager = createClientOnlyFn(
 	},
 );
 
-
 export const logger = createIsomorphicFn()
-  .server((msg: string , data?: any) => console.log(`[SERVER]: ${msg}`, data))
-  .client((msg: string, data?: any) => {
-	if(import.meta.env.DEV) {
-	console.log(`[CLIENT]: ${msg}`, data)
-	}
-  })
-
+	.server((msg: string, data?: any) => console.log(`[SERVER]: ${msg}`, data))
+	.client((msg: string, data?: any) => {
+		if (import.meta.env.DEV) {
+			console.log(`[CLIENT]: ${msg}`, data);
+		}
+	});
 
 export const detectColumnType = (
 	value: string | number | boolean | null | undefined | object,
@@ -211,7 +209,7 @@ export const detectColumns = (data: JsonData[]) => {
 				key
 					.slice(1)
 					.replace(/([A-Z])/g, " $1")
-					.trim(),			
+					.trim(),
 			type: mostCommonType,
 			order: index,
 			hasDateFilter: false, // Default value for hasDateFilter

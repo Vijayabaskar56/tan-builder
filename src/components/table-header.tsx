@@ -14,6 +14,7 @@ import { AnimatedIconButton } from "./ui/animated-icon-button";
 import { RotateCWIcon } from "./ui/rotate-cw";
 import { SettingsGearIcon } from "./ui/settings-gear";
 import { ShareIcon } from "./ui/share";
+import DataUploadDialog from "./table-components/table-data-upload-dialog";
 
 export default function TableHeader() {
 	const id = useId();
@@ -25,12 +26,12 @@ export default function TableHeader() {
 			if (!draft.settings)
 				draft.settings = {
 					isGlobalSearch: false,
-					enableHiding: true,
-					enableSorting: true,
-					enableResizing: true,
-					enablePinning: true,
-					enableColumnFilter: true,
-					enableGlobalFilter: true,
+					enableHiding: false,
+					enableSorting: false,
+					enableResizing: false,
+					enablePinning: false,
+					enableColumnFilter: false,
+					enableGlobalFilter: false,
 				} as any;
 			(draft.settings as any)[key] = value;
 		});
@@ -48,6 +49,8 @@ export default function TableHeader() {
 				{/* Actions section */}
 				<ScrollArea className="md:w-fit w-full py-2 order-1 lg:order-2">
 					<div className="flex items-center gap-2">
+						<div className="h-4 w-px bg-border" />
+						<DataUploadDialog />
 						<div className="h-4 w-px bg-border" />
 						<nav className="flex items-center space-x-2">
 							<DropdownMenu>

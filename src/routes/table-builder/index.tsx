@@ -9,7 +9,7 @@ export const Route = createFileRoute("/table-builder/")({
 function RouteComponent() {
 	return (
 		<div className="m-6">
-		<Component485 />
+			<Component485 />
 		</div>
 	);
 }

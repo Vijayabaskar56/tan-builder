@@ -1,7 +1,7 @@
 import {
 	createCollection,
-	localStorageCollectionOptions,
 	localOnlyCollectionOptions,
+	localStorageCollectionOptions,
 } from "@tanstack/react-db";
 import * as v from "valibot";
 import { settingsCollection } from "./settings.collections";
@@ -9,13 +9,13 @@ import { settingsCollection } from "./settings.collections";
 const TableBuilderSchema = v.object({
 	id: v.number(),
 	settings: v.object({
-		isGlobalSearch: v.boolean(),
-		enableHiding: v.boolean(),
-		enableSorting: v.boolean(),
-		enableResizing: v.boolean(),
-		enablePinning: v.boolean(),
-		enableColumnFilter: v.boolean(),
-		enableGlobalFilter: v.boolean(),
+		isGlobalSearch: v.optional(v.boolean(), false),
+		enableHiding: v.optional(v.boolean(), false),
+		enableSorting: v.optional(v.boolean(), false),
+		enableResizing: v.optional(v.boolean(), false),
+		enablePinning: v.optional(v.boolean(), false),
+		enableColumnFilter: v.optional(v.boolean(), false),
+		enableGlobalFilter: v.optional(v.boolean(), false),
 	}),
 	table: v.object({
 		columns: v.array(
@@ -31,8 +31,8 @@ const TableBuilderSchema = v.object({
 					v.literal("object"),
 				]),
 				order: v.number(),
-				hasDateFilter: v.boolean(),
-				hasSliderFilter: v.boolean(),
+				hasDateFilter: v.optional(v.boolean(), false),
+				hasSliderFilter: v.optional(v.boolean(), false),
 			}),
 		),
 		data: v.array(v.record(v.string(), v.any())),

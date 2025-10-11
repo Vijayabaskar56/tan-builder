@@ -167,8 +167,6 @@ export function generateColumns(
 	return [selectColumn, ...generatedColumns, actionsColumn];
 }
 
-
-
 export const detectColumnType = (
 	value: string | number | boolean | null | undefined | object,
 ): ColumnConfig["type"] => {

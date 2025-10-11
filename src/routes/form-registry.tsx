@@ -387,10 +387,7 @@ function RouteComponent() {
 							<TabsContent key={item.value} value={item.value}>
 								<div className="relative">
 									<CodeBlock>
-										<CodeBlockCode
-											code={item.registery}
-											language="bash"
-										/>
+										<CodeBlockCode code={item.registery} language="bash" />
 									</CodeBlock>
 								</div>
 							</TabsContent>

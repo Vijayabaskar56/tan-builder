@@ -8,6 +8,23 @@ import { Reorder } from "motion/react";
 import { useState, useEffect } from "react";
 import useTableStore from "@/hooks/use-table-store";
 import type { TableBuilder } from "@/db-collections/table-builder.collections";
+import { ScrollArea } from "../ui/scroll-area";
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import { TableColumnDropdown } from "./table-column-dropdown";
+import { faker } from "@faker-js/faker";
 
 export function TableColumnEdit() {
 	const [localColumns, setLocalColumns] = useState<
@@ -28,6 +45,23 @@ export function TableColumnEdit() {
 	}
 
 	const columns = tableData.table.columns;
+
+	const generateFakeData = (type: string) => {
+		switch (type) {
+			case "string":
+				return faker.lorem.words(2);
+			case "number":
+				return faker.number.int({ min: 1, max: 1000 });
+			case "boolean":
+				return faker.datatype.boolean();
+			case "date":
+				return faker.date.recent().toISOString().split("T")[0];
+			case "object":
+				return { key: faker.lorem.word(), value: faker.lorem.words(1) };
+			default:
+				return faker.lorem.words(1);
+		}
+	};
 
 	const updateColumn = (
 		columnId: string,
@@ -67,36 +101,60 @@ export function TableColumnEdit() {
 		});
 	};
 
+	const addColumn = (type: string) => {
+		const columnKey = `column_${Date.now()}`;
+		const newColumn = {
+			id: columnKey,
+			accessor: columnKey,
+			label: `Column ${columns.length + 1}`,
+			type: type as TableBuilder["table"]["columns"][0]["type"],
+			order: columns.length,
+			hasDateFilter: false,
+			hasSliderFilter: false,
+		};
+
+		tableBuilderCollection.update(1, (draft) => {
+			draft.table.columns.push(newColumn);
+
+			const currentDataLength = draft.table.data.length;
+			const allColumns = [...draft.table.columns]; // including the new one
+			console.log(
+				"🚀 ~ file: table-column-edit.tsx:120 ~ allColumns:",
+				allColumns,
+			);
+
+			if (currentDataLength === 0) {
+				// No existing data, create 10 rows
+				const newData = [];
+				for (let i = 0; i < 10; i++) {
+					const row: Record<string, any> = {};
+					for (const col of allColumns) {
+						row[col.id] = generateFakeData(col.type);
+					}
+					newData.push(row);
+				}
+				draft.table.data = newData;
+			} else {
+				// Add data to existing rows
+				console.log(
+					"🚀 ~ file: table-column-edit.tsx:140 ~ draft.table.data:",
+					draft.table.data,
+				);
+				for (const row of draft.table.data) {
+					row[columnKey] = generateFakeData(newColumn.type);
+				}
+			}
+		});
+	};
+
 	return (
 		<div className="w-full space-y-4">
 			<div className="flex items-center justify-between">
 				<Label className="text-sm font-medium">Table Columns</Label>
-				<Button
-					type="button"
-					variant="outline"
-					size="sm"
-					onClick={() => {
-						const newColumn = {
-							id: `column_${Date.now()}`,
-							accessor: `accessor_${Date.now()}`,
-							label: `Column ${columns.length + 1}`,
-							type: "string" as const,
-							order: columns.length,
-							hasDateFilter: false,
-							hasSliderFilter: false,
-						};
-
-						tableBuilderCollection.update(1, (draft) => {
-							draft.table.columns.push(newColumn);
-						});
-					}}
-					className="h-8 px-2"
-				>
-					Add Column
-				</Button>
+				<TableColumnDropdown onAddColumn={addColumn} />
 			</div>
 
-			<div className="space-y-2 max-h-96 overflow-y-auto">
+			<ScrollArea className="h-96">
 				<Reorder.Group
 					axis="y"
 					onReorder={reorderColumns}
@@ -107,39 +165,137 @@ export function TableColumnEdit() {
 						<Reorder.Item
 							key={column.id}
 							value={column}
-							className="flex items-center gap-2 py-2 pr-2 pl-4 border rounded-md cursor-grab active:cursor-grabbing group bg-secondary"
+							className="w-full rounded-xl border border-dashed py-1.5 bg-background"
 						>
-							<LucideGripVertical
-								size={20}
-								className="dark:text-muted-foreground text-muted-foreground"
-							/>
-							<div className="flex-1 space-y-2">
-								<div className="flex gap-2">
-									<div className="flex-1">
-										<Label className="text-xs text-muted-foreground">
-											Column Name
-										</Label>
-										<Input
-											value={column.label}
-											onChange={(e) => {
-												updateColumn(column.id, { label: e.target.value });
-											}}
-											placeholder="Column name"
-											className="h-8 text-sm"
+							<div className="w-full group">
+								<div className="flex items-center justify-between px-2">
+									<div className="flex items-center justify-start gap-2 size-full">
+										<LucideGripVertical
+											size={20}
+											className="dark:text-muted-foreground text-muted-foreground"
 										/>
+										<span className="truncate max-w-xs md:max-w-sm">
+											{column.label}
+										</span>
+									</div>
+									<div className="flex items-center justify-end lg:opacity-0 opacity-100 group-hover:opacity-100 duration-100">
+										<Button
+											type="button"
+											variant="ghost"
+											size="icon"
+											onClick={() => deleteColumn(column.id)}
+											className="rounded-xl h-9"
+										>
+											<DeleteIcon />
+										</Button>
 									</div>
 								</div>
-							</div>
-							<div className="flex gap-1 lg:opacity-0 opacity-100 group-hover:opacity-100 duration-200">
-								<Button
-									type="button"
-									variant="ghost"
-									size="icon"
-									onClick={() => deleteColumn(column.id)}
-									className="size-8"
-								>
-									<DeleteIcon className="size-4" />
-								</Button>
+								<Accordion type="single" collapsible className="w-full">
+									<AccordionItem
+										value={`item-${column.id}`}
+										className="border-none"
+									>
+										<AccordionTrigger className="px-2 py-1 text-sm text-muted-foreground hover:no-underline">
+											Customize Column
+										</AccordionTrigger>
+										<AccordionContent className="px-2 pb-4 space-y-4">
+											<div className="flex gap-2">
+												<div className="flex-1">
+													<Label className="text-xs text-muted-foreground">
+														Column Name
+													</Label>
+													<Input
+														value={column.label}
+														onChange={(e) => {
+															updateColumn(column.id, {
+																label: e.target.value,
+															});
+														}}
+														placeholder="Column name"
+														className="h-8 text-sm"
+													/>
+												</div>
+											</div>
+											<div className="flex gap-2">
+												<div className="flex-1">
+													<Label className="text-xs text-muted-foreground">
+														Accessor
+													</Label>
+													<Input
+														value={column.accessor}
+														onChange={(e) => {
+															updateColumn(column.id, {
+																accessor: e.target.value,
+															});
+														}}
+														placeholder="Accessor key"
+														className="h-8 text-sm"
+													/>
+												</div>
+												<div className="flex-1">
+													<Label className="text-xs text-muted-foreground">
+														Type
+													</Label>
+													<Select
+														value={column.type}
+														onValueChange={(value) => {
+															updateColumn(column.id, {
+																type: value as TableBuilder["table"]["columns"][0]["type"],
+															});
+														}}
+													>
+														<SelectTrigger className="h-8 text-sm">
+															<SelectValue placeholder="Select type" />
+														</SelectTrigger>
+														<SelectContent>
+															<SelectItem value="string">String</SelectItem>
+															<SelectItem value="number">Number</SelectItem>
+															<SelectItem value="boolean">Boolean</SelectItem>
+															<SelectItem value="date">Date</SelectItem>
+															<SelectItem value="object">Object</SelectItem>
+														</SelectContent>
+													</Select>
+												</div>
+											</div>
+											<div className="flex items-center gap-4">
+												<div className="flex items-center space-x-2">
+													<Checkbox
+														id={`date-filter-${column.id}`}
+														checked={column.hasDateFilter}
+														onCheckedChange={(checked) => {
+															updateColumn(column.id, {
+																hasDateFilter: !!checked,
+															});
+														}}
+													/>
+													<Label
+														htmlFor={`date-filter-${column.id}`}
+														className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+													>
+														Date Filter
+													</Label>
+												</div>
+												<div className="flex items-center space-x-2">
+													<Checkbox
+														id={`slider-filter-${column.id}`}
+														checked={column.hasSliderFilter}
+														onCheckedChange={(checked) => {
+															updateColumn(column.id, {
+																hasSliderFilter: !!checked,
+															});
+														}}
+													/>
+													<Label
+														htmlFor={`slider-filter-${column.id}`}
+														className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+													>
+														Slider Filter
+													</Label>
+												</div>
+											</div>
+										</AccordionContent>
+									</AccordionItem>
+								</Accordion>
 							</div>
 						</Reorder.Item>
 					))}
@@ -150,7 +306,7 @@ export function TableColumnEdit() {
 						No columns added yet. Click "Add Column" to get started.
 					</div>
 				)}
-			</div>
+			</ScrollArea>
 		</div>
 	);
 }

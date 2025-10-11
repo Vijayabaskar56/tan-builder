@@ -56,7 +56,12 @@ export const RenderFormElement = ({
 						<field.FieldSet className="w-full">
 							<field.Field>
 								<field.FieldLabel htmlFor={formElement.name}>
-									{formElement.label} {formElement.required ?  <span className="text-red-500">*</span> : ""}
+									{formElement.label}{" "}
+									{formElement.required ? (
+										<span className="text-red-500">*</span>
+									) : (
+										""
+									)}
 								</field.FieldLabel>
 								<Input
 									placeholder={formElement.placeholder}
@@ -85,7 +90,10 @@ export const RenderFormElement = ({
 					{(field) => (
 						<field.FieldSet className="w-full">
 							<field.FieldLabel htmlFor={formElement.name}>
-								{formElement.label} {formElement.required && <span className="text-red-500">*</span>}
+								{formElement.label}{" "}
+								{formElement.required && (
+									<span className="text-red-500">*</span>
+								)}
 							</field.FieldLabel>
 							<field.Field orientation="horizontal">
 								<field.InputGroup>
@@ -143,7 +151,10 @@ export const RenderFormElement = ({
 						<field.FieldSet className="w-full">
 							<field.Field>
 								<field.FieldLabel htmlFor={formElement.name}>
-									{formElement.label} {formElement.required && <span className="text-red-500">*</span>}
+									{formElement.label}{" "}
+									{formElement.required && (
+										<span className="text-red-500">*</span>
+									)}
 								</field.FieldLabel>
 								<InputOTP
 									maxLength={formElement.maxLength ?? 6}
@@ -182,7 +193,10 @@ export const RenderFormElement = ({
 						<field.FieldSet className="w-full">
 							<field.Field>
 								<field.FieldLabel htmlFor={formElement.name}>
-									{formElement.label} {formElement.required && <span className="text-red-500">*</span>}
+									{formElement.label}{" "}
+									{formElement.required && (
+										<span className="text-red-500">*</span>
+									)}
 								</field.FieldLabel>
 								<Textarea
 									placeholder={formElement.placeholder}
@@ -221,7 +235,10 @@ export const RenderFormElement = ({
 										className="space-y-1 leading-none"
 										htmlFor={formElement.name}
 									>
-										{formElement.label} {formElement.required && <span className="text-red-500">*</span>}
+										{formElement.label}{" "}
+										{formElement.required && (
+											<span className="text-red-500">*</span>
+										)}
 									</field.FieldLabel>
 									{formElement.description ? (
 										<field.FieldDescription>
@@ -241,7 +258,10 @@ export const RenderFormElement = ({
 					{(field) => (
 						<field.FieldSet className="flex flex-col gap-2 w-full py-1">
 							<field.FieldLabel className="mt-0" htmlFor={formElement.name}>
-								{formElement?.label} {formElement.required && <span className="text-red-500">*</span>}
+								{formElement?.label}{" "}
+								{formElement.required && (
+									<span className="text-red-500">*</span>
+								)}
 							</field.FieldLabel>
 							{formElement.description && (
 								<field.FieldDescription>
@@ -291,7 +311,10 @@ export const RenderFormElement = ({
 						<field.FieldSet className="flex flex-col gap-2 w-full py-1">
 							<field.Field>
 								<field.FieldLabel className="mt-0" htmlFor={formElement.name}>
-									{formElement?.label} {formElement.required && <span className="text-red-500">*</span>}
+									{formElement?.label}{" "}
+									{formElement.required && (
+										<span className="text-red-500">*</span>
+									)}
 								</field.FieldLabel>
 								{formElement.type === "single" ? (
 									<ToggleGroup
@@ -388,7 +411,12 @@ export const RenderFormElement = ({
 										className="flex justify-between items-center"
 										htmlFor={formElement.name}
 									>
-										{formElement.label} {formElement.required ? <span className="text-red-500">*</span> : ""}
+										{formElement.label}{" "}
+										{formElement.required ? (
+											<span className="text-red-500">*</span>
+										) : (
+											""
+										)}
 										<span className="text-sm text-muted-foreground">
 											{sliderValue[0] || min} / {max}
 										</span>
@@ -427,7 +455,10 @@ export const RenderFormElement = ({
 									className="flex justify-between items-center"
 									htmlFor={formElement.name}
 								>
-									{formElement.label} {formElement.required && <span className="text-red-500">*</span>}
+									{formElement.label}{" "}
+									{formElement.required && (
+										<span className="text-red-500">*</span>
+									)}
 								</field.FieldLabel>
 							</field.Field>
 							<Select
@@ -469,7 +500,12 @@ export const RenderFormElement = ({
 							<field.FieldSet className="w-full">
 								<field.Field>
 									<field.FieldLabel htmlFor={formElement.name}>
-										{formElement.label} {formElement.required ? <span className="text-red-500">*</span> : ""}
+										{formElement.label}{" "}
+										{formElement.required ? (
+											<span className="text-red-500">*</span>
+										) : (
+											""
+										)}
 									</field.FieldLabel>
 									<MultiSelect
 										// value={field.state.value as string[]}
@@ -513,7 +549,12 @@ export const RenderFormElement = ({
 							<field.FieldSet className="flex flex-col w-full">
 								<field.Field>
 									<field.FieldLabel htmlFor={formElement.name}>
-										{formElement.label} {formElement.required ?  <span className="text-red-500">*</span> : ""}
+										{formElement.label}{" "}
+										{formElement.required ? (
+											<span className="text-red-500">*</span>
+										) : (
+											""
+										)}
 									</field.FieldLabel>
 									<Popover>
 										<PopoverTrigger

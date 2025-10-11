@@ -8,10 +8,10 @@
 		"MY_VAR": "Hello from Cloudflare"
 	},
 	"kv_namespaces": [
-    {
-      "binding": "CACHE",
-      "id": "81933913fa104eb4b88104f5766ad6ea",   
-      "preview_id": "d511674f54a34905bb19e4c04c7bafa2"
-    }
-  ]
+		{
+			"binding": "CACHE",
+			"id": "81933913fa104eb4b88104f5766ad6ea",
+			"preview_id": "d511674f54a34905bb19e4c04c7bafa2"
+		}
+	]
 }

@@ -10,12 +10,24 @@ import { CreateRegistryResponse } from "@/types/form-types";
 import { useMutation } from "@tanstack/react-query";
 import { useAppForm } from "./ui/tanstack-form";
 import { revalidateLogic } from "./ui/tanstack-form";
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "./ui/input-group";
+import {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupButton,
+	InputGroupInput,
+} from "./ui/input-group";
 import { Spinner } from "./ui/spinner";
 import { Separator } from "./ui/separator";
 import { ScrollArea } from "./ui/scroll-area";
 import { GeneratedFormCodeViewer } from "./generated-code/code-viewer";
-import { ResponsiveDialog, ResponsiveDialogContent, ResponsiveDialogDescription, ResponsiveDialogHeader, ResponsiveDialogTitle, ResponsiveDialogTrigger } from "./ui/revola";
+import {
+	ResponsiveDialog,
+	ResponsiveDialogContent,
+	ResponsiveDialogDescription,
+	ResponsiveDialogHeader,
+	ResponsiveDialogTitle,
+	ResponsiveDialogTrigger,
+} from "./ui/revola";
 import { TerminalIcon } from "./ui/terminal";
 import { AnimatedIconButton } from "./ui/animated-icon-button";
 import * as z from "zod";
@@ -92,7 +104,10 @@ function CodeDialog() {
 		files,
 		name: formName,
 	};
-	const url = import.meta.env.MODE === 'development' ? "http://localhost:3000" : "https://tan-form-builder.baskar.dev"
+	const url =
+		import.meta.env.MODE === "development"
+			? "http://localhost:3000"
+			: "https://tan-form-builder.baskar.dev";
 	const mutation = useMutation<CreateRegistryResponse, Error, void>({
 		mutationKey: ["/create-command", formName],
 		mutationFn: async (): Promise<CreateRegistryResponse> => {
@@ -156,7 +171,11 @@ function CodeDialog() {
 			onChangeDebounceMs: 300,
 			onChange: ({ fieldApi }) => {
 				logger(fieldApi.state.value);
-				fieldApi.state.value = fieldApi.state.value.toLowerCase().replace(/[^a-z0-9]/g, "").replace(/_+/g, "").replace(/^_|_$/g, "");
+				fieldApi.state.value = fieldApi.state.value
+					.toLowerCase()
+					.replace(/[^a-z0-9]/g, "")
+					.replace(/_+/g, "")
+					.replace(/^_|_$/g, "");
 				actions.setFormName(fieldApi.state.value as string);
 			},
 		},

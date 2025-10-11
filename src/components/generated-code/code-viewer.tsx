@@ -14,15 +14,11 @@ import useSettings from "@/hooks/use-settings";
 import { generateFormCode } from "@/lib/form-code-generators/react/generate-form-code";
 import { flattenFormSteps } from "@/lib/form-elements-helpers";
 import { generateValidationCode } from "@/lib/schema-generators";
-import {
-	formatCode,
-	logger,
-	updatePreferredPackageManager,
-} from "@/lib/utils";
+import { formatCode, logger, updatePreferredPackageManager } from "@/lib/utils";
 import type {
 	FormElement,
 	FormElementOrList,
-	FormStep
+	FormStep,
 } from "@/types/form-types";
 
 export const Wrapper = ({
@@ -83,10 +79,10 @@ const installableShadcnComponents: Partial<
 	MultiSelect: "",
 };
 //======================================
-export function CodeBlockPackagesInstallation({ 
-	customRegistryUrl 
-}: { 
-	customRegistryUrl?: string 
+export function CodeBlockPackagesInstallation({
+	customRegistryUrl,
+}: {
+	customRegistryUrl?: string;
 }) {
 	const { formElements } = useFormStore();
 	const isMS = useIsMultiStep();
@@ -103,10 +99,11 @@ export function CodeBlockPackagesInstallation({
 	const packagesSet = new Set(formElementTypes);
 	const packages = Array.from(packagesSet).join(" ");
 	const otherPackages = "@tanstack/react-form zod motion";
-	
-	const defaultRegistryUrl = "https://tan-form-builder.baskar.dev/r/tanstack-form.json";
+
+	const defaultRegistryUrl =
+		"https://tan-form-builder.baskar.dev/r/tanstack-form.json";
 	const registryUrl = customRegistryUrl || defaultRegistryUrl;
-	
+
 	const tabsData = [
 		{
 			value: "pnpm",
@@ -156,10 +153,7 @@ export function CodeBlockPackagesInstallation({
 				{tabsData.map((item) => (
 					<TabsContent key={item.value} value={item.value}>
 						<CodeBlock>
-							<CodeBlockCode
-								code={item.base}
-								language="bash"
-							/>
+							<CodeBlockCode code={item.base} language="bash" />
 						</CodeBlock>
 					</TabsContent>
 				))}
@@ -186,10 +180,7 @@ export function CodeBlockPackagesInstallation({
 				{tabsData.map((item) => (
 					<TabsContent key={item.value} value={item.value}>
 						<CodeBlock>
-							<CodeBlockCode
-								code={item.shadcn}
-								language="bash"
-							/>
+							<CodeBlockCode code={item.shadcn} language="bash" />
 						</CodeBlock>
 					</TabsContent>
 				))}
@@ -216,10 +207,7 @@ export function CodeBlockPackagesInstallation({
 				{tabsData.map((item) => (
 					<TabsContent key={item.value} value={item.value}>
 						<CodeBlock>
-							<CodeBlockCode
-								code={item.registery}
-								language="bash"
-							/>
+							<CodeBlockCode code={item.registery} language="bash" />
 						</CodeBlock>
 					</TabsContent>
 				))}
@@ -261,10 +249,7 @@ const CodeBlockSchema = () => {
 	const { formElements } = useFormStore();
 
 	useEffect(() => {
-		logger(
-			"Form elements changed, regenerating schema code:",
-			formElements,
-		);
+		logger("Form elements changed, regenerating schema code:", formElements);
 	}, [formElements]);
 	const validationCode = generateValidationCode();
 	const formattedCode = formatCode(validationCode);
@@ -277,7 +262,15 @@ const CodeBlockSchema = () => {
 	);
 };
 
-export function GeneratedFormCodeViewer({ isGenerateSuccess, generatedId, tabsData }: { isGenerateSuccess: boolean, generatedId: string, tabsData: { value: string, registery: string }[]	 }) {
+export function GeneratedFormCodeViewer({
+	isGenerateSuccess,
+	generatedId,
+	tabsData,
+}: {
+	isGenerateSuccess: boolean;
+	generatedId: string;
+	tabsData: { value: string; registery: string }[];
+}) {
 	const settings = useSettings();
 	return (
 		<Tabs defaultValue="tsx" className="w-full min-w-full flex">
@@ -290,52 +283,49 @@ export function GeneratedFormCodeViewer({ isGenerateSuccess, generatedId, tabsDa
 			</div>
 			<TabsContent value="tsx" tabIndex={-1}>
 				<AnimatePresence>
-						{isGenerateSuccess && generatedId && (
-							<motion.div
-								initial={{ opacity: 0, height: 0, y: -20 }}
-								animate={{ opacity: 1, height: "auto", y: 0 }}
-								exit={{ opacity: 0, height: 0, y: -20 }}
-								transition={{ duration: 0.4, ease: "easeOut" }}
-								className="border-t mt-4"
-							>
-								<ScrollArea className=" max-h-[40vh]">
-									<h2 className="font-sembold text-start pt-4">
-										Instal With Shadcn CLI Command
-									</h2>
-									<Tabs
-										value={settings?.preferredPackageManager}
-										onValueChange={(value) =>
-											updatePreferredPackageManager(
-												value as SettingsCollection["preferredPackageManager"],
-											)
-										}
-										className="w-full mt-2 rounded-md"
-									>
-										<TabsList>
-											{tabsData.map((item) => (
-												<TabsTrigger key={item.value} value={item.value}>
-													{item.value}
-												</TabsTrigger>
-											))}
-										</TabsList>
+					{isGenerateSuccess && generatedId && (
+						<motion.div
+							initial={{ opacity: 0, height: 0, y: -20 }}
+							animate={{ opacity: 1, height: "auto", y: 0 }}
+							exit={{ opacity: 0, height: 0, y: -20 }}
+							transition={{ duration: 0.4, ease: "easeOut" }}
+							className="border-t mt-4"
+						>
+							<ScrollArea className=" max-h-[40vh]">
+								<h2 className="font-sembold text-start pt-4">
+									Instal With Shadcn CLI Command
+								</h2>
+								<Tabs
+									value={settings?.preferredPackageManager}
+									onValueChange={(value) =>
+										updatePreferredPackageManager(
+											value as SettingsCollection["preferredPackageManager"],
+										)
+									}
+									className="w-full mt-2 rounded-md"
+								>
+									<TabsList>
 										{tabsData.map((item) => (
-											<TabsContent key={item.value} value={item.value}>
-												<CodeBlock>
-													<CodeBlockCode
-														code={item.registery}
-														language="bash"
-													/>
-												</CodeBlock>
-											</TabsContent>
+											<TabsTrigger key={item.value} value={item.value}>
+												{item.value}
+											</TabsTrigger>
 										))}
-									</Tabs>
-								</ScrollArea>
-							</motion.div>
-						)}
-					</AnimatePresence>
-					<CodeBlockPackagesInstallation />
-					<div className="border-t border-dashed w-full mt-6" />
-					<CodeBlockTSX />
+									</TabsList>
+									{tabsData.map((item) => (
+										<TabsContent key={item.value} value={item.value}>
+											<CodeBlock>
+												<CodeBlockCode code={item.registery} language="bash" />
+											</CodeBlock>
+										</TabsContent>
+									))}
+								</Tabs>
+							</ScrollArea>
+						</motion.div>
+					)}
+				</AnimatePresence>
+				<CodeBlockPackagesInstallation />
+				<div className="border-t border-dashed w-full mt-6" />
+				<CodeBlockTSX />
 			</TabsContent>
 			<TabsContent value="schema" tabIndex={-1}>
 				<ScrollArea className="h-[60vh]">

@@ -1,20 +1,14 @@
 import {
 	Calendar,
 	CheckSquare,
-	ChevronDown,
-	CircleDot,
 	Grid3X3,
+	Hash,
 	Heading1,
 	Heading2,
 	Heading3,
 	ListChecks,
-	Lock,
-	Minus,
 	Shield,
-	Sliders,
-	ToggleLeft,
 	Type,
-	WrapText,
 } from "lucide-react";
 
 /**
@@ -116,81 +110,35 @@ export const formElementsList = [
 			},
 		],
 	},
+];
+
+/**
+ * Table column types for adding columns
+ */
+export const tableColumnTypes = [
 	{
-		group: "field",
-		name: "Password",
-		fieldType: "Password",
-		type: "password",
-		icon: Lock,
+		name: "String",
+		type: "string",
+		icon: Type,
 	},
 	{
-		group: "field",
-		name: "Radio",
-		icon: CircleDot,
-		fieldType: "RadioGroup",
-		options: [
-			{
-				value: "1",
-				label: "Option 1",
-			},
-			{
-				value: "2",
-				label: "Option 2",
-			},
-			{
-				value: "2",
-				label: "Option 3",
-			},
-		],
+		name: "Number",
+		type: "number",
+		icon: Hash,
 	},
 	{
-		group: "field",
-		name: "Select",
-		icon: ChevronDown,
-		fieldType: "Select",
-		options: [
-			{
-				value: "1",
-				label: "Option 1",
-			},
-			{
-				value: "2",
-				label: "Option 2",
-			},
-		],
+		name: "Boolean",
+		type: "boolean",
+		icon: CheckSquare,
 	},
 	{
-		group: "display",
-		name: "Separator",
-		fieldType: "Separator",
-		static: true,
-		icon: Minus,
+		name: "Date",
+		type: "date",
+		icon: Calendar,
 	},
 	{
-		group: "field",
-		name: "Slider",
-		fieldType: "Slider",
-		icon: Sliders,
-		min: 1,
-		max: 100,
-		step: 2,
-	},
-	{
-		group: "field",
-		name: "Switch",
-		fieldType: "Switch",
-		icon: ToggleLeft,
-	},
-	{
-		group: "field",
-		name: "Textarea",
-		fieldType: "Textarea",
-		icon: WrapText,
-	},
-	{
-		group: "field",
-		name: "Toggle",
-		fieldType: "ToggleGroup",
+		name: "Object",
+		type: "object",
 		icon: Grid3X3,
 	},
 ];

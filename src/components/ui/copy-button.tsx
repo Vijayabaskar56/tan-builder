@@ -10,7 +10,13 @@ import { CheckIcon } from "./check";
 import { CopyIcon } from "./copy";
 
 //======================================
-function CopyButton({ text, type = "button" }: { text: string, type?: "button" | "submit" }) {
+function CopyButton({
+	text,
+	type = "button",
+}: {
+	text: string;
+	type?: "button" | "submit";
+}) {
 	const [copied, setCopied] = React.useState(false);
 	const handleCopy = () => {
 		navigator.clipboard.writeText(text);

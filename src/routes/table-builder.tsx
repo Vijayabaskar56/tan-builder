@@ -1,53 +1,21 @@
-import { TableColumnEdit } from "@/components/table-components/table-column-edit";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createClientOnlyFn } from "@tanstack/react-start";
+import { Database, Settings, Table } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { ErrorBoundary } from "@/components/error-boundary";
-import FileUpload from "@/components/file-upload";
 import FormHeader from "@/components/header";
 import { NotFound } from "@/components/not-found";
-import { Button } from "@/components/ui/button";
+import { TableColumnEdit } from "@/components/table-components/table-column-edit";
+import { TableTemplates } from "@/components/table-components/table-templates";
+import TableHeader from "@/components/table-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
-import { revalidateLogic, useAppForm } from "@/components/ui/tanstack-form";
-import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { tableBuilderCollection } from "@/db-collections/table-builder.collections";
-import { detectColumns } from "@/lib/table-generator/generate-columns";
 import { useScreenSize } from "@/hooks/use-screen-size";
 import useTableStore from "@/hooks/use-table-store";
 import { cn } from "@/lib/utils";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { createClientOnlyFn } from "@tanstack/react-start";
-import { Database, Settings, Upload } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
-import * as z from "zod";
-import TableHeader from "@/components/table-header";
-// Utility functions for parsing data
-const parseCSV = (csvText: string): any[] => {
-	const lines = csvText.trim().split("\n");
-	if (lines.length < 2)
-		throw new Error("CSV must have at least headers and one data row");
-
-	const headers = lines[0].split(",").map((h) => h.trim());
-	const data = lines.slice(1).map((line) => {
-		const values = line.split(",");
-		const obj: any = {};
-		headers.forEach((header, index) => {
-			obj[header] = values[index]?.trim() || "";
-		});
-		return obj;
-	});
-	return data;
-};
-
-const parseJSON = (jsonText: string): any[] => {
-	const parsed = JSON.parse(jsonText);
-	if (Array.isArray(parsed)) {
-		return parsed;
-	} else if (typeof parsed === "object") {
-		return [parsed];
-	}
-	return [];
-};
 
 const initializeTableStore = createClientOnlyFn(async () => {
 	if (typeof window !== "undefined") {
@@ -59,13 +27,13 @@ const initializeTableStore = createClientOnlyFn(async () => {
 				{
 					id: 1,
 					settings: {
-						isGlobalSearch: false,
-						enableHiding: false,
-						enableSorting: false,
-						enableResizing: false,
-						enablePinning: false,
-						enableColumnFilter: false,
-						enableGlobalFilter: false,
+						isGlobalSearch: true,
+						enableHiding: true,
+						enableSorting: true,
+						enableResizing: true,
+						enablePinning: true,
+						enableColumnFilter: true,
+						enableGlobalFilter: true,
 					},
 					table: {
 						columns: [],
@@ -86,76 +54,14 @@ export const Route = createFileRoute("/table-builder")({
 	ssr: false,
 });
 
-export const dataFormSchema = z.object({
-	data: z.array(z.any()),
-});
-
 function RouteComponent() {
 	// Sidebar width used only on md+ screens
-	const [sidebarWidth, setSidebarWidth] = useState(300);
+	const [sidebarWidth, setSidebarWidth] = useState(400); // Increased default width
 	const [isResizing, setIsResizing] = useState(false);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const screenSize = useScreenSize();
 	const isMdUp = screenSize.greaterThanOrEqual("md");
 	const tableBuilder = useTableStore();
-	const [textareaText, setTextareaText] = useState("");
-	const dataForm = useAppForm({
-		defaultValues: {
-			data: [],
-		} as z.input<typeof dataFormSchema>,
-		validationLogic: revalidateLogic(),
-		validators: {
-			onDynamic: dataFormSchema,
-			onDynamicAsyncDebounceMs: 300,
-		},
-	});
-
-	const updateTableData = useCallback((data: any[]) => {
-		const columns = detectColumns(data);
-		console.log("🚀 ~ RouteComponent ~ columns:", columns);
-		tableBuilderCollection.update(1, (draft) => {
-			draft.table = {
-				columns,
-				data,
-			};
-		});
-		console.log(tableBuilder);
-	}, []);
-
-	const handleFileUpload = useCallback(
-		(files: any[]) => {
-			const file = files[0]?.file;
-			if (!file) return;
-
-			const reader = new FileReader();
-			reader.onload = (e) => {
-				const text = e.target?.result as string;
-				if (text.trim() === "") {
-					dataForm.setFieldValue("data", []);
-					toast.error("The uploaded file is empty");
-					return;
-				}
-				let data: any[] = [];
-				try {
-					if (file.type === "application/json" || file.name.endsWith(".json")) {
-						data = parseJSON(text);
-					} else if (file.type === "text/csv" || file.name.endsWith(".csv")) {
-						data = parseCSV(text);
-					} else {
-						throw new Error("Unsupported file type");
-					}
-					dataForm.setFieldValue("data", data);
-					updateTableData(data);
-				} catch (error) {
-					toast.error(
-						"Failed to parse file. Please ensure it's valid JSON or CSV.",
-					);
-				}
-			};
-			reader.readAsText(file);
-		},
-		[dataForm, updateTableData],
-	);
 
 	const [isTableBuilderInitialized, setIsTableBuilderInitialized] =
 		useState(false);
@@ -164,9 +70,6 @@ function RouteComponent() {
 		setIsTableBuilderInitialized(true);
 	}, []);
 
-	useEffect(() => {
-		setTextareaText(JSON.stringify(dataForm.state.values.data || [], null, 2));
-	}, [dataForm.state.values.data]);
 	// On breakpoint changes, set sensible defaults:
 	// - tablet/mobile (<md): collapse to min (200px)
 	// - laptop/desktop (>=md): default to 1/3 of available width
@@ -178,33 +81,30 @@ function RouteComponent() {
 		if (!isMdUp) {
 			setSidebarWidth(minWidth);
 		} else {
-			const oneThird = Math.floor(containerRect.width * 0.25);
+			const oneThird = Math.floor(containerRect.width * 0.4);
 			setSidebarWidth(Math.max(minWidth, oneThird));
 		}
 	}, [isMdUp]);
 
-	const handleMouseDown = useCallback((e: React.MouseEvent) => {
+	const handleMouseDown = (e: React.MouseEvent) => {
 		setIsResizing(true);
 		e.preventDefault();
-	}, []);
+	};
 
-	const handleMouseMove = useCallback(
-		(e: MouseEvent) => {
-			if (!isResizing || !containerRef.current || !isMdUp) return;
+	const handleMouseMove = (e: MouseEvent) => {
+		if (!isResizing || !containerRef.current || !isMdUp) return;
 
-			const containerRect = containerRef.current.getBoundingClientRect();
-			const newWidth = e.clientX - containerRect.left;
-			const minWidth = 200;
-			const maxWidth = containerRect.width * 0.33; // Maximum 1/3 of screen width
+		const containerRect = containerRef.current.getBoundingClientRect();
+		const newWidth = e.clientX - containerRect.left;
+		const minWidth = 200;
+		const maxWidth = containerRect.width * 0.5; // Maximum 1/2 of screen width
 
-			setSidebarWidth(Math.min(Math.max(newWidth, minWidth), maxWidth));
-		},
-		[isResizing, isMdUp],
-	);
+		setSidebarWidth(Math.min(Math.max(newWidth, minWidth), maxWidth));
+	};
 
-	const handleMouseUp = useCallback(() => {
+	const handleMouseUp = () => {
 		setIsResizing(false);
-	}, []);
+	};
 
 	// Add event listeners for mouse move and up
 	useEffect(() => {
@@ -221,7 +121,7 @@ function RouteComponent() {
 				document.body.style.userSelect = "";
 			};
 		}
-	}, [isResizing, isMdUp, handleMouseMove, handleMouseUp]);
+	}, [isResizing, isMdUp]);
 
 	if (!isTableBuilderInitialized) {
 		return <Spinner />;
@@ -236,150 +136,47 @@ function RouteComponent() {
 				>
 					{/* Left Sidebar */}
 					<div
-						className="flex-shrink-0 border-b md:border-b-0 md:border-r p-2"
+						className="flex-shrink-0 border-b md:border-b-0 md:border-r"
 						style={isMdUp ? { width: `${sidebarWidth}px` } : { width: "100%" }}
 					>
 						{isMdUp ? (
 							<ScrollArea className="h-full">
-								{/* Upload Data Section */}
-								<div className="flex flex-col gap-4">
-									<FileUpload onFilesAdded={handleFileUpload} />
-									<div className="text-center">or Past CSV or JSON Data</div>
-									{/* Global Settings Section */}
-									{/* TODO: */}
-									<dataForm.AppForm>
-										<dataForm.Form>
-											<dataForm.AppField name={"data"}>
-												{(field) => (
-													<field.FieldSet className="w-full">
-														<field.Field>
-															<field.FieldLabel htmlFor={"data"}>
-																Textarea *
-															</field.FieldLabel>
-															<div className="*:not-first:mt-2">
-																<Textarea
-																	placeholder="Enter your text"
-																	onBlur={() => {
-																		if (textareaText.trim() === "") {
-																			dataForm.setFieldValue("data", []);
-																			field.handleBlur();
-																			return;
-																		}
-																		try {
-																			let parsed;
-																			try {
-																				parsed = parseJSON(textareaText);
-																			} catch {
-																				parsed = parseCSV(textareaText);
-																			}
-																			dataForm.setFieldValue("data", parsed);
-																			updateTableData(parsed);
-																		} catch {
-																			toast.error("Invalid JSON or CSV format");
-																			setTextareaText(
-																				JSON.stringify(
-																					dataForm.state.values.data || [],
-																					null,
-																					2,
-																				),
-																			);
-																		}
-																		field.handleBlur();
-																	}}
-																	aria-invalid={
-																		!!field.state.meta.errors.length
-																	}
-																	required={true}
-																	disabled={false}
-																	value={textareaText}
-																	name={"data"}
-																	onChange={(e) =>
-																		setTextareaText(e.target.value)
-																	}
-																	className="field-sizing-content max-h-29.5 min-h-0 resize-none py-1.75"
-																/>
-															</div>
-															<field.FieldDescription>
-																A multi-line text input field
-															</field.FieldDescription>
-														</field.Field>
-														<field.FieldError />
-													</field.FieldSet>
-												)}
-											</dataForm.AppField>
-										</dataForm.Form>
-									</dataForm.AppForm>
-
-									{/* Table Column Settings Section */}
-									<TableColumnEdit />
+								<div className="p-4">
+									<Tabs defaultValue="columns" className="w-full">
+										<ScrollArea className="w-full">
+											<TabsList className="mb-3 w-full justify-center">
+												<TabsTrigger value="columns">
+													<Settings
+														className="-ms-0.5 me-1.5 opacity-60"
+														size={16}
+														aria-hidden="true"
+													/>
+													Columns
+												</TabsTrigger>
+												<TabsTrigger value="templates">
+													<Table
+														className="-ms-0.5 me-1.5 opacity-60"
+														size={16}
+														aria-hidden="true"
+													/>
+													Templates
+												</TabsTrigger>
+											</TabsList>
+											<ScrollBar orientation="horizontal" />
+										</ScrollArea>
+										<TabsContent value="columns" className="mt-4">
+											<div className="w-full">
+												<TableColumnEdit />
+											</div>
+										</TabsContent>
+										<TabsContent value="templates" className="mt-4">
+											<TableTemplates />
+										</TabsContent>
+									</Tabs>
 								</div>
 							</ScrollArea>
 						) : (
 							<div>
-								<dataForm.AppForm>
-									<dataForm.Form>
-										<dataForm.AppField name={"data"}>
-											{(field) => (
-												<field.FieldSet className="w-full">
-													<field.Field>
-														<field.FieldLabel htmlFor={"data"}>
-															Textarea *
-														</field.FieldLabel>
-														<div className="*:not-first:mt-2">
-															<Textarea
-																placeholder="Enter your text"
-																aria-invalid={!!field.state.meta.errors.length}
-																required={true}
-																disabled={false}
-																value={textareaText}
-																name={"data"}
-																onChange={(e) =>
-																	setTextareaText(e.target.value)
-																}
-																className="field-sizing-content max-h-29.5 min-h-0 resize-none py-1.75"
-															/>
-															<Button
-																type="button"
-																variant="outline"
-																size="sm"
-																onClick={() => {
-																	if (textareaText.trim() === "") {
-																		dataForm.setFieldValue("data", []);
-																		updateTableData([]);
-																		return;
-																	}
-																	try {
-																		let parsed;
-																		try {
-																			parsed = parseJSON(textareaText);
-																		} catch {
-																			parsed = parseCSV(textareaText);
-																		}
-																		dataForm.setFieldValue("data", parsed);
-																		updateTableData(parsed);
-																		toast.success(
-																			"Data processed successfully",
-																		);
-																	} catch (error) {
-																		toast.error("Invalid JSON or CSV format");
-																		console.error("Parsing error:", error);
-																	}
-																}}
-																className="mt-2"
-															>
-																Process Data
-															</Button>
-														</div>
-														<field.FieldDescription>
-															A multi-line text input field
-														</field.FieldDescription>
-													</field.Field>
-													<field.FieldError />
-												</field.FieldSet>
-											)}
-										</dataForm.AppField>
-									</dataForm.Form>
-								</dataForm.AppForm>
 								{/* Global Settings Section */}
 								<Card>
 									<CardHeader className="pb-3">
@@ -502,24 +299,6 @@ function RouteComponent() {
 							}
 						>
 							<div>
-								{/* Upload Data Section */}
-								<Card>
-									<CardHeader className="pb-3">
-										<CardTitle className="flex items-center gap-2 text-sm">
-											<Upload className="h-4 w-4" />
-											Upload Data
-										</CardTitle>
-									</CardHeader>
-									<CardContent className="pt-0">
-										<div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center">
-											<Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground/50" />
-											<p className="text-sm text-muted-foreground">
-												Drag and drop your data file here
-											</p>
-										</div>
-									</CardContent>
-								</Card>
-
 								{/* Global Settings Section */}
 								<Card>
 									<CardHeader className="pb-3">
