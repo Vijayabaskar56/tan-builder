@@ -75,6 +75,7 @@ const ChevronsLeftRightIcon = forwardRef<
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			>
+				<title>Chevrons Left Right</title>
 				<motion.path
 					variants={{
 						normal: { translateX: "0%" },

@@ -872,7 +872,7 @@ const createActions = (
 				);
 			}
 
-			let updatedElements;
+			let updatedElements: unknown;
 			if (isFormArrayForm(state.formElements)) {
 				updatedElements = findAndRemoveFormArray(state.formElements);
 			} else if (isMultiStepForm(state.formElements)) {
@@ -943,7 +943,7 @@ const createActions = (
 					);
 				}
 
-				let updatedElements;
+				let updatedElements: unknown;
 				if (isFormArrayForm(state.formElements)) {
 					updatedElements = findAndUpdateFormArray(state.formElements);
 				} else if (isMultiStepForm(state.formElements)) {
@@ -983,7 +983,7 @@ const createActions = (
 				});
 			};
 
-			let updatedElements;
+			let updatedElements: unknown;
 			if (isFormArrayForm(state.formElements)) {
 				updatedElements = findAndUpdateFormArray(state.formElements);
 			} else if (isMultiStepForm(state.formElements)) {

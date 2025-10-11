@@ -54,7 +54,7 @@ function CodeDialog() {
 	const [open, setOpen] = useState(false);
 	const [isGenerateSuccess, setIsGenerateSuccess] = useState(false);
 	const [generatedId, setGeneratedId] = useState<string>("");
-
+	const id = useId();
 	useEffect(() => {
 		setIsGenerateSuccess(false);
 		setGeneratedId("");
@@ -84,7 +84,12 @@ function CodeDialog() {
 		settings,
 		formName,
 	});
-	const validationCode = generateValidationCode();
+	const validationCode = generateValidationCode(
+		isMS,
+		schemaName,
+		validationSchema,
+		formElements,
+	);
 	const importDependencies = generateImports(
 		formElements as (FormElement | FormArray)[],
 		validationSchema,
@@ -149,7 +154,7 @@ function CodeDialog() {
 			onDynamic: formSchema,
 			onDynamicAsyncDebounceMs: 300,
 		},
-		onSubmit: async ({}) => {
+		onSubmit: async () => {
 			const result = await mutation.mutateAsync();
 			logger("Response:", result);
 			if (result.data?.id) {
@@ -162,7 +167,7 @@ function CodeDialog() {
 			if (!errorMap) return;
 
 			const inputs = Array.from(
-				document.querySelectorAll("#generatedCodeForm input"),
+				document.querySelectorAll(`#${id} input`),
 			) as HTMLInputElement[];
 			let firstInput: HTMLInputElement | undefined;
 			for (const input of inputs) {
@@ -205,7 +210,7 @@ function CodeDialog() {
 						</ResponsiveDialogDescription>
 					</ResponsiveDialogHeader>
 					<form.AppForm>
-						<form.Form id="generatedCodeForm" className="px-6 pt-4">
+						<form.Form id={id} className="px-6 pt-4">
 							<form.AppField name={"formName"}>
 								{(field) => (
 									<field.FieldSet className="w-full">
@@ -217,7 +222,6 @@ function CodeDialog() {
 											</field.FieldLabel>
 											<InputGroup>
 												<InputGroupInput
-													id="formName"
 													name={"formName"}
 													aria-invalid={!!field.state.meta.errors.length}
 													placeholder="Enter your form name eg:- contactUs"

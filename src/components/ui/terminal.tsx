@@ -79,6 +79,7 @@ const TerminalIcon = forwardRef<TerminalIconHandle, TerminalIconProps>(
 					strokeLinecap="round"
 					strokeLinejoin="round"
 				>
+					<title>Terminal Icon</title>
 					<polyline points="4 17 10 11 4 5" />
 					<motion.line
 						x1="12"

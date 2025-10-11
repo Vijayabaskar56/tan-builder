@@ -1,6 +1,3 @@
-// generate-default-value.tsx
-
-import { useFormStore } from "@/hooks/use-form-store";
 import { flattenFormSteps } from "@/lib/form-elements-helpers";
 import type {
 	FormArray,
@@ -289,9 +286,12 @@ export const getDefaultFormElement = (
 	return defaults;
 };
 
-export const getDefaultValuesString = () => {
-	const { validationSchema, schemaName, formName, formElements } =
-		useFormStore();
+export const getDefaultValuesString = (
+	validationSchema: string | undefined,
+	schemaName: string,
+	formName: string,
+	formElements: any,
+) => {
 	console.log("🚀 ~ getDefaultValuesString ~ schemaName:", schemaName);
 
 	// Handle multi-step forms by flattening them to a single list of elements

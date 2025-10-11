@@ -150,6 +150,7 @@ const LinkedinIcon = forwardRef<LinkedinIconHandle, LinkedinIconProps>(
 					strokeLinejoin="round"
 					viewBox="0 0 24 24"
 				>
+					<title>LinkedIn Icon</title>
 					<motion.path
 						variants={pathVariants}
 						initial="normal"

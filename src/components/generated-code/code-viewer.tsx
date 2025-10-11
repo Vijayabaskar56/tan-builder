@@ -246,12 +246,17 @@ const CodeBlockTSX = () => {
 	);
 };
 const CodeBlockSchema = () => {
-	const { formElements } = useFormStore();
+	const { formElements, validationSchema } = useFormStore();
 
 	useEffect(() => {
 		logger("Form elements changed, regenerating schema code:", formElements);
 	}, [formElements]);
-	const validationCode = generateValidationCode();
+	const validationCode = generateValidationCode(
+		false,
+		"schema",
+		validationSchema,
+		formElements,
+	);
 	const formattedCode = formatCode(validationCode);
 	return (
 		<div className="relative max-w-full">

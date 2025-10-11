@@ -84,6 +84,7 @@ const LockKeyholeOpenIcon = forwardRef<
 				}}
 				animate={controls}
 			>
+				<title>Lock KeyHold Open Icon</title>
 				<circle cx="12" cy="16" r="1" />
 				<rect width="18" height="12" x="3" y="10" rx="2" />
 				<motion.path

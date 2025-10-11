@@ -105,7 +105,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 				onValueChangeProp(state, items);
 			}
 		},
-		[onValueChangeProp],
+		[onValueChangeProp, itemCache.get],
 	);
 
 	const [value, setValue] = useControllableState({
@@ -171,6 +171,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 		maxCount,
 		handleSelect,
 		handleDeselect,
+		itemCache,
 	]);
 
 	return (
@@ -215,6 +216,16 @@ const MultiSelectTrigger = React.forwardRef<
 				)}
 				onClick={disabled ? PreventClick : props.onClick}
 				onTouchStart={disabled ? PreventClick : props.onTouchStart}
+				onKeyDown={
+					disabled
+						? (e) => {
+								e.preventDefault();
+								e.stopPropagation();
+							}
+						: props.onKeyDown
+				}
+				tabIndex={disabled ? -1 : (props.tabIndex ?? 0)}
+				role="button"
 			>
 				{children}
 				<ChevronUp className="size-4 opacity-50" />
@@ -459,7 +470,7 @@ const MultiSelectItem = React.forwardRef<
 			if (value) {
 				itemCache.set(value, item!);
 			}
-		}, [selected, value, item]);
+		}, [value, item, itemCache.set]);
 
 		const disabled = Boolean(
 			disabledProp ||

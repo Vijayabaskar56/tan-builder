@@ -81,6 +81,7 @@ function CodeBlockCode({
 
 			{/* Highlighted or fallback content */}
 			{highlightedHtml ? (
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: Needed to render the highlighted html
 				<div dangerouslySetInnerHTML={{ __html: highlightedHtml }} />
 			) : (
 				<pre>

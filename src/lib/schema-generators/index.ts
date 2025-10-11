@@ -1,12 +1,16 @@
-import { useFormStore } from "@/hooks/use-form-store";
 import type { FormArray, FormElement, FormStep } from "@/types/form-types";
 import { flattenFormSteps } from "../form-elements-helpers";
 import { getArkTypeSchemaString } from "./generate-arktype-schema";
 import { getValiSchemaString } from "./generate-valibot-schema";
 import { getZodSchemaString } from "./generate-zod-schema";
 
-export const generateValidationCode = () => {
-	const { isMS, schemaName, validationSchema, formElements } = useFormStore();
+export const generateValidationCode = (
+	isMS: boolean,
+	schemaName: string,
+	validationSchema: string,
+	formElements: any,
+) => {
+
 	const parsedFormElements = isMS
 		? flattenFormSteps(formElements as FormStep[])
 		: formElements.flat();

@@ -41,8 +41,15 @@
 			"recommended": true,
 			"suspicious": {
 				"noArrayIndexKey": "off"
+			},
+			"a11y": {
+				"noStaticElementInteractions": "off",
+				"useSemanticElements": "off",
+				"useFocusableInteractive": "off",
+				"useKeyWithClickEvents": "off"
 			}
-		}
+		},
+		"includes": ["src/**/*", ".vscode/*", "index.html", "vite.config.js"]
 	},
 	"javascript": {
 		"formatter": {

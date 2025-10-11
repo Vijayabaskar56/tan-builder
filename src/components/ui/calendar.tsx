@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/noNestedComponentDefinitions: <explanation> */
 import {
 	ChevronDownIcon,
 	ChevronLeftIcon,

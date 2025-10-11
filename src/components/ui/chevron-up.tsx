@@ -71,6 +71,7 @@ const ChevronUpIcon = forwardRef<ChevronUpIconHandle, ChevronUpIconProps>(
 					strokeLinecap="round"
 					strokeLinejoin="round"
 				>
+					<title>Chevron Up Icon</title>
 					<motion.path
 						variants={{
 							normal: { y: 0 },

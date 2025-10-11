@@ -21,7 +21,7 @@ interface FormPreviewProps {
 }
 
 export function SingleStepFormPreview({ form }: FormPreviewProps) {
-	const { formElements } = useFormStore();
+	const { formElements, formName } = useFormStore();
 	const isMS = useIsMultiStep();
 	if (formElements.length < 1)
 		return (
@@ -48,7 +48,7 @@ export function SingleStepFormPreview({ form }: FormPreviewProps) {
 	return (
 		<div className="w-full animate-in rounded-md">
 			<form.AppForm>
-				<form.Form id="previewForm" noValidate>
+				<form.Form id={formName} noValidate>
 					{isMS ? (
 						<MultiStepFormPreview
 							formElements={formElements as unknown as FormStep[]}

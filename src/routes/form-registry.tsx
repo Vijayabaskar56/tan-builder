@@ -399,14 +399,11 @@ function RouteComponent() {
 					</p>
 				</TabsContent>
 				<TabsContent value="manual">
-					<Wrapper
-						children={manualCode}
-						language="tsx"
-						title="Manual Installation"
-					/>
+					<Wrapper language="tsx" title="Manual Installation">
+						{manualCode}
+					</Wrapper>
 				</TabsContent>
 			</Tabs>
-			{/* <ComponentDetails component={tanstackRegistry} /> */}
 			<h2 className="text-2xl font-semibold mb-4">Usage</h2>
 			<p className="mb-4">
 				This tanstack-form registry component provides a comprehensive set of
@@ -414,7 +411,9 @@ function RouteComponent() {
 				form validation, field management, and UI components.
 			</p>
 			<p className="mb-4">Here's a basic example of how to use it:</p>
-			<Wrapper children={exampleCode} language="tsx" title="Example Usage" />
+			<Wrapper language="tsx" title="Example Usage">
+				{exampleCode}
+			</Wrapper>
 
 			<h2 className="text-2xl font-semibold my-4">Anatomy</h2>
 			<p className="mb-4">

@@ -3,12 +3,10 @@ import type { RegistryItem } from "shadcn/registry";
 import { cn } from "@/lib/utils";
 
 export default function ComponentCard({
-	isSearchPage = false,
 	children,
 	component,
 	className,
 }: {
-	isSearchPage?: boolean;
 	children: React.ReactNode;
 	component: RegistryItem;
 	className?: string;

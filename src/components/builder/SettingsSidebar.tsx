@@ -148,7 +148,6 @@ export function SettingsSidebar() {
 																	option.value as ValidationMethod,
 																)
 															}
-															// biome-ignore lint/a11y/useSemanticElements: Badge used as a radio button for custom styling
 															role="radio"
 															aria-checked={field.state.value === option.value}
 															tabIndex={0}
@@ -258,7 +257,6 @@ export function SettingsSidebar() {
 																	option.value as PreferredSchema,
 																)
 															}
-															// biome-ignore lint/a11y/useSemanticElements: Badge used as a radio button for custom styling
 															role="radio"
 															aria-checked={field.state.value === option.value}
 															tabIndex={0}
@@ -328,7 +326,6 @@ export function SettingsSidebar() {
 																	);
 																}
 															}}
-															// biome-ignore lint/a11y/useSemanticElements: Badge used as a radio button for custom styling
 															role="radio"
 															aria-checked={field.state.value === option.value}
 															tabIndex={0}

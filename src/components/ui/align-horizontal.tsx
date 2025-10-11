@@ -63,11 +63,15 @@ const AlignHorizontalIcon = forwardRef<
 	return (
 		<div
 			className={cn(className)}
+			role="button"
+			aria-label="Align horizontal"
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
+			tabIndex={0}
 			{...props}
 		>
 			<svg
+				aria-label="Align horizontal icon"
 				xmlns="http://www.w3.org/2000/svg"
 				width={size}
 				height={size}
@@ -78,6 +82,7 @@ const AlignHorizontalIcon = forwardRef<
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			>
+				<title>Align horizontal icon</title>
 				<motion.rect
 					variants={{
 						normal: { scaleX: 1 },

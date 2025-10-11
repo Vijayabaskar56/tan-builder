@@ -77,6 +77,7 @@ const XIcon = forwardRef<XIconHandle, XIconProps>(
 					strokeLinecap="round"
 					strokeLinejoin="round"
 				>
+					<title>X Icon</title>
 					<motion.path
 						variants={pathVariants}
 						animate={controls}

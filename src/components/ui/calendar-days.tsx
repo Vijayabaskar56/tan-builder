@@ -94,6 +94,7 @@ const CalendarDaysIcon = forwardRef<
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			>
+				<title>Calendar Days Icon</title>
 				<path d="M8 2v4" />
 				<path d="M16 2v4" />
 				<rect width="18" height="18" x="3" y="4" rx="2" />

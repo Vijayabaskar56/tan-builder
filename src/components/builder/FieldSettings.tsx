@@ -99,9 +99,10 @@ export function FieldSettings({ field, onUpdateField }: FieldSettingsProps) {
 								</CardHeader>
 								<CardContent className="space-y-4">
 									<div className="space-y-2">
-										<Label htmlFor="label">Label</Label>
+										<Label htmlFor={`${field.id}-label`}>Label</Label>
 										<Input
-											id="label"
+											id={`${field.id}-label`}
+											name={`${field.id}-label`}
 											value={field.label}
 											onChange={(e) => handleUpdate({ label: e.target.value })}
 											placeholder="Enter field label"
@@ -109,9 +110,10 @@ export function FieldSettings({ field, onUpdateField }: FieldSettingsProps) {
 									</div>
 
 									<div className="space-y-2">
-										<Label htmlFor="name">Field Name</Label>
+										<Label htmlFor={`${field.id}-name`}>Field Name</Label>
 										<Input
-											id="name"
+											id={`${field.id}-name`}
+											name={`${field.id}-name`}
 											value={field.name}
 											onChange={(e) => handleUpdate({ name: e.target.value })}
 											placeholder="Enter field name"
@@ -147,6 +149,7 @@ export function FieldSettings({ field, onUpdateField }: FieldSettingsProps) {
 																		label: e.target.value,
 																	})
 																}
+																name={`${field.id}-option-${index}-label`}
 																placeholder={`Option ${index + 1}`}
 																className="flex-1"
 															/>
@@ -157,6 +160,7 @@ export function FieldSettings({ field, onUpdateField }: FieldSettingsProps) {
 																		value: e.target.value,
 																	})
 																}
+																name={`${field.id}-option-${index}-value`}
 																placeholder="value"
 																className="w-20"
 															/>
@@ -186,7 +190,8 @@ export function FieldSettings({ field, onUpdateField }: FieldSettingsProps) {
 								<CardContent className="space-y-4">
 									<div className="flex items-center space-x-2">
 										<Checkbox
-											id="required"
+											id={`${field.id}-required`}
+											name={`${field.id}-required`}
 											checked={field.validation?.required}
 											onCheckedChange={(checked) =>
 												handleUpdate({
@@ -207,7 +212,8 @@ export function FieldSettings({ field, onUpdateField }: FieldSettingsProps) {
 											<div className="space-y-2">
 												<Label htmlFor="minLength">Minimum Length</Label>
 												<Input
-													id="minLength"
+													id={`${field.id}-minLength`}
+													name={`${field.id}-minLength`}
 													type="number"
 													value={field.validation?.minLength || ""}
 													onChange={(e) =>
@@ -227,7 +233,8 @@ export function FieldSettings({ field, onUpdateField }: FieldSettingsProps) {
 											<div className="space-y-2">
 												<Label htmlFor="maxLength">Maximum Length</Label>
 												<Input
-													id="maxLength"
+													id={`${field.id}-maxLength`}
+													name={`${field.id}-maxLength`}
 													type="number"
 													value={field.validation?.maxLength || ""}
 													onChange={(e) =>
@@ -251,7 +258,8 @@ export function FieldSettings({ field, onUpdateField }: FieldSettingsProps) {
 											<div className="space-y-2">
 												<Label htmlFor="min">Minimum Value</Label>
 												<Input
-													id="min"
+													id={`${field.id}-min`}
+													name={`${field.id}-min`}
 													type="number"
 													value={field.validation?.min || ""}
 													onChange={(e) =>
@@ -271,7 +279,8 @@ export function FieldSettings({ field, onUpdateField }: FieldSettingsProps) {
 											<div className="space-y-2">
 												<Label htmlFor="max">Maximum Value</Label>
 												<Input
-													id="max"
+													id={`${field.id}-max`}
+													name={`${field.id}-max`}
 													type="number"
 													value={field.validation?.max || ""}
 													onChange={(e) =>
@@ -294,7 +303,8 @@ export function FieldSettings({ field, onUpdateField }: FieldSettingsProps) {
 										<div className="space-y-2">
 											<Label htmlFor="pattern">Pattern (Regex)</Label>
 											<Input
-												id="pattern"
+												id={`${field.id}-pattern`}
+												name={`${field.id}-pattern`}
 												value={field.validation?.pattern || ""}
 												onChange={(e) =>
 													handleUpdate({
@@ -321,7 +331,8 @@ export function FieldSettings({ field, onUpdateField }: FieldSettingsProps) {
 									<div className="space-y-2">
 										<Label htmlFor="placeholder">Placeholder Text</Label>
 										<Input
-											id="placeholder"
+											id={`${field.id}-placeholder`}
+											name={`${field.id}-placeholder`}
 											value={field.appearance?.placeholder || ""}
 											onChange={(e) =>
 												handleUpdate({
@@ -338,7 +349,8 @@ export function FieldSettings({ field, onUpdateField }: FieldSettingsProps) {
 									<div className="space-y-2">
 										<Label htmlFor="helpText">Help Text</Label>
 										<Input
-											id="helpText"
+											id={`${field.id}-helpText`}
+											name={`${field.id}-helpText`}
 											value={field.appearance?.helpText || ""}
 											onChange={(e) =>
 												handleUpdate({
@@ -355,7 +367,8 @@ export function FieldSettings({ field, onUpdateField }: FieldSettingsProps) {
 									<div className="space-y-2">
 										<Label htmlFor="width">Field Width</Label>
 										<select
-											id="width"
+											id={`${field.id}-width`}
+											name={`${field.id}-width`}
 											value={field.appearance?.width || "full"}
 											onChange={(e) =>
 												handleUpdate({

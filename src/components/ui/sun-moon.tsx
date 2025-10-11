@@ -97,6 +97,7 @@ const SunMoonIcon = forwardRef<SunMoonIconHandle, SunMoonIconProps>(
 					strokeLinecap="round"
 					strokeLinejoin="round"
 				>
+					<title>Sun Moon Icon</title>
 					<motion.g
 						variants={sunVariants}
 						animate={sunControls}
