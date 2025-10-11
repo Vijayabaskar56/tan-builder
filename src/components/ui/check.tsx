@@ -88,6 +88,7 @@ const CheckIcon = forwardRef<CheckIconHandle, CheckIconProps>(
 					strokeLinecap="round"
 					strokeLinejoin="round"
 				>
+					<title>Check Icon</title>
 					<motion.path
 						variants={pathVariants}
 						initial="normal"

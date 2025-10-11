@@ -18,7 +18,7 @@ import {
 	FieldLegend,
 	FieldSeparator,
 	FieldTitle,
-	fieldVariants,
+	type fieldVariants,
 } from "@/components/ui/field";
 import {
 	InputGroup,

@@ -1,16 +1,12 @@
-// apps/web/src/routes/form-builder/index.tsx
-
 import { FormEdit } from "@/components/builder/form-edit";
 import { SingleStepFormPreview } from "@/components/builder/form-preview";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { NotFound } from "@/components/not-found";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { type AppForm, useFormBuilder } from "@/hooks/use-form-builder";
-import { useFormStore } from "@/hooks/use-form-store";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useSettings from "@/hooks/use-settings";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 import { FieldTab } from "../../components/builder/FieldLibrary";
 import { SettingsSidebar } from "../../components/builder/SettingsSidebar";
 import { TemplateSidebar } from "../../components/builder/TemplateSidebar";
@@ -28,21 +24,6 @@ function FormBuilderComponent() {
 	const settings = useSettings();
 	const activeTab = settings?.activeTab;
 	const isCodeSidebarOpen = settings?.isCodeSidebarOpen ?? false;
-	// Custom hook to detect desktop (lg breakpoint - 1024px+)
-	const [isDesktop, setIsDesktop] = useState<boolean>(false);
-
-	useEffect(() => {
-		const checkIsDesktop = () => {
-			setIsDesktop(window.innerWidth >= 1024);
-		};
-
-		// Check initial size
-		checkIsDesktop();
-
-		// Listen for resize events
-		window.addEventListener("resize", checkIsDesktop);
-		return () => window.removeEventListener("resize", checkIsDesktop);
-	}, []);
 
 	const renderSidebarContent = () => {
 		switch (activeTab) {

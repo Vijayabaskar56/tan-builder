@@ -1,6 +1,6 @@
 import CopyButton from "@/components/ui/copy-button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SettingsCollection } from "@/db-collections/settings.collections";
+import type { SettingsCollection } from "@/db-collections/settings.collections";
 import useSettings from "@/hooks/use-settings";
 import { updatePreferredPackageManager } from "@/lib/utils";
 

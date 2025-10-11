@@ -99,7 +99,7 @@ const ScrollArea = React.forwardRef<
 				controller.abort();
 				resizeObserver.disconnect();
 			};
-		}, [checkScrollability, isTouch]);
+		}, [checkScrollability]);
 
 		return (
 			<ScrollAreaContext.Provider value={{ isTouch, type }}>
@@ -115,7 +115,6 @@ const ScrollArea = React.forwardRef<
 						<div
 							ref={viewportRef}
 							className={cn("size-full overflow-auto", viewportClassName)}
-							tabIndex={0}
 						>
 							{children}
 						</div>

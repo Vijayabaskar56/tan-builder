@@ -23,11 +23,7 @@ import type {
 	FormStep,
 	Option,
 } from "@/types/form-types";
-import {
-	Check,
-	CircleX,
-	PlusCircle
-} from "lucide-react";
+import { Check, CircleX, PlusCircle } from "lucide-react";
 import { Reorder, useDragControls } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { LucideGripVertical } from "lucide-react";
@@ -162,7 +158,10 @@ function OptionsList({
 							value={option}
 							className="flex items-center gap-2 py-2 pr-2 pl-4 border rounded-md cursor-grab active:cursor-grabbing group bg-secondary"
 						>
-							<LucideGripVertical size={20} className="dark:text-muted-foreground text-muted-foreground" />
+							<LucideGripVertical
+								size={20}
+								className="dark:text-muted-foreground text-muted-foreground"
+							/>
 							{editingIndex === index ? (
 								<>
 									<div className="flex-1 space-y-2">
@@ -335,8 +334,13 @@ const FormElementEditor = ({
 						fieldIndex,
 						formApi.baseStore.state.values,
 					);
-					if(formApi.baseStore.state.values.name) {
-						formApi.baseStore.state.values.name = formApi.baseStore.state.values.name.toLowerCase().replace(/[^a-z0-9]/g, "_").replace(/_+/g, "_").replace(/^_|_$/g, "");
+					if (formApi.baseStore.state.values.name) {
+						formApi.baseStore.state.values.name =
+							formApi.baseStore.state.values.name
+								.toLowerCase()
+								.replace(/[^a-z0-9]/g, "_")
+								.replace(/_+/g, "_")
+								.replace(/^_|_$/g, "");
 					}
 					actions.editElement({
 						fieldIndex: fieldIndex,
@@ -559,7 +563,10 @@ const EditFormItem = (props: EditFormItemProps) => {
 					{isNested ? (
 						<span className="w-1" />
 					) : (
-						<LucideGripVertical size={20} className="dark:text-muted-foreground text-muted-foreground" />
+						<LucideGripVertical
+							size={20}
+							className="dark:text-muted-foreground text-muted-foreground"
+						/>
 					)}
 					<span className="truncate max-w-xs md:max-w-sm">{DisplayName}</span>
 				</div>
@@ -649,7 +656,10 @@ const FormArrayFieldItem = ({
 							onMouseDown={(e) => e.stopPropagation()}
 							className="cursor-grab active:cursor-grabbing p-1 hover:bg-muted rounded"
 						>
-							<LucideGripVertical size={20} className="dark:text-muted-foreground text-muted-foreground" />
+							<LucideGripVertical
+								size={20}
+								className="dark:text-muted-foreground text-muted-foreground"
+							/>
 						</button>
 					)}
 					<span className="truncate max-w-xs md:max-w-sm">{DisplayName}</span>
@@ -751,7 +761,10 @@ const FormArrayItemContainer = ({
 							onPointerDown={(e) => dragControls.start(e)}
 							className="cursor-grab active:cursor-grabbing p-1 hover:bg-muted rounded"
 						>
-							<LucideGripVertical size={20} className="dark:text-muted-foreground text-muted-foreground" />
+							<LucideGripVertical
+								size={20}
+								className="dark:text-muted-foreground text-muted-foreground"
+							/>
 						</button>
 						<SquarePenIcon size={10} />
 						<input
@@ -807,7 +820,10 @@ const FormArrayItemContainer = ({
 									layout
 									{...getTransitionProps(isLayoutTransitioning)}
 								>
-									<LucideGripVertical size={20} className="dark:text-muted-foreground text-muted-foreground" />
+									<LucideGripVertical
+										size={20}
+										className="dark:text-muted-foreground text-muted-foreground"
+									/>
 									<Reorder.Group
 										axis="x"
 										values={field}
@@ -964,7 +980,10 @@ export function FormEdit() {
 															<div className="px-3">
 																<div className="flex items-center justify-between mb-3">
 																	<div className="flex items-center gap-2">
-																		<LucideGripVertical size={20} className="dark:text-muted-foreground text-muted-foreground" />
+																		<LucideGripVertical
+																			size={20}
+																			className="dark:text-muted-foreground text-muted-foreground"
+																		/>
 																		<span className="text-sm font-medium text-muted-foreground">
 																			Form Arrays
 																		</span>
@@ -1002,7 +1021,10 @@ export function FormEdit() {
 																							isLayoutTransitioning,
 																						)}
 																					>
-																						<LucideGripVertical size={20} className="dark:text-muted-foreground text-muted-foreground" />
+																						<LucideGripVertical
+																							size={20}
+																							className="dark:text-muted-foreground text-muted-foreground"
+																						/>
 																						<Reorder.Group
 																							axis="x"
 																							values={field}
@@ -1091,7 +1113,10 @@ export function FormEdit() {
 															layout
 															{...getTransitionProps(isLayoutTransitioning)}
 														>
-															<LucideGripVertical size={20} className="dark:text-muted-foreground text-muted-foreground" />
+															<LucideGripVertical
+																size={20}
+																className="dark:text-muted-foreground text-muted-foreground"
+															/>
 															<Reorder.Group
 																onReorder={(newOrder) => {
 																	actions.reorder({ newOrder, fieldIndex });
@@ -1189,7 +1214,10 @@ export function FormEdit() {
 										layout
 										{...getTransitionProps(isLayoutTransitioning)}
 									>
-										<LucideGripVertical size={20} className="dark:text-muted-foreground text-muted-foreground" />
+										<LucideGripVertical
+											size={20}
+											className="dark:text-muted-foreground text-muted-foreground"
+										/>
 										<Reorder.Group
 											axis="x"
 											onReorder={(newOrder) => {

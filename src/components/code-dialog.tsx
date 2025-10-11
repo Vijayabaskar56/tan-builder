@@ -1,24 +1,41 @@
 import { useFormStore } from "@/hooks/use-form-store";
 import useSettings from "@/hooks/use-settings";
-import { useEffect, useState } from "react";
 import { generateFormCode } from "@/lib/form-code-generators/react/generate-form-code";
-import { FormElementOrList, FormElement, FormArray } from "@/types/form-types";
+import {
+	extractImportDependencies,
+	generateImports,
+} from "@/lib/form-code-generators/react/generate-imports";
 import { generateValidationCode } from "@/lib/schema-generators";
-import { generateImports } from "@/lib/form-code-generators/react/generate-imports";
-import { extractImportDependencies } from "@/lib/form-code-generators/react/generate-imports";
-import { CreateRegistryResponse } from "@/types/form-types";
+import type {
+	CreateRegistryResponse,
+	FormArray,
+	FormElement,
+	FormElementOrList,
+} from "@/types/form-types";
 import { useMutation } from "@tanstack/react-query";
-import { useAppForm } from "./ui/tanstack-form";
-import { revalidateLogic } from "./ui/tanstack-form";
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "./ui/input-group";
-import { Spinner } from "./ui/spinner";
-import { Separator } from "./ui/separator";
-import { ScrollArea } from "./ui/scroll-area";
-import { GeneratedFormCodeViewer } from "./generated-code/code-viewer";
-import { ResponsiveDialog, ResponsiveDialogContent, ResponsiveDialogDescription, ResponsiveDialogHeader, ResponsiveDialogTitle, ResponsiveDialogTrigger } from "./ui/revola";
-import { TerminalIcon } from "./ui/terminal";
-import { AnimatedIconButton } from "./ui/animated-icon-button";
+import { useEffect, useId, useState } from "react";
 import * as z from "zod";
+import { GeneratedFormCodeViewer } from "./generated-code/code-viewer";
+import { AnimatedIconButton } from "./ui/animated-icon-button";
+import {
+	InputGroup,
+	InputGroupAddon,
+	InputGroupButton,
+	InputGroupInput,
+} from "./ui/input-group";
+import {
+	ResponsiveDialog,
+	ResponsiveDialogContent,
+	ResponsiveDialogDescription,
+	ResponsiveDialogHeader,
+	ResponsiveDialogTitle,
+	ResponsiveDialogTrigger,
+} from "./ui/revola";
+import { ScrollArea } from "./ui/scroll-area";
+import { Separator } from "./ui/separator";
+import { Spinner } from "./ui/spinner";
+import { revalidateLogic, useAppForm } from "./ui/tanstack-form";
+import { TerminalIcon } from "./ui/terminal";
 const formSchema = z.object({
 	formName: z.string().min(1, { message: "Form name is required" }),
 });
@@ -35,7 +52,8 @@ function CodeDialog() {
 	const [open, setOpen] = useState(false);
 	const [isGenerateSuccess, setIsGenerateSuccess] = useState(false);
 	const [generatedId, setGeneratedId] = useState<string>("");
-
+	const id = useId();
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Avoid overriding user selections by excluding formElements from deps
 	useEffect(() => {
 		setIsGenerateSuccess(false);
 		setGeneratedId("");
@@ -65,7 +83,12 @@ function CodeDialog() {
 		settings,
 		formName,
 	});
-	const validationCode = generateValidationCode();
+	const validationCode = generateValidationCode(
+		isMS,
+		schemaName,
+		validationSchema,
+		formElements,
+	);
 	const importDependencies = generateImports(
 		formElements as (FormElement | FormArray)[],
 		validationSchema,
@@ -91,7 +114,10 @@ function CodeDialog() {
 		files,
 		name: formName,
 	};
-	const url = import.meta.env.MODE === 'development' ? "http://localhost:3000" : "https://tan-form-builder.baskar.dev"
+	const url =
+		import.meta.env.MODE === "development"
+			? "http://localhost:3000"
+			: "https://tan-form-builder.baskar.dev";
 	const mutation = useMutation<CreateRegistryResponse, Error, void>({
 		mutationKey: ["/create-command", formName],
 		mutationFn: async (): Promise<CreateRegistryResponse> => {
@@ -127,20 +153,19 @@ function CodeDialog() {
 			onDynamic: formSchema,
 			onDynamicAsyncDebounceMs: 300,
 		},
-		onSubmit: async ({}) => {
+		onSubmit: async () => {
 			const result = await mutation.mutateAsync();
-			console.log("Response:", result);
 			if (result.data?.id) {
 				setGeneratedId(result.data.id);
 				setIsGenerateSuccess(true);
 			}
 		},
 		onSubmitInvalid({ formApi }) {
-			const errorMap = formApi.state.errorMap["onDynamic"];
+			const errorMap = formApi.state.errorMap.onDynamic;
 			if (!errorMap) return;
 
 			const inputs = Array.from(
-				document.querySelectorAll("#generatedCodeForm input"),
+				document.querySelectorAll(`#${id} input`),
 			) as HTMLInputElement[];
 			let firstInput: HTMLInputElement | undefined;
 			for (const input of inputs) {
@@ -155,7 +180,11 @@ function CodeDialog() {
 			onChangeDebounceMs: 300,
 			onChange: ({ fieldApi }) => {
 				console.log(fieldApi.state.value);
-				fieldApi.state.value = fieldApi.state.value.toLowerCase().replace(/[^a-z0-9]/g, "").replace(/_+/g, "").replace(/^_|_$/g, "");
+				fieldApi.state.value = fieldApi.state.value
+					.toLowerCase()
+					.replace(/[^a-z0-9]/g, "")
+					.replace(/_+/g, "")
+					.replace(/^_|_$/g, "");
 				actions.setFormName(fieldApi.state.value as string);
 			},
 		},
@@ -179,7 +208,7 @@ function CodeDialog() {
 						</ResponsiveDialogDescription>
 					</ResponsiveDialogHeader>
 					<form.AppForm>
-						<form.Form id="generatedCodeForm" className="px-6 pt-4">
+						<form.Form id={id} className="px-6 pt-4">
 							<form.AppField name={"formName"}>
 								{(field) => (
 									<field.FieldSet className="w-full">
@@ -191,7 +220,6 @@ function CodeDialog() {
 											</field.FieldLabel>
 											<InputGroup>
 												<InputGroupInput
-													id="formName"
 													name={"formName"}
 													aria-invalid={!!field.state.meta.errors.length}
 													placeholder="Enter your form name eg:- contactUs"
@@ -245,4 +273,4 @@ function CodeDialog() {
 	);
 }
 
-export default CodeDialog;  
+export default CodeDialog;

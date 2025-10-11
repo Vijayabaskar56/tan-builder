@@ -18,10 +18,10 @@ export const Route = createFileRoute("/form-builder")({
 	loader: ({
 		location,
 	}): v.InferOutput<typeof FormElementsSchema> | undefined => {
-		if ((location?.search as any)?.share) {
+		if ((location?.search as unknown as { share: string })?.share) {
 			localStorage.setItem(
 				"share",
-				JSON.stringify((location.search as any).share),
+				JSON.stringify((location.search as unknown as { share: string }).share),
 			);
 			throw redirect({
 				to: "/form-builder",

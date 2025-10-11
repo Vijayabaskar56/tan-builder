@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import type { AppForm } from "@/hooks/use-form-builder";
 import { useMultiStepForm } from "@/hooks/use-multi-step-form";
 import useSettings from "@/hooks/use-settings";
-import type { FormArray, FormStep } from "@/types/form-types";
+import type { FormArray, FormElement, FormStep } from "@/types/form-types";
 
 function collectFieldNames(items: any[]): string[] {
 	const names: string[] = [];
@@ -91,7 +91,10 @@ export function MultiStepFormPreview({
 							"arrayField" in field
 						) {
 							return (
-								<div key={(field as any).id + i} className="w-full">
+								<div
+									key={(field as unknown as FormElement).id + i}
+									className="w-full"
+								>
 									<FormArrayPreview
 										formArray={field as unknown as FormArray}
 										form={form}
@@ -107,7 +110,7 @@ export function MultiStepFormPreview({
 									key={i}
 									className="flex items-center justify-between flex-wrap sm:flex-nowrap w-full gap-2"
 								>
-									{field.map((el: any, ii: number) => (
+									{field.map((el, ii: number) => (
 										<div key={el.name + ii} className="w-full">
 											<RenderFormElement formElement={el} form={form} />
 										</div>
@@ -117,7 +120,7 @@ export function MultiStepFormPreview({
 						}
 						return (
 							<div key={i} className="w-full">
-								<RenderFormElement formElement={field as any} form={form} />
+								<RenderFormElement formElement={field} form={form} />
 							</div>
 						);
 					})}

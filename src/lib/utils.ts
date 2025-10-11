@@ -3,7 +3,7 @@ import { type ClassValue, clsx } from "clsx";
 import js_beautify from "js-beautify";
 import { twMerge } from "tailwind-merge";
 import {
-	SettingsCollection,
+	type SettingsCollection,
 	settingsCollection,
 } from "@/db-collections/settings.collections";
 

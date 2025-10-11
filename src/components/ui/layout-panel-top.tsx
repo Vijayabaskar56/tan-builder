@@ -68,6 +68,7 @@ const LayoutPanelTopIcon = forwardRef<
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			>
+				<title>Layout Panel Icon</title>
 				<motion.rect
 					width="18"
 					height="7"

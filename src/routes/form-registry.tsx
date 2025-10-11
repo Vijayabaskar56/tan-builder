@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CodeBlock, CodeBlockCode } from "@/components/ui/code-block";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { fieldItems, items } from "@/constants/registry";
-import { SettingsCollection } from "@/db-collections/settings.collections";
+import type { SettingsCollection } from "@/db-collections/settings.collections";
 import useSettings from "@/hooks/use-settings";
 import { updatePreferredPackageManager } from "@/lib/utils";
 import { createFileRoute, Link } from "@tanstack/react-router";
@@ -387,10 +387,7 @@ function RouteComponent() {
 							<TabsContent key={item.value} value={item.value}>
 								<div className="relative">
 									<CodeBlock>
-										<CodeBlockCode
-											code={item.registery}
-											language="bash"
-										/>
+										<CodeBlockCode code={item.registery} language="bash" />
 									</CodeBlock>
 								</div>
 							</TabsContent>
@@ -402,14 +399,11 @@ function RouteComponent() {
 					</p>
 				</TabsContent>
 				<TabsContent value="manual">
-					<Wrapper
-						children={manualCode}
-						language="tsx"
-						title="Manual Installation"
-					/>
+					<Wrapper language="tsx" title="Manual Installation">
+						{manualCode}
+					</Wrapper>
 				</TabsContent>
 			</Tabs>
-			{/* <ComponentDetails component={tanstackRegistry} /> */}
 			<h2 className="text-2xl font-semibold mb-4">Usage</h2>
 			<p className="mb-4">
 				This tanstack-form registry component provides a comprehensive set of
@@ -417,7 +411,9 @@ function RouteComponent() {
 				form validation, field management, and UI components.
 			</p>
 			<p className="mb-4">Here's a basic example of how to use it:</p>
-			<Wrapper children={exampleCode} language="tsx" title="Example Usage" />
+			<Wrapper language="tsx" title="Example Usage">
+				{exampleCode}
+			</Wrapper>
 
 			<h2 className="text-2xl font-semibold my-4">Anatomy</h2>
 			<p className="mb-4">

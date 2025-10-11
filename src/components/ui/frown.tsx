@@ -135,6 +135,7 @@ const FrownIcon = forwardRef<FrownIconHandle, FrownIconProps>(
 					initial="normal"
 					variants={faceVariants}
 				>
+					<title>Frown Icon</title>
 					<circle cx="12" cy="12" r="10" />
 					<motion.path
 						variants={mouthVariants}

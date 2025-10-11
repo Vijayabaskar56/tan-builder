@@ -73,6 +73,7 @@ const CopyIcon = forwardRef<CopyIconHandle, CopyIconProps>(
 					strokeLinecap="round"
 					strokeLinejoin="round"
 				>
+					<title>Copy Icon</title>
 					<motion.rect
 						width="14"
 						height="14"

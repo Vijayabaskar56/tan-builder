@@ -41,17 +41,17 @@ function CodeBlockCode({
 }: CodeBlockCodeProps) {
 	const [highlightedHtml, setHighlightedHtml] = useState<string | null>(null);
 	const { theme: themeMode, systemTheme } = useTheme();
-	
+
 	// Auto-detect theme if not provided
-	const theme = themeProp || (
-		themeMode === "system"
+	const theme =
+		themeProp ||
+		(themeMode === "system"
 			? systemTheme === "dark"
 				? "github-dark"
 				: "github-light"
 			: themeMode === "dark"
 				? "github-dark"
-				: "github-light"
-	);
+				: "github-light");
 
 	useEffect(() => {
 		async function highlight() {
@@ -81,6 +81,7 @@ function CodeBlockCode({
 
 			{/* Highlighted or fallback content */}
 			{highlightedHtml ? (
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: Needed to render the highlighted html
 				<div dangerouslySetInnerHTML={{ __html: highlightedHtml }} />
 			) : (
 				<pre>

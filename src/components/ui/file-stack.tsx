@@ -66,6 +66,7 @@ const FileStackIcon = forwardRef<FileStackIconHandle, FileStackIconProps>(
 					strokeLinecap="round"
 					strokeLinejoin="round"
 				>
+					<title>File Stack Icon</title>
 					<motion.path
 						d="M21 7h-3a2 2 0 0 1-2-2V2"
 						variants={{

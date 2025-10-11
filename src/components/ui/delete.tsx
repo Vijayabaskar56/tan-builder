@@ -78,6 +78,7 @@ const DeleteIcon = forwardRef<DeleteIconHandle, DeleteIconProps>(
 					strokeLinecap="round"
 					strokeLinejoin="round"
 				>
+					<title>Delete Icon</title>
 					<motion.g
 						variants={lidVariants}
 						animate={controls}

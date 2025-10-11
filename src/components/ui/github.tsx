@@ -123,6 +123,7 @@ const GithubIcon = forwardRef<GithubIconHandle, GithubIconProps>(
 					strokeLinecap="round"
 					strokeLinejoin="round"
 				>
+					<title>Github Icon</title>
 					<motion.path
 						variants={bodyVariants}
 						initial="normal"

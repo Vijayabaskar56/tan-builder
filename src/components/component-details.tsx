@@ -65,7 +65,7 @@ export default function ComponentDetails({
 				if (!isMounted) return;
 				setCode(codeContent);
 			} catch (error) {
-				if ((error as any)?.name === "AbortError") return;
+				if ((error as Error)?.name === "AbortError") return;
 				console.error("Failed to load code:", error);
 				handleEmptyCode();
 			}
@@ -140,9 +140,7 @@ export default function ComponentDetails({
 										.
 									</p>
 								) : (
-									<>
-										<CodeBlockCode code={code || ""} lang="tsx" />
-									</>
+									<CodeBlockCode code={code || ""} lang="tsx" />
 								)}
 							</div>
 						</div>

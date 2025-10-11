@@ -140,7 +140,7 @@ const Theme = ({
 				const colorScheme = colorSchemes.includes(resolved)
 					? resolved
 					: fallback;
-				// @ts-ignore
+				// @ts-expect-error - colorScheme is not typed
 				d.style.colorScheme = colorScheme;
 			}
 
@@ -159,9 +159,9 @@ const Theme = ({
 	);
 
 	// Set theme state and save to local storage
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Avoid overriding user selections by excluding forcedTheme from deps
 	const setTheme = React.useCallback(
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		// biome-ignore lint/suspicious/noExplicitAny: Avoid overriding user selections by excluding forcedTheme from deps
 		(value: any) => {
 			const newTheme = typeof value === "function" ? value(theme) : value;
 			setThemeState(newTheme);
@@ -171,12 +171,13 @@ const Theme = ({
 				localStorage.setItem(storageKey, newTheme);
 			} catch (e) {
 				// Unsupported
+				console.error(e);
 			}
 		},
 		[theme],
 	);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Avoid overriding user selections by excluding forcedTheme from deps
 	const handleMediaQuery = React.useCallback(
 		(_e?: MediaQueryList | MediaQueryListEvent) => {
 			if (theme === "system" && enableSystem && !forcedTheme) {
@@ -198,7 +199,7 @@ const Theme = ({
 	}, [handleMediaQuery]);
 
 	// localStorage event handling, allow to sync theme changes between tabs
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Avoid overriding user selections by excluding forcedTheme from deps
 	React.useEffect(() => {
 		const handleStorage = (e: StorageEvent) => {
 			if (e.key !== storageKey) {
@@ -215,7 +216,7 @@ const Theme = ({
 	}, [setTheme]);
 
 	// Whenever theme or forcedTheme changes, apply it
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Avoid overriding user selections by excluding forcedTheme from deps
 	React.useEffect(() => {
 		applyTheme(forcedTheme ?? theme);
 	}, [forcedTheme, theme]);
@@ -296,6 +297,7 @@ const getTheme = (key: string, fallback?: string) => {
 		theme = localStorage.getItem(key) || undefined;
 	} catch (e) {
 		// Unsupported
+		console.error(e);
 	}
 	return theme || fallback;
 };
@@ -397,7 +399,7 @@ export const script: (...args: any[]) => void = (
 			const theme = isSystem ? getSystemTheme() : themeName;
 			updateDOM(theme);
 		} catch (e) {
-			//
+			console.error(e);
 		}
 	}
 };

@@ -15,7 +15,7 @@ export const Route = createFileRoute("/r/$id.json")({
 				const id = params["id.json"];
 				const registryId = id?.endsWith(".json") ? id?.slice(0, -5) : id;
 				try {
-					let registryItem = await env.CACHE.get(registryId);
+					const registryItem = await env.CACHE.get(registryId);
 					if (!registryItem) {
 						return new Response("Registry item not found", {
 							status: 404,
@@ -57,9 +57,14 @@ export const Route = createFileRoute("/r/$id.json")({
 
 				try {
 					const body = (await request.json()) as {
-						registryDependencies: any[];
-						dependencies: any[];
-						files: any[];
+						registryDependencies: string[];
+						dependencies: string[];
+						files: {
+							path: string;
+							content: string;
+							type: string;
+							target: string;
+						}[];
 						name: string;
 					};
 					const { registryDependencies, dependencies, files, name } = body;
@@ -93,12 +98,13 @@ export const Route = createFileRoute("/r/$id.json")({
 							},
 						},
 					);
-				} catch (error: any) {
-					console.log(error);
+				} catch (error: unknown) {
+					console.error(error);
 					return new Response(
 						JSON.stringify({
 							data: null,
-							error: error?.message || "Something went wrong",
+							error:
+								error instanceof Error ? error.message : "Something went wrong",
 						}),
 						{
 							status: 500,

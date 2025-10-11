@@ -76,6 +76,7 @@ const PlusIcon = forwardRef<PlusIconHandle, PlusIconProps>(
 						},
 					}}
 				>
+					<title>Plus Icon</title>
 					<path d="M5 12h14" />
 					<path d="M12 5v14" />
 				</motion.svg>
