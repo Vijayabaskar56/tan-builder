@@ -5,105 +5,105 @@ import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 export interface GithubIconHandle {
-  startAnimation: () => void;
-  stopAnimation: () => void;
+	startAnimation: () => void;
+	stopAnimation: () => void;
 }
 
 interface GithubIconProps extends HTMLAttributes<HTMLDivElement> {
-  size?: number;
+	size?: number;
 }
 
 const bodyVariants: Variants = {
-  normal: {
-    opacity: 1,
-    pathLength: 1,
-    scale: 1,
-    transition: {
-      duration: 0.3,
-    },
-  },
-  animate: {
-    opacity: [0, 1],
-    pathLength: [0, 1],
-    scale: [0.9, 1],
-    transition: {
-      duration: 0.4,
-    },
-  },
+	normal: {
+		opacity: 1,
+		pathLength: 1,
+		scale: 1,
+		transition: {
+			duration: 0.3,
+		},
+	},
+	animate: {
+		opacity: [0, 1],
+		pathLength: [0, 1],
+		scale: [0.9, 1],
+		transition: {
+			duration: 0.4,
+		},
+	},
 };
 
 const tailVariants: Variants = {
-  normal: {
-    pathLength: 1,
-    rotate: 0,
-    transition: {
-      duration: 0.3,
-    },
-  },
-  draw: {
-    pathLength: [0, 1],
-    rotate: 0,
-    transition: {
-      duration: 0.5,
-    },
-  },
-  wag: {
-    pathLength: 1,
-    rotate: [0, -15, 15, -10, 10, -5, 5],
-    transition: {
-      duration: 2.5,
-      ease: 'easeInOut',
-      repeat: Infinity,
-    },
-  },
+	normal: {
+		pathLength: 1,
+		rotate: 0,
+		transition: {
+			duration: 0.3,
+		},
+	},
+	draw: {
+		pathLength: [0, 1],
+		rotate: 0,
+		transition: {
+			duration: 0.5,
+		},
+	},
+	wag: {
+		pathLength: 1,
+		rotate: [0, -15, 15, -10, 10, -5, 5],
+		transition: {
+			duration: 2.5,
+			ease: "easeInOut",
+			repeat: Infinity,
+		},
+	},
 };
 
 const GithubIcon = forwardRef<GithubIconHandle, GithubIconProps>(
-  ({ onMouseEnter, onMouseLeave, className, size = 28, ...props }, ref) => {
-    const bodyControls = useAnimation();
-    const tailControls = useAnimation();
-    const isControlledRef = useRef(false);
+	({ onMouseEnter, onMouseLeave, className, size = 28, ...props }, ref) => {
+		const bodyControls = useAnimation();
+		const tailControls = useAnimation();
+		const isControlledRef = useRef(false);
 
-    useImperativeHandle(ref, () => {
-      isControlledRef.current = true;
+		useImperativeHandle(ref, () => {
+			isControlledRef.current = true;
 
-      return {
-        startAnimation: async () => {
-          bodyControls.start('animate');
-          await tailControls.start('draw');
-          tailControls.start('wag');
-        },
-        stopAnimation: () => {
-          bodyControls.start('normal');
-          tailControls.start('normal');
-        },
-      };
-    });
+			return {
+				startAnimation: async () => {
+					bodyControls.start("animate");
+					await tailControls.start("draw");
+					tailControls.start("wag");
+				},
+				stopAnimation: () => {
+					bodyControls.start("normal");
+					tailControls.start("normal");
+				},
+			};
+		});
 
-    const handleMouseEnter = useCallback(
-      async (e: React.MouseEvent<HTMLDivElement>) => {
-        if (!isControlledRef.current) {
-          bodyControls.start('animate');
-          await tailControls.start('draw');
-          tailControls.start('wag');
-        } else {
-          onMouseEnter?.(e);
-        }
-      },
-      [bodyControls, onMouseEnter, tailControls]
-    );
+		const handleMouseEnter = useCallback(
+			async (e: React.MouseEvent<HTMLDivElement>) => {
+				if (!isControlledRef.current) {
+					bodyControls.start("animate");
+					await tailControls.start("draw");
+					tailControls.start("wag");
+				} else {
+					onMouseEnter?.(e);
+				}
+			},
+			[bodyControls, onMouseEnter, tailControls],
+		);
 
-    const handleMouseLeave = useCallback(
-      (e: React.MouseEvent<HTMLDivElement>) => {
-        if (!isControlledRef.current) {
-          bodyControls.start('normal');
-          tailControls.start('normal');
-        } else {
-          onMouseLeave?.(e);
-        }
-      },
-      [bodyControls, tailControls, onMouseLeave]
-    );
+		const handleMouseLeave = useCallback(
+			(e: React.MouseEvent<HTMLDivElement>) => {
+				if (!isControlledRef.current) {
+					bodyControls.start("normal");
+					tailControls.start("normal");
+				} else {
+					onMouseLeave?.(e);
+				}
+			},
+			[bodyControls, tailControls, onMouseLeave],
+		);
 
 		return (
 			<div
@@ -142,6 +142,6 @@ const GithubIcon = forwardRef<GithubIconHandle, GithubIconProps>(
 	},
 );
 
-GithubIcon.displayName = 'GithubIcon';
+GithubIcon.displayName = "GithubIcon";
 
 export { GithubIcon };

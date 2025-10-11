@@ -1,10 +1,10 @@
+import { draftFormSchema } from "@/lib/draftFormSchema";
+import { useAppForm } from "@/components/ui/tanstack-form";
 import { revalidateLogic } from "@tanstack/react-form";
 import { toast } from "sonner";
-import type * as z from "zod";
-import { FieldDescription } from "@/components/ui/field";
+import * as z from "zod";
+import { FieldDescription, FieldLegend } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { useAppForm } from "@/components/ui/tanstack-form";
-import { draftFormSchema } from "@/lib/draftFormSchema";
 
 export function DraftForm() {
 	const draftForm = useAppForm({
@@ -17,7 +17,7 @@ export function DraftForm() {
 			toast.success("success");
 		},
 		onSubmitInvalid({ formApi }) {
-			const errorMap = formApi.state.errorMap.onDynamic!;
+			const errorMap = formApi.state.errorMap["onDynamic"]!;
 			const inputs = Array.from(
 				document.querySelectorAll("#previewForm input"),
 			) as HTMLInputElement[];

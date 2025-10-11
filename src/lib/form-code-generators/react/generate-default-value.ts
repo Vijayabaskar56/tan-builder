@@ -286,13 +286,8 @@ export const getDefaultFormElement = (
 	return defaults;
 };
 
-export const getDefaultValuesString = (
-	validationSchema: string | undefined,
-	schemaName: string,
-	formName: string,
-	formElements: any,
-) => {
-	console.log("🚀 ~ getDefaultValuesString ~ schemaName:", schemaName);
+export const getDefaultValuesString = () => {
+	const { validationSchema, schemaName,formName, formElements } = useFormStore();
 
 	// Handle multi-step forms by flattening them to a single list of elements
 	let elementsToProcess = formElements;

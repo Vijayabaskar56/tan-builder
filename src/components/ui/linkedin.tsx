@@ -7,130 +7,130 @@ import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 export interface LinkedinIconHandle {
-  startAnimation: () => void;
-  stopAnimation: () => void;
+	startAnimation: () => void;
+	stopAnimation: () => void;
 }
 
 interface LinkedinIconProps extends HTMLAttributes<HTMLDivElement> {
-  size?: number;
+	size?: number;
 }
 
 const pathVariants: Variants = {
-  normal: {
-    opacity: 1,
-    pathLength: 1,
-    pathOffset: 0,
-    transition: {
-      duration: 0.4,
-      opacity: { duration: 0.1 },
-    },
-  },
-  animate: {
-    opacity: [0, 1],
-    pathLength: [0, 1],
-    pathOffset: [1, 0],
-    transition: {
-      duration: 0.6,
-      ease: 'linear',
-      opacity: { duration: 0.1 },
-    },
-  },
+	normal: {
+		opacity: 1,
+		pathLength: 1,
+		pathOffset: 0,
+		transition: {
+			duration: 0.4,
+			opacity: { duration: 0.1 },
+		},
+	},
+	animate: {
+		opacity: [0, 1],
+		pathLength: [0, 1],
+		pathOffset: [1, 0],
+		transition: {
+			duration: 0.6,
+			ease: "linear",
+			opacity: { duration: 0.1 },
+		},
+	},
 };
 
 const rectVariants: Variants = {
-  normal: {
-    opacity: 1,
-    pathLength: 1,
-    pathOffset: 0,
-    transition: {
-      duration: 0.4,
-      opacity: { duration: 0.1 },
-    },
-  },
-  animate: {
-    opacity: [0, 1],
-    pathLength: [0, 1],
-    pathOffset: [1, 0],
-    transition: {
-      duration: 0.6,
-      ease: 'linear',
-      opacity: { duration: 0.1 },
-    },
-  },
+	normal: {
+		opacity: 1,
+		pathLength: 1,
+		pathOffset: 0,
+		transition: {
+			duration: 0.4,
+			opacity: { duration: 0.1 },
+		},
+	},
+	animate: {
+		opacity: [0, 1],
+		pathLength: [0, 1],
+		pathOffset: [1, 0],
+		transition: {
+			duration: 0.6,
+			ease: "linear",
+			opacity: { duration: 0.1 },
+		},
+	},
 };
 
 const circleVariants: Variants = {
-  normal: {
-    opacity: 1,
-    pathLength: 1,
-    pathOffset: 0,
-    transition: {
-      duration: 0.4,
-      opacity: { duration: 0.1 },
-    },
-  },
-  animate: {
-    opacity: [0, 1],
-    pathLength: [0, 1],
-    pathOffset: [1, 0],
-    transition: {
-      duration: 0.6,
-      ease: 'linear',
-      opacity: { duration: 0.1 },
-    },
-  },
+	normal: {
+		opacity: 1,
+		pathLength: 1,
+		pathOffset: 0,
+		transition: {
+			duration: 0.4,
+			opacity: { duration: 0.1 },
+		},
+	},
+	animate: {
+		opacity: [0, 1],
+		pathLength: [0, 1],
+		pathOffset: [1, 0],
+		transition: {
+			duration: 0.6,
+			ease: "linear",
+			opacity: { duration: 0.1 },
+		},
+	},
 };
 
 const LinkedinIcon = forwardRef<LinkedinIconHandle, LinkedinIconProps>(
-  ({ onMouseEnter, onMouseLeave, className, size = 28, ...props }, ref) => {
-    const pathControls = useAnimation();
-    const rectControls = useAnimation();
-    const circleControls = useAnimation();
+	({ onMouseEnter, onMouseLeave, className, size = 28, ...props }, ref) => {
+		const pathControls = useAnimation();
+		const rectControls = useAnimation();
+		const circleControls = useAnimation();
 
-    const isControlledRef = useRef(false);
+		const isControlledRef = useRef(false);
 
-    useImperativeHandle(ref, () => {
-      isControlledRef.current = true;
+		useImperativeHandle(ref, () => {
+			isControlledRef.current = true;
 
-      return {
-        startAnimation: () => {
-          pathControls.start('animate');
-          rectControls.start('animate');
-          circleControls.start('animate');
-        },
-        stopAnimation: () => {
-          pathControls.start('normal');
-          rectControls.start('normal');
-          circleControls.start('normal');
-        },
-      };
-    });
+			return {
+				startAnimation: () => {
+					pathControls.start("animate");
+					rectControls.start("animate");
+					circleControls.start("animate");
+				},
+				stopAnimation: () => {
+					pathControls.start("normal");
+					rectControls.start("normal");
+					circleControls.start("normal");
+				},
+			};
+		});
 
-    const handleMouseEnter = useCallback(
-      (e: React.MouseEvent<HTMLDivElement>) => {
-        if (!isControlledRef.current) {
-          pathControls.start('animate');
-          rectControls.start('animate');
-          circleControls.start('animate');
-        } else {
-          onMouseEnter?.(e);
-        }
-      },
-      [circleControls, onMouseEnter, pathControls, rectControls]
-    );
+		const handleMouseEnter = useCallback(
+			(e: React.MouseEvent<HTMLDivElement>) => {
+				if (!isControlledRef.current) {
+					pathControls.start("animate");
+					rectControls.start("animate");
+					circleControls.start("animate");
+				} else {
+					onMouseEnter?.(e);
+				}
+			},
+			[circleControls, onMouseEnter, pathControls, rectControls],
+		);
 
-    const handleMouseLeave = useCallback(
-      (e: React.MouseEvent<HTMLDivElement>) => {
-        if (!isControlledRef.current) {
-          pathControls.start('normal');
-          rectControls.start('normal');
-          circleControls.start('normal');
-        } else {
-          onMouseLeave?.(e);
-        }
-      },
-      [pathControls, rectControls, circleControls, onMouseLeave]
-    );
+		const handleMouseLeave = useCallback(
+			(e: React.MouseEvent<HTMLDivElement>) => {
+				if (!isControlledRef.current) {
+					pathControls.start("normal");
+					rectControls.start("normal");
+					circleControls.start("normal");
+				} else {
+					onMouseLeave?.(e);
+				}
+			},
+			[pathControls, rectControls, circleControls, onMouseLeave],
+		);
 
 		return (
 			<div
@@ -180,6 +180,6 @@ const LinkedinIcon = forwardRef<LinkedinIconHandle, LinkedinIconProps>(
 	},
 );
 
-LinkedinIcon.displayName = 'LinkedinIcon';
+LinkedinIcon.displayName = "LinkedinIcon";
 
 export { LinkedinIcon };

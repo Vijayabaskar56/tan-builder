@@ -75,6 +75,23 @@ export function TableColumnEdit() {
 
 	const columns = tableData.table.columns;
 
+	const generateFakeData = (type: string) => {
+		switch (type) {
+			case "string":
+				return faker.lorem.words(2);
+			case "number":
+				return faker.number.int({ min: 1, max: 1000 });
+			case "boolean":
+				return faker.datatype.boolean();
+			case "date":
+				return faker.date.recent().toISOString().split("T")[0];
+			case "object":
+				return { key: faker.lorem.word(), value: faker.lorem.words(1) };
+			default:
+				return faker.lorem.words(1);
+		}
+	};
+
 	const updateColumn = (
 		columnId: string,
 		updates: Partial<(typeof columns)[0]>,

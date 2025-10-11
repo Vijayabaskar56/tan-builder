@@ -4,7 +4,6 @@ import { Database, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { TableSettingsSidebar } from "@/components/builder/TableSettingsSidebar";
 import { ErrorBoundary } from "@/components/error-boundary";
-import FileUpload from "@/components/file-upload";
 import FormHeader from "@/components/header";
 import { NotFound } from "@/components/not-found";
 import { TableColumnEdit } from "@/components/table-components/table-column-edit";
@@ -101,7 +100,7 @@ function RouteComponent() {
 				document.body.style.userSelect = "";
 			};
 		}
-	}, [isResizing, isMdUp, handleMouseMove, handleMouseUp]);
+	}, [isResizing, isMdUp]);
 
 	if (!isTableBuilderInitialized) {
 		return <Spinner />;

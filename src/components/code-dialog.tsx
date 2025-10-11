@@ -182,7 +182,11 @@ function CodeDialog() {
 			onChangeDebounceMs: 300,
 			onChange: ({ fieldApi }) => {
 				logger(fieldApi.state.value);
-				fieldApi.state.value = fieldApi.state.value.toLowerCase().replace(/[^a-z0-9]/g, "").replace(/_+/g, "").replace(/^_|_$/g, "");
+				fieldApi.state.value = fieldApi.state.value
+					.toLowerCase()
+					.replace(/[^a-z0-9]/g, "")
+					.replace(/_+/g, "")
+					.replace(/^_|_$/g, "");
 				actions.setFormName(fieldApi.state.value as string);
 			},
 		},
