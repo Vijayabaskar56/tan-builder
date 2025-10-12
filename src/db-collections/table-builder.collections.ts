@@ -6,7 +6,7 @@ import {
 import * as v from "valibot";
 import { settingsCollection } from "./settings.collections";
 
-const TableBuilderSchema = v.object({
+export const TableBuilderSchema = v.object({
 	id: v.number(),
 	settings: v.object({
 		isGlobalSearch: v.optional(v.boolean(), false),
@@ -14,8 +14,8 @@ const TableBuilderSchema = v.object({
 		enableSorting: v.optional(v.boolean(), false),
 		enableResizing: v.optional(v.boolean(), false),
 		enablePinning: v.optional(v.boolean(), false),
-		enableColumnFilter: v.optional(v.boolean(), false),
-		enableGlobalFilter: v.optional(v.boolean(), false),
+		enableRowSelection: v.optional(v.boolean(), false),
+		enableRowActions: v.optional(v.boolean(), false),
 	}),
 	table: v.object({
 		columns: v.array(
@@ -31,8 +31,7 @@ const TableBuilderSchema = v.object({
 					v.literal("object"),
 				]),
 				order: v.number(),
-				hasDateFilter: v.optional(v.boolean(), false),
-				hasSliderFilter: v.optional(v.boolean(), false),
+				filterable: v.optional(v.boolean(), false),
 			}),
 		),
 		data: v.array(v.record(v.string(), v.any())),

@@ -212,8 +212,6 @@ export const detectColumns = (data: JsonData[]) => {
 					.trim(),
 			type: mostCommonType,
 			order: index,
-			hasDateFilter: false, // Default value for hasDateFilter
-			hasSliderFilter: false, // Default value for hasSliderFilter
 		});
 	});
 

@@ -1,0 +1,369 @@
+import {
+	Eye,
+	GripVertical,
+	MoreHorizontal,
+	Pin,
+	Search,
+	SortAsc,
+	CheckSquare,
+} from "lucide-react";
+import { useId } from "react";
+import * as v from "valibot";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Switch } from "@/components/ui/switch";
+import { useAppForm } from "@/components/ui/tanstack-form";
+import { tableBuilderCollection } from "@/db-collections/table-builder.collections";
+import useTableStore from "@/hooks/use-table-store";
+import { Separator } from "../ui/separator";
+
+const TableSettingsSchema = v.object({
+	isGlobalSearch: v.optional(v.boolean(), false),
+	enableHiding: v.optional(v.boolean(), false),
+	enableSorting: v.optional(v.boolean(), false),
+	enableResizing: v.optional(v.boolean(), false),
+	enablePinning: v.optional(v.boolean(), false),
+	enableRowSelection: v.optional(v.boolean(), false),
+	enableRowActions: v.optional(v.boolean(), false),
+});
+
+export function TableSettingsSidebar() {
+	const focusOnErrorId = useId();
+	const validationMethodId = useId();
+	const asyncValidationId = useId();
+	const preferredSchemaId = useId();
+	const preferredFrameworkId = useId();
+	const rowSelectionId = useId();
+	const rowActionsId = useId();
+	const data = useTableStore();
+
+	const form = useAppForm({
+		defaultValues: {
+			isGlobalSearch: data?.settings?.isGlobalSearch ?? false,
+			enableHiding: data?.settings?.enableHiding ?? false,
+			enableSorting: data?.settings?.enableSorting ?? false,
+			enableResizing: data?.settings?.enableResizing ?? false,
+			enablePinning: data?.settings?.enablePinning ?? false,
+			enableRowSelection: data?.settings?.enableRowSelection ?? false,
+			enableRowActions: data?.settings?.enableRowActions ?? false,
+		} as v.InferInput<typeof TableSettingsSchema>,
+		validators: {
+			onChange: TableSettingsSchema,
+		},
+		listeners: {
+			onChangeDebounceMs: 1000,
+			onChange: ({ formApi }) => {
+				tableBuilderCollection?.update(1, (draft) => {
+					draft.settings.isGlobalSearch =
+						formApi.baseStore.state.values.isGlobalSearch;
+					draft.settings.enableHiding =
+						formApi.baseStore.state.values.enableHiding;
+					draft.settings.enableSorting =
+						formApi.baseStore.state.values.enableSorting;
+					draft.settings.enableResizing =
+						formApi.baseStore.state.values.enableResizing;
+					draft.settings.enablePinning =
+						formApi.baseStore.state.values.enablePinning;
+					draft.settings.enableRowSelection =
+						formApi.baseStore.state.values.enableRowSelection;
+					draft.settings.enableRowActions =
+						formApi.baseStore.state.values.enableRowActions;
+				});
+			},
+		},
+	});
+
+	return (
+		<div className="flex flex-col h-full md:h-full max-h-[35vh] md:max-h-none">
+			<form.AppForm>
+				<form
+					noValidate
+					onSubmit={(e) => {
+						e.preventDefault();
+						e.stopPropagation();
+						void form.handleSubmit();
+					}}
+				>
+					<div className="mb-4 pb-2 px-4 border-b">
+						<h3 className="text-lg font-semibold text-primary">
+							Table Settings
+						</h3>
+						<p className="text-sm text-muted-foreground">
+							Configure Your Table
+						</p>
+					</div>
+
+					<ScrollArea className="h-[calc(35vh-8rem)]  md:h-[45rem]">
+						<div className=" space-y-4 sm:space-y-6">
+							<div>
+								<div className="space-y-3">
+									<form.AppField name="isGlobalSearch" mode="value">
+										{(field) => (
+											<div className=" border-b mx-2">
+												<div className="flex items-center justify-between p-3">
+													<div className="flex items-center gap-2">
+														<Search className="w-4 h-4 text-muted-foreground" />
+														<field.FieldLabel
+															htmlFor={focusOnErrorId}
+															className="text-sm"
+														>
+															Global Search
+														</field.FieldLabel>
+													</div>
+													<Switch
+														id={focusOnErrorId}
+														checked={field.state.value}
+														onCheckedChange={field.handleChange}
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+													/>
+												</div>
+												<Separator className="my-2" />
+												<field.FieldDescription className="pb-2">
+													Enable global search across all table columns. For
+													more info check the TanStack Table docs:{" "}
+													<a
+														className="text-primary"
+														href="https://tanstack.com/table/latest/docs/guide/global-filtering"
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														Global Filtering
+													</a>
+												</field.FieldDescription>
+											</div>
+										)}
+									</form.AppField>
+									<form.AppField name="enableSorting" mode="value">
+										{(field) => (
+											<div className="p-3 border-b mx-2">
+												<div className="flex items-center justify-between">
+													<div className="flex items-center gap-2">
+														<SortAsc className="w-4 h-4 text-muted-foreground" />
+														<field.FieldLabel
+															htmlFor={validationMethodId}
+															className="text-sm"
+														>
+															Column Sorting
+														</field.FieldLabel>
+													</div>
+													<Switch
+														id={validationMethodId}
+														checked={field.state.value}
+														onCheckedChange={field.handleChange}
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+													/>
+												</div>
+												<Separator className="my-2" />
+												<field.FieldDescription>
+													Allow sorting on table columns. For more info check
+													the TanStack Table docs:{" "}
+													<a
+														className="text-primary"
+														href="https://tanstack.com/table/latest/docs/guide/sorting"
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														Sorting
+													</a>
+												</field.FieldDescription>
+												<field.FieldError />
+											</div>
+										)}
+									</form.AppField>
+
+									<form.AppField name="enableResizing" mode="value">
+										{(field) => (
+											<div className="p-3 border-b mx-2">
+												<div className="flex items-center justify-between">
+													<div className="flex items-center gap-2">
+														<GripVertical className="w-4 h-4 text-muted-foreground" />
+														<field.FieldLabel
+															htmlFor={asyncValidationId}
+															className="text-sm"
+														>
+															Column Resizing
+														</field.FieldLabel>
+													</div>
+													<Switch
+														id={asyncValidationId}
+														checked={field.state.value}
+														onCheckedChange={field.handleChange}
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+													/>
+												</div>
+												<Separator className="my-2" />
+												<field.FieldDescription>
+													Allow resizing of table columns. For more info check
+													the TanStack Table docs:{" "}
+													<a
+														className="text-primary"
+														href="https://tanstack.com/table/latest/docs/guide/column-sizing"
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														Column Sizing
+													</a>
+												</field.FieldDescription>
+											</div>
+										)}
+									</form.AppField>
+
+									<form.AppField name="enablePinning" mode="value">
+										{(field) => (
+											<div className="p-3 border-b mx-2">
+												<div className="flex items-center justify-between">
+													<div className="flex items-center gap-2">
+														<Pin className="w-4 h-4 text-muted-foreground" />
+														<field.FieldLabel
+															htmlFor={preferredSchemaId}
+															className="text-sm"
+														>
+															Column Pinning
+														</field.FieldLabel>
+													</div>
+													<Switch
+														id={preferredSchemaId}
+														checked={field.state.value}
+														onCheckedChange={field.handleChange}
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+													/>
+												</div>
+												<Separator className="my-2" />
+												<field.FieldDescription>
+													Allow pinning columns to left or right. For more info
+													check the TanStack Table docs:{" "}
+													<a
+														className="text-primary"
+														href="https://tanstack.com/table/latest/docs/guide/column-pinning"
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														Column Pinning
+													</a>
+												</field.FieldDescription>
+												<field.FieldError />
+											</div>
+										)}
+									</form.AppField>
+
+									<form.AppField name="enableHiding" mode="value">
+										{(field) => (
+											<div className="p-3 border-b mx-2">
+												<div className="flex items-center justify-between">
+													<div className="flex items-center gap-2">
+														<Eye className="w-4 h-4 text-muted-foreground" />
+														<field.FieldLabel
+															htmlFor={preferredFrameworkId}
+															className="text-sm"
+														>
+															Column Visibility
+														</field.FieldLabel>
+													</div>
+													<Switch
+														id={preferredFrameworkId}
+														checked={field.state.value}
+														onCheckedChange={field.handleChange}
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+													/>
+												</div>
+												<Separator className="my-2" />
+												<field.FieldDescription>
+													Allow hiding/showing table columns. For more info
+													check the TanStack Table docs:{" "}
+													<a
+														className="text-primary"
+														href="https://tanstack.com/table/latest/docs/guide/column-visibility"
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														Column Visibility
+													</a>
+												</field.FieldDescription>
+												<field.FieldError />
+											</div>
+										)}
+									</form.AppField>
+
+									<form.AppField name="enableRowSelection" mode="value">
+										{(field) => (
+											<div className="p-3 border-b mx-2">
+												<div className="flex items-center justify-between">
+													<div className="flex items-center gap-2">
+														<CheckSquare className="w-4 h-4 text-muted-foreground" />
+														<field.FieldLabel
+															htmlFor={rowSelectionId}
+															className="text-sm"
+														>
+															Row Selection
+														</field.FieldLabel>
+													</div>
+													<Switch
+														id={rowSelectionId}
+														checked={field.state.value}
+														onCheckedChange={field.handleChange}
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+													/>
+												</div>
+												<Separator className="my-2" />
+												<field.FieldDescription>
+													Enable row selection with checkboxes. For more info
+													check the TanStack Table docs:{" "}
+													<a
+														className="text-primary"
+														href="https://tanstack.com/table/latest/docs/guide/row-selection"
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														Row Selection
+													</a>
+												</field.FieldDescription>
+												<field.FieldError />
+											</div>
+										)}
+									</form.AppField>
+
+									<form.AppField name="enableRowActions" mode="value">
+										{(field) => (
+											<div className="p-3 border-b mx-2">
+												<div className="flex items-center justify-between">
+													<div className="flex items-center gap-2">
+														<MoreHorizontal className="w-4 h-4 text-muted-foreground" />
+														<field.FieldLabel
+															htmlFor={rowActionsId}
+															className="text-sm"
+														>
+															Row Actions
+														</field.FieldLabel>
+													</div>
+													<Switch
+														id={rowActionsId}
+														checked={field.state.value}
+														onCheckedChange={field.handleChange}
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+													/>
+												</div>
+												<Separator className="my-2" />
+												<field.FieldDescription>
+													Show action buttons for each row (edit, delete, etc.).
+													For more info check the TanStack Table docs:{" "}
+													<a
+														className="text-primary"
+														href="https://tanstack.com/table/latest/docs/guide/actions"
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														Table Actions
+													</a>
+												</field.FieldDescription>
+												<field.FieldError />
+											</div>
+										)}
+									</form.AppField>
+								</div>
+							</div>
+						</div>
+					</ScrollArea>
+				</form>
+			</form.AppForm>
+		</div>
+	);
+}

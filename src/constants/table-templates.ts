@@ -18,9 +18,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				label: "ID",
 				type: "number",
 				order: 1,
-				hasFacetedFilter: false,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 			{
 				id: "name",
@@ -29,8 +26,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "string",
 				order: 2,
 				hasFacetedFilter: true,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 			{
 				id: "email",
@@ -39,8 +34,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "string",
 				order: 3,
 				hasFacetedFilter: false,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 			{
 				id: "role",
@@ -49,8 +42,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "string",
 				order: 4,
 				hasFacetedFilter: true,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 			{
 				id: "active",
@@ -59,8 +50,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "boolean",
 				order: 5,
 				hasFacetedFilter: false,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 			{
 				id: "createdAt",
@@ -69,8 +58,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "date",
 				order: 6,
 				hasFacetedFilter: false,
-				hasDateFilter: true,
-				hasSliderFilter: false,
 			},
 		],
 		sampleData: [
@@ -111,8 +98,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "number",
 				order: 1,
 				hasFacetedFilter: false,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 			{
 				id: "name",
@@ -121,8 +106,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "string",
 				order: 2,
 				hasFacetedFilter: true,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 			{
 				id: "category",
@@ -131,8 +114,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "string",
 				order: 3,
 				hasFacetedFilter: true,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 			{
 				id: "price",
@@ -141,8 +122,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "number",
 				order: 4,
 				hasFacetedFilter: false,
-				hasDateFilter: false,
-				hasSliderFilter: true,
 			},
 			{
 				id: "stock",
@@ -151,8 +130,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "number",
 				order: 5,
 				hasFacetedFilter: false,
-				hasDateFilter: false,
-				hasSliderFilter: true,
 			},
 			{
 				id: "available",
@@ -161,8 +138,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "boolean",
 				order: 6,
 				hasFacetedFilter: false,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 		],
 		sampleData: [
@@ -203,8 +178,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "string",
 				order: 1,
 				hasFacetedFilter: false,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 			{
 				id: "customerName",
@@ -213,8 +186,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "string",
 				order: 2,
 				hasFacetedFilter: true,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 			{
 				id: "total",
@@ -223,8 +194,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "number",
 				order: 3,
 				hasFacetedFilter: false,
-				hasDateFilter: false,
-				hasSliderFilter: true,
 			},
 			{
 				id: "status",
@@ -233,8 +202,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "string",
 				order: 4,
 				hasFacetedFilter: true,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 			{
 				id: "orderDate",
@@ -243,8 +210,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "date",
 				order: 5,
 				hasFacetedFilter: false,
-				hasDateFilter: true,
-				hasSliderFilter: false,
 			},
 			{
 				id: "shipped",
@@ -253,8 +218,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "boolean",
 				order: 6,
 				hasFacetedFilter: false,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 		],
 		sampleData: [
@@ -295,8 +258,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "number",
 				order: 1,
 				hasFacetedFilter: false,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 			{
 				id: "title",
@@ -305,8 +266,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "string",
 				order: 2,
 				hasFacetedFilter: false,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 			{
 				id: "priority",
@@ -315,8 +274,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "string",
 				order: 3,
 				hasFacetedFilter: true,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 			{
 				id: "assignedTo",
@@ -325,8 +282,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "string",
 				order: 4,
 				hasFacetedFilter: true,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 			{
 				id: "dueDate",
@@ -335,8 +290,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "date",
 				order: 5,
 				hasFacetedFilter: false,
-				hasDateFilter: true,
-				hasSliderFilter: false,
 			},
 			{
 				id: "completed",
@@ -345,8 +298,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "boolean",
 				order: 6,
 				hasFacetedFilter: false,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 		],
 		sampleData: [
@@ -387,8 +338,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "string",
 				order: 1,
 				hasFacetedFilter: false,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 			{
 				id: "itemName",
@@ -397,8 +346,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "string",
 				order: 2,
 				hasFacetedFilter: true,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 			{
 				id: "supplier",
@@ -407,8 +354,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "string",
 				order: 3,
 				hasFacetedFilter: true,
-				hasDateFilter: false,
-				hasSliderFilter: false,
 			},
 			{
 				id: "quantity",
@@ -417,8 +362,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "number",
 				order: 4,
 				hasFacetedFilter: false,
-				hasDateFilter: false,
-				hasSliderFilter: true,
 			},
 			{
 				id: "unitCost",
@@ -427,8 +370,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "number",
 				order: 5,
 				hasFacetedFilter: false,
-				hasDateFilter: false,
-				hasSliderFilter: true,
 			},
 			{
 				id: "lastRestocked",
@@ -437,8 +378,6 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				type: "date",
 				order: 6,
 				hasFacetedFilter: false,
-				hasDateFilter: true,
-				hasSliderFilter: false,
 			},
 		],
 		sampleData: [

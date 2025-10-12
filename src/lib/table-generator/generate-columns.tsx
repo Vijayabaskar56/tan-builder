@@ -19,12 +19,12 @@ interface ColumnSettings {
 	enableHiding?: boolean;
 	enableResizing?: boolean;
 	enablePinning?: boolean;
-	enableColumnFilter?: boolean;
-	enableGlobalFilter?: boolean;
+	enableRowSelection?: boolean;
+	enableRowActions?: boolean;
 }
 
 // Row actions component
-function RowActions({ row }: { row: any }) {
+function RowActions({ row: _row }: { row: any }) {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -107,64 +107,89 @@ export function generateColumns(
 	columns: ColumnConfig[],
 	settings?: ColumnSettings,
 ): ColumnDef<JsonData>[] {
-	const generatedColumns: ColumnDef<JsonData>[] = columns.map((col) => ({
-		id: col.id,
-		accessorKey: col.accessor,
-		header: col.label,
-		cell: ({ row }) => renderCell(row.getValue(col.accessor), col.type),
-		size: 180, // Default size, can be customized
-		enableSorting: settings?.enableSorting ?? true,
-		enableHiding: settings?.enableHiding ?? true,
-		enableResizing: settings?.enableResizing ?? true,
-		enablePinning: settings?.enablePinning ?? true,
-		enableColumnFilter: settings?.enableColumnFilter ?? true,
-		enableGlobalFilter: settings?.enableGlobalFilter ?? true,
-	}));
+	const generatedColumns: ColumnDef<JsonData>[] = columns.map((col) => {
+		const base = {
+			id: col.id,
+			accessorKey: col.accessor,
+			header: col.label,
+			cell: ({ row }) => renderCell(row.getValue(col.accessor), col.type),
+			size: 180, // Default size, can be customized
+			enableSorting: settings?.enableSorting ?? true,
+			enableHiding: settings?.enableHiding ?? true,
+			enableResizing: settings?.enableResizing ?? true,
+			enablePinning: settings?.enablePinning ?? true,
+			meta: {
+				type: col.type,
+				filterable: col.filterable,
+			} as any,
+		};
 
-	// Add select column
-	const selectColumn: ColumnDef<JsonData> = {
-		id: "select",
-		header: ({ table }) => (
-			<Checkbox
-				checked={
-					table.getIsAllPageRowsSelected() ||
-					(table.getIsSomePageRowsSelected() && "indeterminate")
-				}
-				onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-				aria-label="Select all"
-			/>
-		),
-		cell: ({ row }) => (
-			<Checkbox
-				checked={row.getIsSelected()}
-				onCheckedChange={(value) => row.toggleSelected(!!value)}
-				aria-label="Select row"
-			/>
-		),
-		size: 28,
-		enableSorting: false,
-		enableHiding: false,
-		enableResizing: false,
-		enablePinning: false,
-		enableColumnFilter: false,
-		enableGlobalFilter: false,
-	};
+		if (col.type === "number") {
+			return {
+				...base,
+				filterFn: (row: any, columnId: string, filterValue: unknown) => {
+					if (!filterValue) return true;
+					const [min, max] = filterValue as [number, number];
+					const value = row.getValue(columnId) as number;
+					return value >= min && value <= max;
+				},
+			};
+		}
 
-	// Add actions column
-	const actionsColumn: ColumnDef<JsonData> = {
-		id: "actions",
-		header: () => <span className="sr-only">Actions</span>,
-		cell: ({ row }) => <RowActions row={row} />,
-		size: 60,
-		enableHiding: false,
-		enableSorting: false,
-		enableResizing: false,
-		enablePinning: false,
-		enableColumnFilter: false,
-		enableGlobalFilter: false,
-	};
+		return base;
+	});
 
-	return [selectColumn, ...generatedColumns, actionsColumn];
+	const resultColumns: ColumnDef<JsonData>[] = [];
+
+	// Conditionally add select column
+	if (settings?.enableRowSelection) {
+		const selectColumn: ColumnDef<JsonData> = {
+			id: "select",
+			header: ({ table }) => (
+				<Checkbox
+					checked={
+						table.getIsAllPageRowsSelected() ||
+						(table.getIsSomePageRowsSelected() && "indeterminate")
+					}
+					onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+					aria-label="Select all"
+				/>
+			),
+			cell: ({ row }) => (
+				<Checkbox
+					checked={row.getIsSelected()}
+					onCheckedChange={(value) => row.toggleSelected(!!value)}
+					aria-label="Select row"
+				/>
+			),
+			size: 28,
+			enableSorting: false,
+			enableHiding: false,
+			enableResizing: false,
+			enablePinning: false,
+		};
+		resultColumns.push(selectColumn);
+	}
+
+	// Add generated columns
+	resultColumns.push(...generatedColumns);
+
+	// Conditionally add actions column
+	if (settings?.enableRowActions) {
+		const actionsColumn: ColumnDef<JsonData> = {
+			id: "actions",
+			header: () => <span className="sr-only">Actions</span>,
+			cell: ({ row }) => <RowActions row={row} />,
+			size: 60,
+			enableHiding: false,
+			enableSorting: false,
+			enableResizing: false,
+			enablePinning: false,
+		};
+		resultColumns.push(actionsColumn);
+	}
+
+	return resultColumns;
 }
 
 export const detectColumnType = (
@@ -214,8 +239,6 @@ export const detectColumns = (data: JsonData[]) => {
 					.trim(),
 			type: mostCommonType,
 			order: index,
-			hasDateFilter: false, // Default value for hasDateFilter
-			hasSliderFilter: false, // Default value for hasSliderFilter
 		});
 	});
 

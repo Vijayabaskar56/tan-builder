@@ -27,7 +27,6 @@ import { CSS } from "@dnd-kit/utilities";
 import {
 	Cell,
 	Column,
-	ColumnDef,
 	ColumnFiltersState,
 	flexRender,
 	getCoreRowModel,
@@ -36,7 +35,6 @@ import {
 	getSortedRowModel,
 	Header,
 	PaginationState,
-	Row,
 	SortingState,
 	useReactTable,
 	VisibilityState,
@@ -55,20 +53,17 @@ import {
 	CircleXIcon,
 	Columns3Icon,
 	EllipsisIcon,
-	FilterIcon,
 	GripVerticalIcon,
 	ListFilterIcon,
 	PinOffIcon,
-	PlusIcon,
 	TrashIcon,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import {
-	detectColumns,
-	generateColumns,
-} from "@/lib/table-generator/generate-columns";
+import { generateColumns } from "@/lib/table-generator/generate-columns";
 import { JsonData } from "@/types/table-types";
+import { DataTableSliderFilter } from "@/components/ui/data-table-slider-filter";
+import { DataTableDateFilter } from "@/components/ui/data-table-date-filter";
 
 // Helper function to compute pinning styles for columns
 const getPinningStyles = (column: Column<any>): CSSProperties => {
@@ -94,20 +89,12 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
-	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuLabel,
-	DropdownMenuPortal,
-	DropdownMenuSeparator,
-	DropdownMenuShortcut,
-	DropdownMenuSub,
-	DropdownMenuSubContent,
-	DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -117,11 +104,7 @@ import {
 	PaginationContent,
 	PaginationItem,
 } from "@/components/ui/pagination";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
+
 import {
 	Select,
 	SelectContent,
@@ -146,19 +129,24 @@ export default function Component485() {
 	const tableData = useTableStore();
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: 0,
-		pageSize: 8,
+		pageSize: 10,
 	});
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const [sorting, setSorting] = useState<SortingState>([]);
-
-	const [columnOrder, setColumnOrder] = useState<string[]>([]);
 
 	const [data, setData] = useState<JsonData[]>([]);
 	const columns = useMemo(
 		() => generateColumns(tableData.table.columns, tableData.settings),
 		[tableData.table.columns, tableData.settings],
 	);
+
+	const [columnOrder, setColumnOrder] = useState<string[]>([]);
+
+	// Initialize column order when columns change
+	useEffect(() => {
+		setColumnOrder(columns.map((column) => column.id!));
+	}, [columns]);
 	useEffect(() => {
 		setData(tableData.table.data as JsonData[]);
 	}, [tableData.table.data]);
@@ -186,7 +174,8 @@ export default function Component485() {
 		onColumnVisibilityChange: setColumnVisibility,
 		getFilteredRowModel: getFilteredRowModel(),
 		enableColumnPinning: true,
-		enableGlobalFilter: true,
+		enableColumnResizing: true,
+		enableRowSelection: tableData.settings.enableRowSelection,
 		state: {
 			sorting,
 			pagination,
@@ -222,47 +211,6 @@ export default function Component485() {
 		useSensor(KeyboardSensor, {}),
 	);
 
-	// Get unique status values
-	const uniqueStatusValues = useMemo(() => {
-		const statusColumn = table.getColumn("status");
-
-		if (!statusColumn) return [];
-
-		const values = Array.from(statusColumn.getFacetedUniqueValues().keys());
-
-		return values.sort();
-	}, [table.getColumn("status")?.getFacetedUniqueValues()]);
-
-	// Get counts for each status
-	const statusCounts = useMemo(() => {
-		const statusColumn = table.getColumn("status");
-		if (!statusColumn) return new Map();
-		return statusColumn.getFacetedUniqueValues();
-	}, [table.getColumn("status")?.getFacetedUniqueValues()]);
-
-	const selectedStatuses = useMemo(() => {
-		const filterValue = table.getColumn("status")?.getFilterValue() as string[];
-		return filterValue ?? [];
-	}, [table.getColumn("status")?.getFilterValue()]);
-
-	const handleStatusChange = (checked: boolean, value: string) => {
-		const filterValue = table.getColumn("status")?.getFilterValue() as string[];
-		const newFilterValue = filterValue ? [...filterValue] : [];
-
-		if (checked) {
-			newFilterValue.push(value);
-		} else {
-			const index = newFilterValue.indexOf(value);
-			if (index > -1) {
-				newFilterValue.splice(index, 1);
-			}
-		}
-
-		table
-			.getColumn("status")
-			?.setFilterValue(newFilterValue.length ? newFilterValue : undefined);
-	};
-
 	return (
 		<DndContext
 			id={useId()}
@@ -276,125 +224,126 @@ export default function Component485() {
 				<div className="flex flex-wrap items-center justify-between gap-3">
 					<div className="flex items-center gap-3">
 						{/* Filter by name or email */}
-						<div className="relative">
-							<Input
-								id={`${id}-input`}
-								ref={inputRef}
-								className={cn(
-									"peer min-w-60 ps-9",
-									Boolean(table.getColumn("name")?.getFilterValue()) && "pe-9",
-								)}
-								value={
-									(table.getColumn("name")?.getFilterValue() ?? "") as string
-								}
-								onChange={(e) =>
-									table.getColumn("name")?.setFilterValue(e.target.value)
-								}
-								placeholder="Filter by name or email..."
-								type="text"
-								aria-label="Filter by name or email"
-							/>
-							<div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
-								<ListFilterIcon size={16} aria-hidden="true" />
-							</div>
-							{Boolean(table.getColumn("name")?.getFilterValue()) && (
-								<button
-									className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-									aria-label="Clear filter"
-									onClick={() => {
-										table.getColumn("name")?.setFilterValue("");
-										if (inputRef.current) {
-											inputRef.current.focus();
-										}
-									}}
-								>
-									<CircleXIcon size={16} aria-hidden="true" />
-								</button>
-							)}
-						</div>
-						{/* Filter by status */}
-						<Popover>
-							<PopoverTrigger asChild>
-								<Button variant="outline">
-									<FilterIcon
-										className="-ms-1 opacity-60"
-										size={16}
-										aria-hidden="true"
-									/>
-									Status
-									{selectedStatuses.length > 0 && (
-										<span className="bg-background text-muted-foreground/70 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
-											{selectedStatuses.length}
-										</span>
+						{tableData.settings.isGlobalSearch && (
+							<div className="relative">
+								<Input
+									id={`${id}-input`}
+									ref={inputRef}
+									className={cn(
+										"peer min-w-60 ps-9",
+										Boolean(table.getColumn("name")?.getFilterValue()) &&
+											"pe-9",
 									)}
-								</Button>
-							</PopoverTrigger>
-							<PopoverContent className="w-auto min-w-36 p-3" align="start">
-								<div className="space-y-3">
-									<div className="text-muted-foreground text-xs font-medium">
-										Filters
-									</div>
-									<div className="space-y-3">
-										{uniqueStatusValues.map((value, i) => (
-											<div key={value} className="flex items-center gap-2">
-												<Checkbox
-													id={`${id}-${i}`}
-													checked={selectedStatuses.includes(value)}
-													onCheckedChange={(checked: boolean) =>
-														handleStatusChange(checked, value)
-													}
-												/>
-												<Label
-													htmlFor={`${id}-${i}`}
-													className="flex grow justify-between gap-2 font-normal"
-												>
-													{value}{" "}
-													<span className="text-muted-foreground ms-2 text-xs">
-														{statusCounts.get(value)}
-													</span>
-												</Label>
-											</div>
-										))}
-									</div>
+									value={
+										(table.getColumn("name")?.getFilterValue() ?? "") as string
+									}
+									onChange={(e) =>
+										table.getColumn("name")?.setFilterValue(e.target.value)
+									}
+									placeholder="Filter by name or email..."
+									type="text"
+									aria-label="Filter by name or email"
+								/>
+								<div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
+									<ListFilterIcon size={16} aria-hidden="true" />
 								</div>
-							</PopoverContent>
-						</Popover>
+								{Boolean(table.getColumn("name")?.getFilterValue()) && (
+									<button
+										className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+										aria-label="Clear filter"
+										onClick={() => {
+											table.getColumn("name")?.setFilterValue("");
+											if (inputRef.current) {
+												inputRef.current.focus();
+											}
+										}}
+									>
+										<CircleXIcon size={16} aria-hidden="true" />
+									</button>
+								)}
+							</div>
+						)}
+
 						{/* Toggle columns visibility */}
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button variant="outline">
-									<Columns3Icon
-										className="-ms-1 opacity-60"
-										size={16}
-										aria-hidden="true"
-									/>
-									View
-								</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align="end">
-								<DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
-								{table
-									.getAllColumns()
-									.filter((column) => column.getCanHide())
-									.map((column) => {
-										return (
-											<DropdownMenuCheckboxItem
-												key={column.id}
-												className="capitalize"
-												checked={column.getIsVisible()}
-												onCheckedChange={(value) =>
-													column.toggleVisibility(!!value)
-												}
-												onSelect={(event) => event.preventDefault()}
-											>
-												{column.id}
-											</DropdownMenuCheckboxItem>
-										);
-									})}
-							</DropdownMenuContent>
-						</DropdownMenu>
+						{tableData.settings.enableHiding && (
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button variant="outline">
+										<Columns3Icon
+											className="-ms-1 opacity-60"
+											size={16}
+											aria-hidden="true"
+										/>
+										View
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent align="end">
+									<DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+									{table
+										.getAllColumns()
+										.filter((column) => column.getCanHide())
+										.map((column) => {
+											return (
+												<DropdownMenuCheckboxItem
+													key={column.id}
+													className="capitalize"
+													checked={column.getIsVisible()}
+													onCheckedChange={(value) =>
+														column.toggleVisibility(!!value)
+													}
+													onSelect={(event) => event.preventDefault()}
+												>
+													{column.id}
+												</DropdownMenuCheckboxItem>
+											);
+										})}
+								</DropdownMenuContent>
+							</DropdownMenu>
+						)}
+
+						{/* Column filters */}
+						{table
+							.getAllColumns()
+							.filter((col) => (col.columnDef.meta as any)?.filterable)
+							.map((column) => {
+								const meta = column.columnDef.meta as any;
+								if (meta?.type === "number") {
+									return (
+										<DataTableSliderFilter
+											key={column.id}
+											column={column as any}
+											title={column.id}
+										/>
+									);
+								}
+								if (meta?.type === "date") {
+									return (
+										<DataTableDateFilter
+											key={column.id}
+											column={column as any}
+											title={column.id}
+										/>
+									);
+								}
+								return null;
+							})}
 					</div>
 					<div className="flex items-center gap-3">
+						{/* Clear filters button */}
+						{(table.getState().columnFilters.length > 0 ||
+							Boolean(table.getColumn("name")?.getFilterValue())) && (
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={() => {
+									table.resetColumnFilters();
+									table.getColumn("name")?.setFilterValue("");
+								}}
+								className="h-8"
+							>
+								Clear Filters
+							</Button>
+						)}
 						{/* Delete button */}
 						{table.getSelectedRowModel().rows.length > 0 && (
 							<AlertDialog>
@@ -443,15 +392,6 @@ export default function Component485() {
 								</AlertDialogContent>
 							</AlertDialog>
 						)}
-						{/* Add user button */}
-						<Button className="ml-auto" variant="outline">
-							<PlusIcon
-								className="-ms-1 opacity-60"
-								size={16}
-								aria-hidden="true"
-							/>
-							Add user
-						</Button>
 					</div>
 				</div>
 
@@ -720,9 +660,9 @@ const DraggableTableHeader = ({
 					{/* Clickable header text with sorting */}
 					<div
 						className={cn(
-							"flex items-center gap-1 cursor-pointer select-none",
+							"flex items-center gap-1 select-none",
 							header.column.getCanSort() &&
-								"hover:bg-muted/50 rounded px-1 -mx-1",
+								"cursor-pointer hover:bg-muted/50 rounded px-1 -mx-1",
 						)}
 						onClick={
 							header.column.getCanSort()

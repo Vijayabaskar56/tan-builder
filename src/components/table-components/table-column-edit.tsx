@@ -15,7 +15,7 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Checkbox } from "@/components/ui/checkbox";
+
 import {
 	Select,
 	SelectContent,
@@ -109,8 +109,6 @@ export function TableColumnEdit() {
 			label: `Column ${columns.length + 1}`,
 			type: type as TableBuilder["table"]["columns"][0]["type"],
 			order: columns.length,
-			hasDateFilter: false,
-			hasSliderFilter: false,
 		};
 
 		tableBuilderCollection.update(1, (draft) => {
@@ -118,10 +116,6 @@ export function TableColumnEdit() {
 
 			const currentDataLength = draft.table.data.length;
 			const allColumns = [...draft.table.columns]; // including the new one
-			console.log(
-				"🚀 ~ file: table-column-edit.tsx:120 ~ allColumns:",
-				allColumns,
-			);
 
 			if (currentDataLength === 0) {
 				// No existing data, create 10 rows
@@ -136,10 +130,6 @@ export function TableColumnEdit() {
 				draft.table.data = newData;
 			} else {
 				// Add data to existing rows
-				console.log(
-					"🚀 ~ file: table-column-edit.tsx:140 ~ draft.table.data:",
-					draft.table.data,
-				);
 				for (const row of draft.table.data) {
 					row[columnKey] = generateFakeData(newColumn.type);
 				}
@@ -149,12 +139,18 @@ export function TableColumnEdit() {
 
 	return (
 		<div className="w-full space-y-4">
+			<div className="mb-4 pb-2 px-4 border-b">
+				<h3 className="text-lg font-semibold text-primary">Columns</h3>
+				<p className="text-sm text-muted-foreground">
+					Add Columns to Your Forms
+				</p>
+			</div>
 			<div className="flex items-center justify-between">
 				<Label className="text-sm font-medium">Table Columns</Label>
 				<TableColumnDropdown onAddColumn={addColumn} />
 			</div>
 
-			<ScrollArea className="h-96">
+			<ScrollArea className="h-[calc(100vh-20rem)]">
 				<Reorder.Group
 					axis="y"
 					onReorder={reorderColumns}
@@ -257,41 +253,24 @@ export function TableColumnEdit() {
 													</Select>
 												</div>
 											</div>
-											<div className="flex items-center gap-4">
-												<div className="flex items-center space-x-2">
-													<Checkbox
-														id={`date-filter-${column.id}`}
-														checked={column.hasDateFilter}
-														onCheckedChange={(checked) => {
-															updateColumn(column.id, {
-																hasDateFilter: !!checked,
-															});
-														}}
-													/>
-													<Label
-														htmlFor={`date-filter-${column.id}`}
-														className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-													>
-														Date Filter
-													</Label>
-												</div>
-												<div className="flex items-center space-x-2">
-													<Checkbox
-														id={`slider-filter-${column.id}`}
-														checked={column.hasSliderFilter}
-														onCheckedChange={(checked) => {
-															updateColumn(column.id, {
-																hasSliderFilter: !!checked,
-															});
-														}}
-													/>
-													<Label
-														htmlFor={`slider-filter-${column.id}`}
-														className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-													>
-														Slider Filter
-													</Label>
-												</div>
+											<div className="flex items-center gap-2">
+												<input
+													type="checkbox"
+													id={`filterable-${column.id}`}
+													checked={column.filterable || false}
+													onChange={(e) => {
+														updateColumn(column.id, {
+															filterable: e.target.checked,
+														});
+													}}
+													className="h-4 w-4"
+												/>
+												<Label
+													htmlFor={`filterable-${column.id}`}
+													className="text-xs text-muted-foreground"
+												>
+													Enable Filtering
+												</Label>
 											</div>
 										</AccordionContent>
 									</AccordionItem>

@@ -9,9 +9,8 @@ export interface ColumnConfig {
 	label: string;
 	type: "string" | "number" | "boolean" | "date" | "object";
 	order: number;
+	filterable?: boolean;
 	hasFacetedFilter?: boolean;
-	hasDateFilter: boolean;
-	hasSliderFilter: boolean;
 	options?: { label: string; value: string }[];
 	optionsMode?: "auto" | "custom";
 }
