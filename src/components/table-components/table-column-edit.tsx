@@ -167,6 +167,8 @@ export function TableColumnEdit() {
 														onValueChange={(value) => {
 															updateColumn(column.id, {
 																type: value as TableBuilder["table"]["columns"][0]["type"],
+																filterable:
+																	value === "string" ? true : column.filterable,
 															});
 														}}
 													>

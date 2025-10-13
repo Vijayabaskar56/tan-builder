@@ -91,6 +91,7 @@ export class TableBuilderService {
 						enablePinning: false,
 						enableRowSelection: false,
 						enableRowActions: false,
+						enableDraggable: false,
 					};
 				}
 				(draft.settings as any)[key] = value;
@@ -117,6 +118,7 @@ export class TableBuilderService {
 						enablePinning: false,
 						enableRowSelection: false,
 						enableRowActions: false,
+						enableDraggable: false,
 					};
 				}
 				Object.assign(draft.settings, settings);
@@ -141,6 +143,7 @@ export class TableBuilderService {
 				enablePinning: true,
 				enableRowSelection: false,
 				enableRowActions: false,
+				enableDraggable: false,
 			});
 		} catch (error) {
 			console.error("Failed to reset settings:", error);
@@ -165,6 +168,7 @@ export class TableBuilderService {
 				label: `Column ${columns.length + 1}`,
 				type,
 				order: columns.length,
+				filterable: type === "string",
 			};
 
 			tableBuilderCollection.update(this.TABLE_ID, (draft) => {
@@ -355,6 +359,7 @@ export class TableBuilderService {
 			}
 
 			tableBuilderCollection.update(this.TABLE_ID, (draft) => {
+				draft.settings = template.settings;
 				draft.table = {
 					columns: template.columns,
 					data: template.sampleData || [],
@@ -393,6 +398,7 @@ export class TableBuilderService {
 					enablePinning: true,
 					enableRowSelection: false,
 					enableRowActions: false,
+					enableDraggable: false,
 				};
 
 				tableBuilderCollection.insert([

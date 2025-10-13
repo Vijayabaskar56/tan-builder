@@ -72,7 +72,7 @@ const getPinningStyles = (column: Column<any>): CSSProperties => {
 		left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
 		right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
 		position: isPinned ? "sticky" : "relative",
-		width: column.getSize(),
+		minWidth: column.getSize(),
 		zIndex: isPinned ? 1 : 0,
 	};
 };
@@ -134,12 +134,29 @@ export default function Component485() {
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const [sorting, setSorting] = useState<SortingState>([]);
+	const [globalFilter, setGlobalFilter] = useState("");
 
 	const [data, setData] = useState<JsonData[]>([]);
-	const columns = useMemo(
-		() => generateColumns(tableData.table.columns, tableData.settings),
-		[tableData.table.columns, tableData.settings],
-	);
+	const columns = useMemo(() => {
+		// Ensure the first string column is filterable
+		const modifiedColumns = tableData.table.columns.map((col, index) => {
+			if (
+				col.type === "string" &&
+				index === tableData.table.columns.findIndex((c) => c.type === "string")
+			) {
+				return { ...col, filterable: true };
+			}
+			return col;
+		});
+		return generateColumns(modifiedColumns, tableData.settings);
+	}, [tableData.table.columns, tableData.settings]);
+
+	const filterableStringColumns = useMemo(() => {
+		return columns.filter((col) => {
+			const meta = col.meta as any;
+			return meta?.type === "string" && meta?.filterable;
+		});
+	}, [columns]);
 
 	const [columnOrder, setColumnOrder] = useState<string[]>([]);
 
@@ -173,6 +190,14 @@ export default function Component485() {
 		onColumnFiltersChange: setColumnFilters,
 		onColumnVisibilityChange: setColumnVisibility,
 		getFilteredRowModel: getFilteredRowModel(),
+		globalFilterFn: (row, columnId, filterValue) => {
+			if (!filterValue) return true;
+			return filterableStringColumns.some((col) => {
+				const value = row.getValue(col.id);
+				return String(value).toLowerCase().includes(filterValue.toLowerCase());
+			});
+		},
+		onGlobalFilterChange: setGlobalFilter,
 		enableColumnPinning: true,
 		enableColumnResizing: true,
 		enableRowSelection: tableData.settings.enableRowSelection,
@@ -182,6 +207,7 @@ export default function Component485() {
 			columnFilters,
 			columnVisibility,
 			columnOrder,
+			globalFilter,
 		},
 		onColumnOrderChange: setColumnOrder,
 	});
@@ -223,7 +249,7 @@ export default function Component485() {
 				{/* Filters */}
 				<div className="flex flex-wrap items-center justify-between gap-3">
 					<div className="flex items-center gap-3">
-						{/* Filter by name or email */}
+						{/* Global search for filterable string columns */}
 						{tableData.settings.isGlobalSearch && (
 							<div className="relative">
 								<Input
@@ -231,28 +257,23 @@ export default function Component485() {
 									ref={inputRef}
 									className={cn(
 										"peer min-w-60 ps-9",
-										Boolean(table.getColumn("name")?.getFilterValue()) &&
-											"pe-9",
+										Boolean(globalFilter) && "pe-9",
 									)}
-									value={
-										(table.getColumn("name")?.getFilterValue() ?? "") as string
-									}
-									onChange={(e) =>
-										table.getColumn("name")?.setFilterValue(e.target.value)
-									}
-									placeholder="Filter by name or email..."
+									value={globalFilter}
+									onChange={(e) => setGlobalFilter(e.target.value)}
+									placeholder="Filter by searchable columns..."
 									type="text"
-									aria-label="Filter by name or email"
+									aria-label="Filter by searchable columns"
 								/>
 								<div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
 									<ListFilterIcon size={16} aria-hidden="true" />
 								</div>
-								{Boolean(table.getColumn("name")?.getFilterValue()) && (
+								{Boolean(globalFilter) && (
 									<button
 										className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
 										aria-label="Clear filter"
 										onClick={() => {
-											table.getColumn("name")?.setFilterValue("");
+											setGlobalFilter("");
 											if (inputRef.current) {
 												inputRef.current.focus();
 											}
@@ -331,13 +352,13 @@ export default function Component485() {
 					<div className="flex items-center gap-3">
 						{/* Clear filters button */}
 						{(table.getState().columnFilters.length > 0 ||
-							Boolean(table.getColumn("name")?.getFilterValue())) && (
+							Boolean(globalFilter)) && (
 							<Button
 								variant="outline"
 								size="sm"
 								onClick={() => {
 									table.resetColumnFilters();
-									table.getColumn("name")?.setFilterValue("");
+									setGlobalFilter("");
 								}}
 								className="h-8"
 							>
@@ -397,12 +418,7 @@ export default function Component485() {
 
 				{/* Table */}
 				<div className="bg-background overflow-hidden rounded-md border">
-					<Table
-						className="[&_td]:border-border [&_th]:border-border table-fixed border-separate border-spacing-0 [&_tfoot_td]:border-t [&_th]:border-b [&_tr]:border-none [&_tr:not(:last-child)_td]:border-b"
-						style={{
-							width: table.getTotalSize(),
-						}}
-					>
+					<Table className="[&_td]:border-border [&_th]:border-border border-separate border-spacing-0 [&_tfoot_td]:border-t [&_th]:border-b [&_tr]:border-none [&_tr:not(:last-child)_td]:border-b">
 						<TableHeader>
 							{table.getHeaderGroups().map((headerGroup) => (
 								<TableRow key={headerGroup.id} className="bg-muted/50">
@@ -593,7 +609,7 @@ const DraggableTableHeader = ({
 		transform: CSS.Translate.toString(transform),
 		transition,
 		whiteSpace: "nowrap",
-		width: header.column.getSize(),
+		minWidth: header.column.getSize(),
 		zIndex: isDragging ? 1 : 0,
 	};
 
@@ -610,7 +626,7 @@ const DraggableTableHeader = ({
 			<TableHead
 				key={header.id}
 				className="relative h-10 truncate border-t"
-				style={{ width: header.column.getSize() }}
+				style={{ minWidth: header.column.getSize() }}
 			>
 				<div className="flex items-center justify-center">
 					{flexRender(header.column.columnDef.header, header.getContext())}
@@ -800,7 +816,7 @@ const DragAlongCell = ({ cell }: { cell: Cell<JsonData, unknown> }) => {
 		position: "relative",
 		transform: CSS.Translate.toString(transform),
 		transition,
-		width: cell.column.getSize(),
+		minWidth: cell.column.getSize(),
 		zIndex: isDragging ? 1 : 0,
 	};
 
@@ -816,8 +832,8 @@ const DragAlongCell = ({ cell }: { cell: Cell<JsonData, unknown> }) => {
 		return (
 			<TableCell
 				key={cell.id}
-				className="truncate"
-				style={{ width: cell.column.getSize() }}
+				className="h-10 truncate"
+				style={{ minWidth: cell.column.getSize() }}
 			>
 				<div className="flex items-center justify-center">
 					{flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -830,7 +846,7 @@ const DragAlongCell = ({ cell }: { cell: Cell<JsonData, unknown> }) => {
 	return (
 		<TableCell
 			ref={setNodeRef}
-			className="[&[data-pinned][data-last-col]]:border-border data-pinned:bg-background/90 last:py-0 truncate data-pinned:backdrop-blur-xs [&[data-pinned=left][data-last-col=left]]:border-r [&[data-pinned=right][data-last-col=right]]:border-l"
+			className="[&[data-pinned][data-last-col]]:border-border data-pinned:bg-background/90 h-10 last:py-0 truncate data-pinned:backdrop-blur-xs [&[data-pinned=left][data-last-col=left]]:border-r [&[data-pinned=right][data-last-col=right]]:border-l"
 			style={{ ...getPinningStyles(column), ...style }}
 			data-pinned={isPinned || undefined}
 			data-last-col={

@@ -6,6 +6,7 @@ import {
 	Search,
 	SortAsc,
 	CheckSquare,
+	MoveHorizontal,
 } from "lucide-react";
 import { useId } from "react";
 import * as v from "valibot";
@@ -24,6 +25,7 @@ const TableSettingsSchema = v.object({
 	enablePinning: v.optional(v.boolean(), false),
 	enableRowSelection: v.optional(v.boolean(), false),
 	enableRowActions: v.optional(v.boolean(), false),
+	enableDraggable: v.optional(v.boolean(), false),
 });
 
 export function TableSettingsSidebar() {
@@ -34,6 +36,7 @@ export function TableSettingsSidebar() {
 	const preferredFrameworkId = useId();
 	const rowSelectionId = useId();
 	const rowActionsId = useId();
+	const draggableId = useId();
 	const data = useTableStore();
 
 	const form = useAppForm({
@@ -45,6 +48,7 @@ export function TableSettingsSidebar() {
 			enablePinning: data?.settings?.enablePinning ?? false,
 			enableRowSelection: data?.settings?.enableRowSelection ?? false,
 			enableRowActions: data?.settings?.enableRowActions ?? false,
+			enableDraggable: data?.settings?.enableDraggable ?? false,
 		} as v.InferInput<typeof TableSettingsSchema>,
 		validators: {
 			onChange: TableSettingsSchema,
@@ -337,6 +341,44 @@ export function TableSettingsSidebar() {
 														rel="noopener noreferrer"
 													>
 														Table Actions
+													</a>
+												</field.FieldDescription>
+												<field.FieldError />
+											</div>
+										)}
+									</form.AppField>
+
+									<form.AppField name="enableDraggable" mode="value">
+										{(field) => (
+											<div className="p-3 border-b mx-2">
+												<div className="flex items-center justify-between">
+													<div className="flex items-center gap-2">
+														<MoveHorizontal className="w-4 h-4 text-muted-foreground" />
+														<field.FieldLabel
+															htmlFor={draggableId}
+															className="text-sm"
+														>
+															Column Dragging
+														</field.FieldLabel>
+													</div>
+													<Switch
+														id={draggableId}
+														checked={field.state.value}
+														onCheckedChange={field.handleChange}
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+													/>
+												</div>
+												<Separator className="my-2" />
+												<field.FieldDescription>
+													Allow dragging to reorder table columns. For more info
+													check the TanStack Table docs:{" "}
+													<a
+														className="text-primary"
+														href="https://tanstack.com/table/latest/docs/guide/column-ordering"
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														Column Ordering
 													</a>
 												</field.FieldDescription>
 												<field.FieldError />
