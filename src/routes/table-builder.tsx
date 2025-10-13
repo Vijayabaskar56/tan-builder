@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { tableBuilderCollection } from "@/db-collections/table-builder.collections";
+import { TableBuilderService } from "@/services/table-builder.service";
 import { useScreenSize } from "@/hooks/use-screen-size";
 import useTableStore from "@/hooks/use-table-store";
 import { cn } from "@/lib/utils";
@@ -23,31 +23,7 @@ import { BlocksIcon } from "@/components/ui/blocks";
 import { LayoutPanelTopIcon } from "@/components/ui/layout-panel-top";
 
 const initializeTableStore = createClientOnlyFn(async () => {
-	if (typeof window !== "undefined") {
-		// Clear old data to force re-initialization with new schema
-		localStorage.removeItem("table-builder");
-		const existing = tableBuilderCollection.get(1);
-		if (!existing) {
-			tableBuilderCollection.insert([
-				{
-					id: 1,
-					settings: {
-						isGlobalSearch: true,
-						enableHiding: true,
-						enableSorting: true,
-						enableResizing: true,
-						enablePinning: true,
-					},
-					table: {
-						columns: [],
-						data: [],
-					},
-				},
-			]);
-		}
-	} else {
-		console.log("tableBuilderCollection is undefined");
-	}
+	TableBuilderService.initializeTable();
 });
 
 export const Route = createFileRoute("/table-builder")({

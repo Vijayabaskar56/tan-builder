@@ -1,21 +1,12 @@
 import { tableTemplates } from "@/constants/table-templates";
-import { tableBuilderCollection } from "@/db-collections/table-builder.collections";
+import { TableBuilderService } from "@/services/table-builder.service";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Database } from "lucide-react";
 
 export function TableTemplates() {
 	const applyTemplate = (templateKey: string) => {
-		const template = tableTemplates[templateKey];
-		if (!template) return;
-
-		// Update the table with the template's columns and data
-		tableBuilderCollection.update(1, (draft) => {
-			(draft as any).table = {
-				columns: template.columns,
-				data: template.sampleData || [],
-			};
-		});
+		TableBuilderService.applyTemplate(templateKey);
 	};
 
 	return (

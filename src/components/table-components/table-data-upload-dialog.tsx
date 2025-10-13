@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { detectColumns } from "@/lib/table-generator/generate-columns";
-import { tableBuilderCollection } from "@/db-collections/table-builder.collections";
+import { TableBuilderService } from "@/services/table-builder.service";
 import { useAppForm } from "@/components/ui/tanstack-form";
 import { revalidateLogic } from "@/components/ui/tanstack-form";
 import {
@@ -67,13 +66,7 @@ function DataUploadDialog() {
 	});
 
 	const updateTableData = (data: any[]) => {
-		const columns = detectColumns(data);
-		tableBuilderCollection.update(1, (draft) => {
-			draft.table = {
-				columns,
-				data,
-			};
-		});
+		TableBuilderService.importData(data);
 	};
 
 	const handleFileUpload = (files: any[]) => {

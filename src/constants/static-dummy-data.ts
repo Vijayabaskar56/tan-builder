@@ -1,0 +1,110 @@
+/**
+ * Static dummy data for table columns
+ * Provides consistent, professional sample data for each column type
+ */
+
+export const STATIC_DUMMY_DATA = {
+	string: [
+		"John Doe",
+		"Jane Smith",
+		"Bob Johnson",
+		"Alice Williams",
+		"Charlie Brown",
+		"Diana Davis",
+		"Edward Wilson",
+		"Fiona Garcia",
+		"George Miller",
+		"Helen Taylor",
+		"Ian Anderson",
+		"Julia Thomas",
+		"Kevin Jackson",
+		"Lisa White",
+		"Michael Harris",
+		"Nancy Clark",
+		"Oliver Lewis",
+		"Paula Robinson",
+		"Quincy Walker",
+		"Rachel Hall",
+	],
+	number: [
+		1, 25, 157, 892, 2341, 5678, 9101, 11213, 14151, 16171, 18191, 20202, 22223,
+		24242, 26262, 28282, 30303, 32323, 34343, 36363,
+	],
+	boolean: [
+		true,
+		false,
+		true,
+		false,
+		true,
+		false,
+		true,
+		false,
+		true,
+		false,
+		true,
+		false,
+		true,
+		false,
+		true,
+		false,
+		true,
+		false,
+		true,
+		false,
+	],
+	date: [
+		"2023-01-15",
+		"2023-02-20",
+		"2023-03-10",
+		"2023-04-05",
+		"2023-05-18",
+		"2023-06-22",
+		"2023-07-14",
+		"2023-08-09",
+		"2023-09-30",
+		"2023-10-25",
+		"2023-11-11",
+		"2023-12-03",
+		"2024-01-28",
+		"2024-02-14",
+		"2024-03-07",
+		"2024-04-19",
+		"2024-05-12",
+		"2024-06-08",
+		"2024-07-23",
+		"2024-08-16",
+	],
+	object: [
+		{ key: "user", value: "admin" },
+		{ key: "role", value: "manager" },
+		{ key: "status", value: "active" },
+		{ key: "type", value: "premium" },
+		{ key: "category", value: "electronics" },
+		{ key: "priority", value: "high" },
+		{ key: "department", value: "engineering" },
+		{ key: "location", value: "remote" },
+		{ key: "access", value: "full" },
+		{ key: "level", value: "senior" },
+		{ key: "team", value: "alpha" },
+		{ key: "project", value: "web-app" },
+		{ key: "phase", value: "development" },
+		{ key: "budget", value: "approved" },
+		{ key: "timeline", value: "on-track" },
+		{ key: "quality", value: "excellent" },
+		{ key: "feedback", value: "positive" },
+		{ key: "rating", value: "5-stars" },
+		{ key: "source", value: "organic" },
+		{ key: "channel", value: "direct" },
+	],
+} as const;
+
+/**
+ * Get static data for a specific column type and index
+ */
+export function getStaticData(
+	type: keyof typeof STATIC_DUMMY_DATA,
+	index: number,
+): string | number | boolean | object {
+	const dataArray = STATIC_DUMMY_DATA[type];
+	return dataArray[index % dataArray.length]!;
+}

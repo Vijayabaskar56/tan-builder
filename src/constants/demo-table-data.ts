@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker";
+import { STATIC_DUMMY_DATA } from "./static-dummy-data";
 
 export type Person = {
 	id: number;
@@ -20,18 +20,29 @@ const range = (len: number) => {
 };
 
 const newPerson = (num: number): Person => {
+	const statusOptions: Person["status"][] = [
+		"relationship",
+		"complicated",
+		"single",
+	];
 	return {
 		id: num,
-		firstName: faker.person.firstName(),
-		lastName: faker.person.lastName(),
-		age: faker.number.int(40),
-		visits: faker.number.int(1000),
-		progress: faker.number.int(100),
-		status: faker.helpers.shuffle<Person["status"]>([
-			"relationship",
-			"complicated",
-			"single",
-		])[0]!,
+		firstName: STATIC_DUMMY_DATA.string[
+			num % STATIC_DUMMY_DATA.string.length
+		] as string,
+		lastName: STATIC_DUMMY_DATA.string[
+			(num + 10) % STATIC_DUMMY_DATA.string.length
+		] as string,
+		age: STATIC_DUMMY_DATA.number[
+			num % STATIC_DUMMY_DATA.number.length
+		] as number,
+		visits: STATIC_DUMMY_DATA.number[
+			(num + 5) % STATIC_DUMMY_DATA.number.length
+		] as number,
+		progress: STATIC_DUMMY_DATA.number[
+			(num + 15) % STATIC_DUMMY_DATA.number.length
+		] as number,
+		status: statusOptions[num % statusOptions.length]!,
 	};
 };
 

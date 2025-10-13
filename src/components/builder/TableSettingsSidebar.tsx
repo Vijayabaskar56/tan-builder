@@ -12,7 +12,7 @@ import * as v from "valibot";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import { useAppForm } from "@/components/ui/tanstack-form";
-import { tableBuilderCollection } from "@/db-collections/table-builder.collections";
+import { TableBuilderService } from "@/services/table-builder.service";
 import useTableStore from "@/hooks/use-table-store";
 import { Separator } from "../ui/separator";
 
@@ -52,22 +52,7 @@ export function TableSettingsSidebar() {
 		listeners: {
 			onChangeDebounceMs: 1000,
 			onChange: ({ formApi }) => {
-				tableBuilderCollection?.update(1, (draft) => {
-					draft.settings.isGlobalSearch =
-						formApi.baseStore.state.values.isGlobalSearch;
-					draft.settings.enableHiding =
-						formApi.baseStore.state.values.enableHiding;
-					draft.settings.enableSorting =
-						formApi.baseStore.state.values.enableSorting;
-					draft.settings.enableResizing =
-						formApi.baseStore.state.values.enableResizing;
-					draft.settings.enablePinning =
-						formApi.baseStore.state.values.enablePinning;
-					draft.settings.enableRowSelection =
-						formApi.baseStore.state.values.enableRowSelection;
-					draft.settings.enableRowActions =
-						formApi.baseStore.state.values.enableRowActions;
-				});
+				TableBuilderService.updateSettings(formApi.baseStore.state.values);
 			},
 		},
 	});
@@ -92,7 +77,7 @@ export function TableSettingsSidebar() {
 						</p>
 					</div>
 
-					<ScrollArea className="h-[calc(35vh-8rem)]  md:h-[45rem]">
+					<ScrollArea className="h-[calc(100vh-20rem)]">
 						<div className=" space-y-4 sm:space-y-6">
 							<div>
 								<div className="space-y-3">

@@ -1,4 +1,4 @@
-import { tableBuilderCollection } from "@/db-collections/table-builder.collections";
+import { TableBuilderService } from "@/services/table-builder.service";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,6 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { TableColumnDropdown } from "./table-column-dropdown";
-import { faker } from "@faker-js/faker";
 
 export function TableColumnEdit() {
 	const [localColumns, setLocalColumns] = useState<
@@ -46,95 +45,26 @@ export function TableColumnEdit() {
 
 	const columns = tableData.table.columns;
 
-	const generateFakeData = (type: string) => {
-		switch (type) {
-			case "string":
-				return faker.lorem.words(2);
-			case "number":
-				return faker.number.int({ min: 1, max: 1000 });
-			case "boolean":
-				return faker.datatype.boolean();
-			case "date":
-				return faker.date.recent().toISOString().split("T")[0];
-			case "object":
-				return { key: faker.lorem.word(), value: faker.lorem.words(1) };
-			default:
-				return faker.lorem.words(1);
-		}
-	};
-
 	const updateColumn = (
 		columnId: string,
 		updates: Partial<(typeof columns)[0]>,
 	) => {
-		tableBuilderCollection.update(1, (draft) => {
-			const columnIndex = draft.table.columns.findIndex(
-				(col) => col.id === columnId,
-			);
-			if (columnIndex !== -1) {
-				draft.table.columns[columnIndex] = {
-					...draft.table.columns[columnIndex],
-					...updates,
-				};
-			}
-		});
+		TableBuilderService.updateColumn(columnId, updates);
 	};
 
 	const reorderColumns = (newOrder: typeof columns) => {
-		// Update order property for each column
-		const reorderedColumns = newOrder.map((col, index) => ({
-			...col,
-			order: index,
-		}));
-
-		tableBuilderCollection.update(1, (draft) => {
-			draft.table.columns = reorderedColumns;
-		});
-		setLocalColumns(reorderedColumns);
+		TableBuilderService.reorderColumns(newOrder);
+		setLocalColumns(newOrder);
 	};
 
 	const deleteColumn = (columnId: string) => {
-		tableBuilderCollection.update(1, (draft) => {
-			draft.table.columns = draft.table.columns.filter(
-				(col) => col.id !== columnId,
-			);
-		});
+		TableBuilderService.deleteColumn(columnId);
 	};
 
 	const addColumn = (type: string) => {
-		const columnKey = `column_${Date.now()}`;
-		const newColumn = {
-			id: columnKey,
-			accessor: columnKey,
-			label: `Column ${columns.length + 1}`,
-			type: type as TableBuilder["table"]["columns"][0]["type"],
-			order: columns.length,
-		};
-
-		tableBuilderCollection.update(1, (draft) => {
-			draft.table.columns.push(newColumn);
-
-			const currentDataLength = draft.table.data.length;
-			const allColumns = [...draft.table.columns]; // including the new one
-
-			if (currentDataLength === 0) {
-				// No existing data, create 10 rows
-				const newData = [];
-				for (let i = 0; i < 10; i++) {
-					const row: Record<string, any> = {};
-					for (const col of allColumns) {
-						row[col.id] = generateFakeData(col.type);
-					}
-					newData.push(row);
-				}
-				draft.table.data = newData;
-			} else {
-				// Add data to existing rows
-				for (const row of draft.table.data) {
-					row[columnKey] = generateFakeData(newColumn.type);
-				}
-			}
-		});
+		TableBuilderService.addColumn(
+			type as TableBuilder["table"]["columns"][0]["type"],
+		);
 	};
 
 	return (
