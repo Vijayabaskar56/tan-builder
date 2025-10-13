@@ -266,7 +266,6 @@ function HomePage() {
 										Code generation with 100% Type-Safe.
 									</div>
 								</div>
-							</div>
 
 							<div className="w-full max-w-[497px] lg:w-[497px] flex justify-center items-center gap-6 sm:gap-8 md:gap-10 lg:gap-12 relative z-10 mt-6 sm:mt-8 md:mt-10 lg:mt-12">
 								<Button

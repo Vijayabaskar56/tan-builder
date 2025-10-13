@@ -216,6 +216,14 @@ export default function Component485() {
 		onPaginationChange: setPagination,
 		onColumnVisibilityChange: setColumnVisibility,
 		getFilteredRowModel: getFilteredRowModel(),
+		globalFilterFn: (row, columnId, filterValue) => {
+			if (!filterValue) return true;
+			return filterableStringColumns.some((col) => {
+				const value = row.getValue(col.id);
+				return String(value).toLowerCase().includes(filterValue.toLowerCase());
+			});
+		},
+		onGlobalFilterChange: setGlobalFilter,
 		enableColumnPinning: true,
 		enableColumnResizing: true,
 		enableRowSelection: tableData.settings.enableRowSelection,
@@ -224,6 +232,7 @@ export default function Component485() {
 			pagination,
 			columnVisibility,
 			columnOrder,
+			globalFilter,
 		},
 		onColumnOrderChange: setColumnOrder,
 	});
