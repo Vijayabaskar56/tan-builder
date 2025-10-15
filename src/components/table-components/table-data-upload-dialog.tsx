@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { TableBuilderService } from "@/services/table-builder.service";
 import { useAppForm } from "@/components/ui/tanstack-form";
 import { revalidateLogic } from "@/components/ui/tanstack-form";
@@ -10,41 +10,14 @@ import {
 	ResponsiveDialogTitle,
 	ResponsiveDialogTrigger,
 } from "@/components/ui/revola";
-import { UploadIcon } from "lucide-react";
+import { UploadIcon, Loader2Icon } from "lucide-react";
 import { AnimatedIconButton } from "@/components/ui/animated-icon-button";
 import FileUpload from "@/components/file-upload";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import * as z from "zod";
-
-// Utility functions for parsing data
-const parseCSV = (csvText: string): any[] => {
-	const lines = csvText.trim().split("\n");
-	if (lines.length < 2)
-		throw new Error("CSV must have at least headers and one data row");
-
-	const headers = lines[0].split(",").map((h) => h.trim());
-	const data = lines.slice(1).map((line) => {
-		const values = line.split(",");
-		const obj: any = {};
-		headers.forEach((header, index) => {
-			obj[header] = values[index]?.trim() || "";
-		});
-		return obj;
-	});
-	return data;
-};
-
-const parseJSON = (jsonText: string): any[] => {
-	const parsed = JSON.parse(jsonText);
-	if (Array.isArray(parsed)) {
-		return parsed;
-	} else if (typeof parsed === "object") {
-		return [parsed];
-	}
-	return [];
-};
+import { useDataProcessorWorker } from "@/hooks/use-data-processor-worker";
 
 const dataFormSchema = z.object({
 	data: z.array(z.any()),
@@ -53,6 +26,8 @@ const dataFormSchema = z.object({
 function DataUploadDialog() {
 	const [open, setOpen] = useState(false);
 	const [textareaText, setTextareaText] = useState("");
+	const [isProcessing, setIsProcessing] = useState(false);
+	const { parseData } = useDataProcessorWorker();
 
 	const dataForm = useAppForm({
 		defaultValues: {
@@ -65,8 +40,9 @@ function DataUploadDialog() {
 		},
 	});
 
-	const updateTableData = (data: any[]) => {
-		TableBuilderService.importData(data);
+	const updateTableData = async (data: any[]) => {
+		await TableBuilderService.importData(data);
+		dataForm.setFieldValue("data", data);
 	};
 
 	const handleFileUpload = (files: any[]) => {
@@ -76,60 +52,44 @@ function DataUploadDialog() {
 		const reader = new FileReader();
 		reader.onload = (e) => {
 			const text = e.target?.result as string;
-			if (text.trim() === "") {
-				dataForm.setFieldValue("data", []);
-				toast.error("The uploaded file is empty");
-				return;
-			}
-			let data: any[] = [];
-			try {
-				if (file.type === "application/json" || file.name.endsWith(".json")) {
-					data = parseJSON(text);
-				} else if (file.type === "text/csv" || file.name.endsWith(".csv")) {
-					data = parseCSV(text);
-				} else {
-					throw new Error("Unsupported file type");
-				}
-				dataForm.setFieldValue("data", data);
-				updateTableData(data);
-				toast.success("Data uploaded successfully");
-				setOpen(false);
-			} catch (error) {
-				toast.error(
-					"Failed to parse file. Please ensure it's valid JSON or CSV.",
-				);
-			}
+			
+			// Only read and display the file content in textarea
+			// Actual processing will happen when user clicks "Process Data"
+			setTextareaText(text);
+			toast.success("File loaded. Click 'Process Data' to import.");
 		};
 		reader.readAsText(file);
 	};
 
-	const handleTextareaSubmit = () => {
+	const handleTextareaSubmit = async () => {
 		if (textareaText.trim() === "") {
 			dataForm.setFieldValue("data", []);
-			updateTableData([]);
+			await TableBuilderService.importData([]);
 			toast.success("Data cleared");
 			setOpen(false);
 			return;
 		}
-		try {
-			let parsed;
-			try {
-				parsed = parseJSON(textareaText);
-			} catch {
-				parsed = parseCSV(textareaText);
-			}
-			dataForm.setFieldValue("data", parsed);
-			updateTableData(parsed);
-			toast.success("Data processed successfully");
-			setOpen(false);
-		} catch {
-			toast.error("Invalid JSON or CSV format");
-		}
-	};
 
-	useEffect(() => {
-		setTextareaText(JSON.stringify(dataForm.state.values.data || [], null, 2));
-	}, [dataForm.state.values.data]);
+		// Use worker to parse data
+		setIsProcessing(true);
+		parseData({
+			content: textareaText,
+			fileType: "auto",
+			onSuccess: (data) => {
+				updateTableData(data).then(() => {
+					toast.success("Data processed successfully");
+					setOpen(false);
+				});
+				setIsProcessing(false);
+				toast.success("Data processed successfully");
+				setOpen(false);
+			},
+			onError: (error) => {
+				setIsProcessing(false);
+				toast.error(error);
+			},
+		});
+	};
 
 	return (
 		<ResponsiveDialog open={open} onOpenChange={setOpen}>
@@ -167,12 +127,25 @@ function DataUploadDialog() {
 								value={textareaText}
 								onChange={(e) => setTextareaText(e.target.value)}
 								className="min-h-[200px] font-mono text-sm"
+								disabled={isProcessing}
 							/>
 							<div className="flex justify-end gap-2">
-								<Button variant="outline" onClick={() => setTextareaText("")}>
+								<Button
+									variant="outline"
+									onClick={() => setTextareaText("")}
+									disabled={isProcessing}
+								>
 									Clear
 								</Button>
-								<Button onClick={handleTextareaSubmit}>Process Data</Button>
+								<Button
+									onClick={handleTextareaSubmit}
+									disabled={isProcessing}
+								>
+									{isProcessing && (
+										<Loader2Icon className="w-4 h-4 mr-2 animate-spin" />
+									)}
+									Process Data
+								</Button>
 							</div>
 						</div>
 					</div>

@@ -1,14 +1,21 @@
-import { CodeIcon } from "lucide-react";
+import { CodeIcon, ListIcon } from "lucide-react";
 import { TableBuilderService } from "@/services/table-builder.service";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { AnimatedIconButton } from "./ui/animated-icon-button";
 import { RotateCWIcon } from "./ui/rotate-cw";
 import { ShareIcon } from "./ui/share";
+import useTableStore from "@/hooks/use-table-store";
 import DataUploadDialog from "./table-components/table-data-upload-dialog";
 
 export default function TableHeader() {
+	const tableData = useTableStore();
+
 	const resetTable = () => {
 		TableBuilderService.resetTable();
+	};
+
+	const togglePagination = () => {
+		TableBuilderService.updateSetting("enablePagination", !tableData.settings.enablePagination);
 	};
 
 	return (
@@ -31,6 +38,14 @@ export default function TableHeader() {
 							text={<span className="hidden xl:block ml-1">Share</span>}
 							variant="ghost"
 							disabled
+						/>
+						<div className="h-4 w-px bg-border" />
+						<div className="h-4 w-px bg-border" />
+						<AnimatedIconButton
+							icon={<ListIcon className="w-4 h-4 mr-1" />}
+							text={<span className="hidden xl:block ml-1">Pagination</span>}
+							variant={tableData.settings.enablePagination ? "default" : "ghost"}
+							onClick={togglePagination}
 						/>
 						<div className="h-4 w-px bg-border" />
 						<AnimatedIconButton

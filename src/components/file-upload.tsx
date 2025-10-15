@@ -13,7 +13,7 @@ export default function FileUpload({
 }: {
 	onFilesAdded?: (files: any[]) => void;
 }) {
-	const maxSize = 10 * 1024 * 1024; // 10MB default
+	const maxSize = 15 * 1024 * 1024; // 15MB - increased for better large file handling
 
 	const [
 		{ files, isDragging, errors },

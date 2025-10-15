@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
+import AppToggle from "./app-toggle";
 
 export default function NavBar() {
 	const { data: stars } = useQuery({
@@ -17,7 +18,7 @@ export default function NavBar() {
 	});
 
 	return (
-		<header className="fixed top-0 left-0 right-0 z-10 bg-background border-b px-4 md:px-6">
+		<header className="fixed top-0 left-0 right-0 z-100 bg-background border-b px-4 md:px-6">
 			<div className="flex h-16 items-center justify-between gap-4">
 				{/* Left side */}
 				<div className="flex flex-1 items-center gap-2">
@@ -28,7 +29,7 @@ export default function NavBar() {
 					</div>
 				</div>
 				{/* Middle area */}
-				{/* <AppToggle /> */}
+				<AppToggle />
 				{/* Right side */}
 				<div className="flex flex-1 items-center justify-end gap-2">
 					<Button

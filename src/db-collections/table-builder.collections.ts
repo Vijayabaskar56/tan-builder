@@ -17,6 +17,7 @@ export const TableBuilderSchema = v.object({
 		enableRowSelection: v.optional(v.boolean(), false),
 		enableRowActions: v.optional(v.boolean(), false),
 		enableDraggable: v.optional(v.boolean(), false),
+		enablePagination: v.optional(v.boolean(), false),
 	}),
 	table: v.object({
 		columns: v.array(

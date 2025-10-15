@@ -92,6 +92,7 @@ export class TableBuilderService {
 						enableRowSelection: false,
 						enableRowActions: false,
 						enableDraggable: false,
+						enablePagination: false,
 					};
 				}
 				(draft.settings as any)[key] = value;
@@ -119,6 +120,7 @@ export class TableBuilderService {
 						enableRowSelection: false,
 						enableRowActions: false,
 						enableDraggable: false,
+						enablePagination: false,
 					};
 				}
 				Object.assign(draft.settings, settings);
@@ -144,6 +146,7 @@ export class TableBuilderService {
 				enableRowSelection: false,
 				enableRowActions: false,
 				enableDraggable: false,
+				enablePagination: true,
 			});
 		} catch (error) {
 			console.error("Failed to reset settings:", error);
@@ -294,14 +297,14 @@ export class TableBuilderService {
 	/**
 	 * Import data and automatically detect columns
 	 */
-	static importData(data: DataRow[]): boolean {
+	static async importData(data: DataRow[]): Promise<boolean> {
 		try {
 			if (!Array.isArray(data) || data.length === 0) {
 				throw new Error("Invalid data: must be a non-empty array");
 			}
 
 			const columns = detectColumns(data);
-			tableBuilderCollection.update(this.TABLE_ID, (draft) => {
+			await tableBuilderCollection.update(this.TABLE_ID, (draft) => {
 				draft.table = {
 					columns,
 					data,
@@ -399,6 +402,7 @@ export class TableBuilderService {
 					enableRowSelection: false,
 					enableRowActions: false,
 					enableDraggable: false,
+					enablePagination: true,
 				};
 
 				tableBuilderCollection.insert([
