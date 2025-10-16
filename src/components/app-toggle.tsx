@@ -11,6 +11,11 @@ export default function AppToggle() {
 
 	const isFormBuilder = location.pathname.startsWith("/form-builder");
 	const isTableBuilder = location.pathname.startsWith("/table-builder");
+
+	if (!isFormBuilder && !isTableBuilder) {
+		return null;
+	}
+
 	const selectedValue = isFormBuilder ? "off" : isTableBuilder ? "on" : "none";
 
 	const handleValueChange = (value: string) => {
