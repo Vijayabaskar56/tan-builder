@@ -1,17 +1,22 @@
-import { ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
+import { EllipsisIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import { DataGridColumnHeader } from "@/components/ui/data-grid-column-header";
+import {
+	DataGridTableRowSelect,
+	DataGridTableRowSelectAll,
+} from "@/components/ui/data-grid-table";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuGroup,
 	DropdownMenuItem,
-	DropdownMenuShortcut,
 	DropdownMenuSeparator,
+	DropdownMenuShortcut,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EllipsisIcon } from "lucide-react";
+import type { FilterFieldConfig } from "@/components/ui/filters";
 import type { ColumnConfig, JsonData } from "@/types/table-types";
 
 interface ColumnSettings {
@@ -20,7 +25,7 @@ interface ColumnSettings {
 	enableResizing?: boolean;
 	enablePinning?: boolean;
 	enableRowSelection?: boolean;
-	enableRowActions?: boolean;
+	enableCRUD?: boolean;
 }
 
 // Row actions component
@@ -81,11 +86,7 @@ function renderCell(value: any, type: ColumnConfig["type"]) {
 				</div>
 			);
 		case "boolean":
-			return (
-				<Badge variant={value ? "default" : "secondary"}>
-					{value ? "Yes" : "No"}
-				</Badge>
-			);
+			return <Badge variant="outline">{String(value || "")}</Badge>;
 		case "date":
 			if (value) {
 				const date = new Date(value);
@@ -111,8 +112,11 @@ export function generateColumns(
 		const base = {
 			id: col.id,
 			accessorKey: col.accessor,
-			header: col.label,
-			cell: ({ row }) => renderCell(row.getValue(col.accessor), col.type),
+			header: ({ column }: { column: any }) => (
+				<DataGridColumnHeader title={col.label} column={column} />
+			),
+			cell: ({ row }: { row: any }) =>
+				renderCell(row.getValue(col.accessor), col.type),
 			size: 180, // Default size, can be customized
 			enableSorting: settings?.enableSorting ?? true,
 			enableHiding: settings?.enableHiding ?? true,
@@ -145,23 +149,8 @@ export function generateColumns(
 	if (settings?.enableRowSelection) {
 		const selectColumn: ColumnDef<JsonData> = {
 			id: "select",
-			header: ({ table }) => (
-				<Checkbox
-					checked={
-						table.getIsAllPageRowsSelected() ||
-						(table.getIsSomePageRowsSelected() && "indeterminate")
-					}
-					onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-					aria-label="Select all"
-				/>
-			),
-			cell: ({ row }) => (
-				<Checkbox
-					checked={row.getIsSelected()}
-					onCheckedChange={(value) => row.toggleSelected(!!value)}
-					aria-label="Select row"
-				/>
-			),
+			header: () => <DataGridTableRowSelectAll />,
+			cell: ({ row }) => <DataGridTableRowSelect row={row} />,
 			size: 28,
 			enableSorting: false,
 			enableHiding: false,
@@ -175,7 +164,7 @@ export function generateColumns(
 	resultColumns.push(...generatedColumns);
 
 	// Conditionally add actions column
-	if (settings?.enableRowActions) {
+	if (settings?.enableCRUD) {
 		const actionsColumn: ColumnDef<JsonData> = {
 			id: "actions",
 			header: () => <span className="sr-only">Actions</span>,
@@ -192,6 +181,41 @@ export function generateColumns(
 	return resultColumns;
 }
 
+/**
+ * Generate filter field configurations for DataGrid filters based on table columns
+ */
+export function generateFilterFields(
+	columns: ColumnConfig[],
+): FilterFieldConfig[] {
+	return columns
+		.filter((col) => col.filterable)
+		.map((col) => {
+			const baseConfig: FilterFieldConfig = {
+				key: col.accessor,
+				label: col.label,
+				type:
+					col.type === "string"
+						? "text"
+						: col.type === "number"
+							? "number"
+							: col.type === "boolean"
+								? "boolean"
+								: col.type === "date"
+									? "date"
+									: "text",
+				placeholder: `Filter by ${col.label.toLowerCase()}...`,
+			};
+
+			// Add specific configurations based on column type
+			if (col.type === "boolean") {
+				baseConfig.onLabel = "True";
+				baseConfig.offLabel = "False";
+			}
+
+			return baseConfig;
+		});
+}
+
 export const detectColumnType = (
 	value: string | number | boolean | null | undefined | object,
 ): ColumnConfig["type"] => {
@@ -203,7 +227,7 @@ export const detectColumnType = (
 		// Try to detect dates
 		const dateRegex =
 			/^\d{4}-\d{2}-\d{2}|^\d{2}\/\d{2}\/\d{4}|^\d{2}-\d{2}-\d{4}/;
-		if (dateRegex.test(value) && !isNaN(Date.parse(value))) {
+		if (dateRegex.test(value) && !Number.isNaN(Date.parse(value))) {
 			return "date";
 		}
 	}
@@ -217,16 +241,22 @@ export const detectColumns = (data: JsonData[]) => {
 	const detectedColumns: ColumnConfig[] = [];
 
 	Object.keys(firstRow).forEach((key, index) => {
-		// Sample a few rows to get better type detection
-		const sampleValues = data
-			.slice(0, Math.min(5, data.length))
-			.map((row) => row[key]);
+		// Sample rows to get better type detection
+		const sampleValues = data.map((row) => row[key]);
 		const types = sampleValues.map(detectColumnType);
-		const mostCommonType = types.reduce((a, b, _, arr) =>
+		let mostCommonType = types.reduce((a, b, _, arr) =>
 			arr.filter((v) => v === a).length >= arr.filter((v) => v === b).length
 				? a
 				: b,
 		);
+
+		// If type is string, check if it has exactly 2 unique values (boolean-like)
+		if (mostCommonType === "string") {
+			const uniqueValues = [...new Set(sampleValues.map((v) => String(v)))];
+			if (uniqueValues.length === 2) {
+				mostCommonType = "boolean";
+			}
+		}
 
 		detectedColumns.push({
 			id: key,

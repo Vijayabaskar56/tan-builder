@@ -1,20 +1,21 @@
 import {
+	CheckSquare,
 	Eye,
 	GripVertical,
 	MoreHorizontal,
+	MoveHorizontal,
+	MoveVertical,
 	Pin,
 	Search,
 	SortAsc,
-	CheckSquare,
-	MoveHorizontal,
 } from "lucide-react";
 import { useId } from "react";
 import * as v from "valibot";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import { useAppForm } from "@/components/ui/tanstack-form";
-import { TableBuilderService } from "@/services/table-builder.service";
 import useTableStore from "@/hooks/use-table-store";
+import { TableBuilderService } from "@/services/table-builder.service";
 import { Separator } from "../ui/separator";
 
 const TableSettingsSchema = v.object({
@@ -24,8 +25,9 @@ const TableSettingsSchema = v.object({
 	enableResizing: v.optional(v.boolean(), false),
 	enablePinning: v.optional(v.boolean(), false),
 	enableRowSelection: v.optional(v.boolean(), false),
-	enableRowActions: v.optional(v.boolean(), false),
-	enableDraggable: v.optional(v.boolean(), false),
+	enableCRUD: v.optional(v.boolean(), false),
+	enableColumnDragging: v.optional(v.boolean(), false),
+	enableRowDragging: v.optional(v.boolean(), false),
 });
 
 export function TableSettingsSidebar() {
@@ -37,6 +39,7 @@ export function TableSettingsSidebar() {
 	const rowSelectionId = useId();
 	const rowActionsId = useId();
 	const draggableId = useId();
+	const rowDraggableId = useId();
 	const data = useTableStore();
 
 	const form = useAppForm({
@@ -47,8 +50,9 @@ export function TableSettingsSidebar() {
 			enableResizing: data?.settings?.enableResizing ?? false,
 			enablePinning: data?.settings?.enablePinning ?? false,
 			enableRowSelection: data?.settings?.enableRowSelection ?? false,
-			enableRowActions: data?.settings?.enableRowActions ?? false,
-			enableDraggable: data?.settings?.enableDraggable ?? false,
+			enableCRUD: data?.settings?.enableCRUD ?? false,
+			enableColumnDragging: data?.settings?.enableColumnDragging ?? false,
+			enableRowDragging: data?.settings?.enableRowDragging ?? false,
 		} as v.InferInput<typeof TableSettingsSchema>,
 		validators: {
 			onChange: TableSettingsSchema,
@@ -56,6 +60,10 @@ export function TableSettingsSidebar() {
 		listeners: {
 			onChangeDebounceMs: 1000,
 			onChange: ({ formApi }) => {
+				console.log(
+					"🚀 ~ TableSettingsSidebar ~ formApi:",
+					formApi.baseStore.state.values,
+				);
 				TableBuilderService.updateSettings(formApi.baseStore.state.values);
 			},
 		},
@@ -310,7 +318,7 @@ export function TableSettingsSidebar() {
 										)}
 									</form.AppField>
 
-									<form.AppField name="enableRowActions" mode="value">
+									<form.AppField name="enableCRUD" mode="value">
 										{(field) => (
 											<div className="p-3 border-b mx-2">
 												<div className="flex items-center justify-between">
@@ -348,7 +356,7 @@ export function TableSettingsSidebar() {
 										)}
 									</form.AppField>
 
-									<form.AppField name="enableDraggable" mode="value">
+									<form.AppField name="enableColumnDragging" mode="value">
 										{(field) => (
 											<div className="p-3 border-b mx-2">
 												<div className="flex items-center justify-between">
@@ -379,6 +387,44 @@ export function TableSettingsSidebar() {
 														rel="noopener noreferrer"
 													>
 														Column Ordering
+													</a>
+												</field.FieldDescription>
+												<field.FieldError />
+											</div>
+										)}
+									</form.AppField>
+
+									<form.AppField name="enableRowDragging" mode="value">
+										{(field) => (
+											<div className="p-3 border-b mx-2">
+												<div className="flex items-center justify-between">
+													<div className="flex items-center gap-2">
+														<MoveVertical className="w-4 h-4 text-muted-foreground" />
+														<field.FieldLabel
+															htmlFor={rowDraggableId}
+															className="text-sm"
+														>
+															Row Dragging
+														</field.FieldLabel>
+													</div>
+													<Switch
+														id={rowDraggableId}
+														checked={field.state.value}
+														onCheckedChange={field.handleChange}
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+													/>
+												</div>
+												<Separator className="my-2" />
+												<field.FieldDescription>
+													Allow dragging to reorder table rows. For more info
+													check the TanStack Table docs:{" "}
+													<a
+														className="text-primary"
+														href="https://tanstack.com/table/latest/docs/guide/row-dragging"
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														Row Dragging
 													</a>
 												</field.FieldDescription>
 												<field.FieldError />

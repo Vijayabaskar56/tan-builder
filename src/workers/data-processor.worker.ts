@@ -58,7 +58,7 @@ const detectColumnType = (
 		// Try to detect dates
 		const dateRegex =
 			/^\d{4}-\d{2}-\d{2}|^\d{2}\/\d{2}\/\d{4}|^\d{2}-\d{2}-\d{4}/;
-		if (dateRegex.test(value) && !isNaN(Date.parse(value))) {
+		if (dateRegex.test(value) && !Number.isNaN(Date.parse(value))) {
 			return "date";
 		}
 	}
@@ -169,8 +169,3 @@ self.onmessage = (event: MessageEvent<WorkerRequest>) => {
 		}
 	}
 };
-
-// Export empty object for TypeScript
-export {};
-
-

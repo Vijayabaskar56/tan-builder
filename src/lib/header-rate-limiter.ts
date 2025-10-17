@@ -25,7 +25,7 @@ export class HeaderRateLimiter {
 		const now = Date.now();
 		const lastRequestTimeStr = request.headers.get("X-Last-Request-Time");
 		const lastRequestTime = lastRequestTimeStr
-			? parseInt(lastRequestTimeStr)
+			? parseInt(lastRequestTimeStr, 10)
 			: 0;
 
 		// Minimum interval between requests

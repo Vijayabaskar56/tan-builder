@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
 import {
-	ColumnDef,
+	type ColumnDef,
 	flexRender,
 	getCoreRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
-	PaginationState,
-	SortingState,
+	type PaginationState,
+	type SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -15,9 +14,7 @@ import {
 	ChevronRightIcon,
 	ChevronUpIcon,
 } from "lucide-react";
-
-import { usePagination } from "@/hooks/use-pagination";
-import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -42,6 +39,8 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { usePagination } from "@/hooks/use-pagination";
+import { cn } from "@/lib/utils";
 
 type Item = {
 	id: string;

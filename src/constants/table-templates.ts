@@ -12,8 +12,9 @@ export interface TableTemplate {
 		enableResizing?: boolean;
 		enablePinning?: boolean;
 		enableRowSelection?: boolean;
-		enableRowActions?: boolean;
-		enableDraggable?: boolean;
+		enableCRUD?: boolean;
+		enableColumnDragging?: boolean;
+		enableRowDragging?: boolean;
 	};
 }
 
@@ -56,8 +57,9 @@ export const tableTemplates: Record<string, TableTemplate> = {
 			enableResizing: false,
 			enablePinning: false,
 			enableRowSelection: false,
-			enableRowActions: false,
-			enableDraggable: false,
+			enableCRUD: false,
+			enableColumnDragging: false,
+			enableRowDragging: false,
 		},
 	},
 	rowSelectionTable: {
@@ -99,8 +101,9 @@ export const tableTemplates: Record<string, TableTemplate> = {
 			enableResizing: true,
 			enablePinning: true,
 			enableRowSelection: true,
-			enableRowActions: false,
-			enableDraggable: false,
+			enableCRUD: false,
+			enableColumnDragging: false,
+			enableRowDragging: false,
 		},
 	},
 	filtersTable: {
@@ -151,8 +154,9 @@ export const tableTemplates: Record<string, TableTemplate> = {
 			enableResizing: true,
 			enablePinning: true,
 			enableRowSelection: false,
-			enableRowActions: false,
-			enableDraggable: false,
+			enableCRUD: false,
+			enableColumnDragging: false,
+			enableRowDragging: false,
 		},
 	},
 	resizableSortableTable: {
@@ -201,8 +205,9 @@ export const tableTemplates: Record<string, TableTemplate> = {
 			enableResizing: true,
 			enablePinning: false,
 			enableRowSelection: false,
-			enableRowActions: false,
-			enableDraggable: true,
+			enableCRUD: false,
+			enableColumnDragging: true,
+			enableRowDragging: false,
 		},
 	},
 	complexTable: {
@@ -269,8 +274,9 @@ export const tableTemplates: Record<string, TableTemplate> = {
 			enableResizing: true,
 			enablePinning: true,
 			enableRowSelection: true,
-			enableRowActions: true,
-			enableDraggable: true,
+			enableCRUD: true,
+			enableColumnDragging: true,
+			enableRowDragging: true,
 		},
 	},
 };

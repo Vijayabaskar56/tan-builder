@@ -1,9 +1,9 @@
 import type React from "react";
 import { useEffect, useState } from "react";
 import { codeToHtml } from "shiki";
-import { cn } from "@/lib/utils";
-import CopyButton from "@/components/ui/copy-button";
 import { useTheme } from "@/components/theme-provider";
+import CopyButton from "@/components/ui/copy-button";
+import { cn } from "@/lib/utils";
 
 export type CodeBlockProps = {
 	children?: React.ReactNode;

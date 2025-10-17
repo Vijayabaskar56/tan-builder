@@ -1,5 +1,8 @@
-import { useEffect, useRef, useCallback } from "react";
-import type { WorkerRequest, WorkerResponse } from "@/workers/data-processor.worker";
+import { useCallback, useEffect, useRef } from "react";
+import type {
+	WorkerRequest,
+	WorkerResponse,
+} from "@/workers/data-processor.worker";
 
 interface ParseDataOptions {
 	content: string;
@@ -16,7 +19,7 @@ export function useDataProcessorWorker() {
 		// Create worker from the worker file
 		workerRef.current = new Worker(
 			new URL("../workers/data-processor.worker.ts", import.meta.url),
-			{ type: "module" }
+			{ type: "module" },
 		);
 
 		return () => {
@@ -57,10 +60,8 @@ export function useDataProcessorWorker() {
 			};
 			workerRef.current.postMessage(request);
 		},
-		[]
+		[],
 	);
 
 	return { parseData };
 }
-
-

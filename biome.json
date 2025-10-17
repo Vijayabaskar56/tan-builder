@@ -6,7 +6,8 @@
 		"useIgnoreFile": false
 	},
 	"files": {
-		"ignoreUnknown": false
+		"ignoreUnknown": false,
+		"includes": ["src/**"]
 	},
 	"overrides": [
 		{
@@ -41,8 +42,7 @@
 			"suspicious": {
 				"noArrayIndexKey": "off"
 			}
-		},
-		"includes": ["src/*", ".vscode/*", "index.html", "vite.config.js"]
+		}
 	},
 	"javascript": {
 		"formatter": {

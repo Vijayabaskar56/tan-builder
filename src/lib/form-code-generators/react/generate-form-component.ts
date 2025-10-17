@@ -242,7 +242,7 @@ export const getFormElementCode = (
                     >
                       <MultiSelectTrigger aria-invalid={!!field.state.meta.errors.length}>
                         <MultiSelectValue
-                          placeholder="${field.placeholder == "" ? "Select item" : field.placeholder}"
+                          placeholder="${field.placeholder === "" ? "Select item" : field.placeholder}"
                         />
                       </MultiSelectTrigger>
                       <MultiSelectContent>
@@ -291,7 +291,7 @@ export const getFormElementCode = (
                 <field.Field>
                   <SelectTrigger className="w-full">
                     <SelectValue
-                      placeholder="${field.placeholder == "" ? "Select item" : field.placeholder}"
+                      placeholder="${field.placeholder === "" ? "Select item" : field.placeholder}"
                     />
                   </SelectTrigger>
                 </field.Field>

@@ -1,8 +1,8 @@
-import { tableTemplates } from "@/constants/table-templates";
-import { TableBuilderService } from "@/services/table-builder.service";
+import { Database } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Database } from "lucide-react";
+import { tableTemplates } from "@/constants/table-templates";
+import { TableBuilderService } from "@/services/table-builder.service";
 
 export function TableTemplates() {
 	const applyTemplate = (templateKey: string) => {

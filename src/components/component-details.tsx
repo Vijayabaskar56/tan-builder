@@ -1,3 +1,6 @@
+import { CodeIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import type { RegistryItem } from "shadcn/registry";
 import ComponentCli from "@/components/cli-commands";
 import { CodeBlockCode } from "@/components/code-block";
 import CopyRegistry from "@/components/copy-registry";
@@ -17,9 +20,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { CodeIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import type { RegistryItem } from "shadcn/registry";
 import CopyButton from "./ui/copy-button";
 
 export default function ComponentDetails({
@@ -140,9 +140,7 @@ export default function ComponentDetails({
 										.
 									</p>
 								) : (
-									<>
-										<CodeBlockCode code={code || ""} lang="tsx" />
-									</>
+									<CodeBlockCode code={code || ""} lang="tsx" />
 								)}
 							</div>
 						</div>

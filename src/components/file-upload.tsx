@@ -4,9 +4,8 @@ import {
 	UploadIcon,
 	XIcon,
 } from "lucide-react";
-
-import { formatBytes, useFileUpload } from "@/hooks/use-file-upload";
 import { Button } from "@/components/ui/button";
+import { formatBytes, useFileUpload } from "@/hooks/use-file-upload";
 
 export default function FileUpload({
 	onFilesAdded,

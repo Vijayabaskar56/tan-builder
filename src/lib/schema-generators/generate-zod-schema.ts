@@ -444,7 +444,7 @@ export const getZodSchemaString = (
 				const pickStr = Object.keys(pickObj)
 					.map((key) => `${key}: true`)
 					.join(",\n  ");
-				return `  // Step ${Number.parseInt(stepIndex) + 1}\n  ${schemaName}.pick({\n  ${pickStr}\n  })`;
+				return `  // Step ${Number.parseInt(stepIndex, 10) + 1}\n  ${schemaName}.pick({\n  ${pickStr}\n  })`;
 			})
 			.join(",\n");
 

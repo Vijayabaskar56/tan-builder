@@ -1,25 +1,29 @@
+import { useMutation } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import * as z from "zod";
 import { useFormStore } from "@/hooks/use-form-store";
 import useSettings from "@/hooks/use-settings";
-import { useEffect, useState } from "react";
 import { generateFormCode } from "@/lib/form-code-generators/react/generate-form-code";
-import { FormElementOrList, FormElement, FormArray } from "@/types/form-types";
+import {
+	extractImportDependencies,
+	generateImports,
+} from "@/lib/form-code-generators/react/generate-imports";
 import { generateValidationCode } from "@/lib/schema-generators";
-import { generateImports } from "@/lib/form-code-generators/react/generate-imports";
-import { extractImportDependencies } from "@/lib/form-code-generators/react/generate-imports";
-import { CreateRegistryResponse } from "@/types/form-types";
-import { useMutation } from "@tanstack/react-query";
-import { useAppForm } from "./ui/tanstack-form";
-import { revalidateLogic } from "./ui/tanstack-form";
+import { logger } from "@/lib/utils";
+import type {
+	CreateRegistryResponse,
+	FormArray,
+	FormElement,
+	FormElementOrList,
+} from "@/types/form-types";
+import { GeneratedFormCodeViewer } from "./generated-code/code-viewer";
+import { AnimatedIconButton } from "./ui/animated-icon-button";
 import {
 	InputGroup,
 	InputGroupAddon,
 	InputGroupButton,
 	InputGroupInput,
 } from "./ui/input-group";
-import { Spinner } from "./ui/spinner";
-import { Separator } from "./ui/separator";
-import { ScrollArea } from "./ui/scroll-area";
-import { GeneratedFormCodeViewer } from "./generated-code/code-viewer";
 import {
 	ResponsiveDialog,
 	ResponsiveDialogContent,
@@ -28,10 +32,12 @@ import {
 	ResponsiveDialogTitle,
 	ResponsiveDialogTrigger,
 } from "./ui/revola";
+import { ScrollArea } from "./ui/scroll-area";
+import { Separator } from "./ui/separator";
+import { Spinner } from "./ui/spinner";
+import { revalidateLogic, useAppForm } from "./ui/tanstack-form";
 import { TerminalIcon } from "./ui/terminal";
-import { AnimatedIconButton } from "./ui/animated-icon-button";
-import * as z from "zod";
-import { logger } from "@/lib/utils";
+
 const formSchema = z.object({
 	formName: z.string().min(1, { message: "Form name is required" }),
 });
@@ -52,7 +58,7 @@ function CodeDialog() {
 	useEffect(() => {
 		setIsGenerateSuccess(false);
 		setGeneratedId("");
-	}, [formElements]);
+	}, []);
 	const tabsData = [
 		{
 			value: "pnpm",
@@ -152,7 +158,7 @@ function CodeDialog() {
 			}
 		},
 		onSubmitInvalid({ formApi }) {
-			const errorMap = formApi.state.errorMap["onDynamic"];
+			const errorMap = formApi.state.errorMap.onDynamic;
 			if (!errorMap) return;
 
 			const inputs = Array.from(

@@ -9,7 +9,7 @@ import type {
 	ToggleGroupSingleProps,
 } from "@radix-ui/react-toggle-group";
 import type { OTPInputProps } from "input-otp";
-import { Label } from "@/components/ui/label";
+import type { Label } from "@/components/ui/label";
 
 export type Option = { value: string; label: string };
 //------------------------------------------------------------

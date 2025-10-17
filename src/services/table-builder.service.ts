@@ -1,11 +1,12 @@
-import {
-	tableBuilderCollection,
-	type TableBuilder,
-} from "@/db-collections/table-builder.collections";
-import { tableTemplates } from "@/constants/table-templates";
-import type { ColumnConfig, DataRow } from "@/types/table-types";
-import { detectColumns } from "@/lib/table-generator/generate-columns";
+/** biome-ignore-all lint/complexity/noStaticOnlyClass: <explanation> */
 import { getStaticData } from "@/constants/static-dummy-data";
+import { tableTemplates } from "@/constants/table-templates";
+import {
+	type TableBuilder,
+	tableBuilderCollection,
+} from "@/db-collections/table-builder.collections";
+import { detectColumns } from "@/lib/table-generator/generate-columns";
+import type { ColumnConfig, DataRow } from "@/types/table-types";
 
 /**
  * Centralized service for all table builder operations
@@ -23,7 +24,7 @@ export class TableBuilderService {
 	 */
 	static getTableData(): TableBuilder | null {
 		try {
-			return tableBuilderCollection.get(this.TABLE_ID) || null;
+			return tableBuilderCollection.get(TableBuilderService.TABLE_ID) || null;
 		} catch (error) {
 			console.error("Failed to get table data:", error);
 			return null;
@@ -35,7 +36,7 @@ export class TableBuilderService {
 	 */
 	static getSettings() {
 		try {
-			const data = this.getTableData();
+			const data = TableBuilderService.getTableData();
 			return data?.settings || null;
 		} catch (error) {
 			console.error("Failed to get table settings:", error);
@@ -48,7 +49,7 @@ export class TableBuilderService {
 	 */
 	static getColumns(): ColumnConfig[] {
 		try {
-			const data = this.getTableData();
+			const data = TableBuilderService.getTableData();
 			return data?.table.columns || [];
 		} catch (error) {
 			console.error("Failed to get table columns:", error);
@@ -61,7 +62,7 @@ export class TableBuilderService {
 	 */
 	static getData(): DataRow[] {
 		try {
-			const data = this.getTableData();
+			const data = TableBuilderService.getTableData();
 			return data?.table.data || [];
 		} catch (error) {
 			console.error("Failed to get table data:", error);
@@ -81,7 +82,7 @@ export class TableBuilderService {
 		value: boolean,
 	): boolean {
 		try {
-			tableBuilderCollection.update(this.TABLE_ID, (draft) => {
+			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
 				if (!draft.settings) {
 					draft.settings = {
 						isGlobalSearch: false,
@@ -90,9 +91,20 @@ export class TableBuilderService {
 						enableResizing: false,
 						enablePinning: false,
 						enableRowSelection: false,
-						enableRowActions: false,
-						enableDraggable: false,
+						enableCRUD: false,
+						enableColumnDragging: false,
+						enableRowDragging: false,
 						enablePagination: false,
+						tableLayout: {
+							dense: false,
+							cellBorder: false,
+							rowBorder: true,
+							rowRounded: false,
+							stripped: false,
+							headerBorder: true,
+							headerSticky: false,
+							width: "fixed",
+						},
 					};
 				}
 				(draft.settings as any)[key] = value;
@@ -105,11 +117,14 @@ export class TableBuilderService {
 	}
 
 	/**
-	 * Update multiple settings at once
+	 * Update a table layout setting
 	 */
-	static updateSettings(settings: Partial<TableBuilder["settings"]>): boolean {
+	static updateTableLayoutSetting(
+		key: string,
+		value: boolean | string,
+	): boolean {
 		try {
-			tableBuilderCollection.update(this.TABLE_ID, (draft) => {
+			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
 				if (!draft.settings) {
 					draft.settings = {
 						isGlobalSearch: false,
@@ -118,8 +133,60 @@ export class TableBuilderService {
 						enableResizing: false,
 						enablePinning: false,
 						enableRowSelection: false,
-						enableRowActions: false,
-						enableDraggable: false,
+						enableCRUD: false,
+						enableColumnDragging: false,
+						enableRowDragging: false,
+						enablePagination: false,
+						tableLayout: {
+							dense: false,
+							cellBorder: false,
+							rowBorder: true,
+							rowRounded: false,
+							stripped: false,
+							headerBorder: true,
+							headerSticky: false,
+							width: "fixed",
+						},
+					};
+				}
+				if (!draft.settings.tableLayout) {
+					draft.settings.tableLayout = {
+						dense: false,
+						cellBorder: false,
+						rowBorder: true,
+						rowRounded: false,
+						stripped: false,
+						headerBorder: true,
+						headerSticky: false,
+						width: "fixed",
+					};
+				}
+				(draft.settings.tableLayout as any)[key] = value;
+			});
+			return true;
+		} catch (error) {
+			console.error(`Failed to update table layout setting ${key}:`, error);
+			return false;
+		}
+	}
+
+	/**
+	 * Update multiple settings at once
+	 */
+	static updateSettings(settings: Partial<TableBuilder["settings"]>): boolean {
+		try {
+			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
+				if (!draft.settings) {
+					draft.settings = {
+						isGlobalSearch: false,
+						enableHiding: false,
+						enableSorting: false,
+						enableResizing: false,
+						enablePinning: false,
+						enableRowSelection: false,
+						enableCRUD: false,
+						enableColumnDragging: false,
+						enableRowDragging: false,
 						enablePagination: false,
 					};
 				}
@@ -137,16 +204,27 @@ export class TableBuilderService {
 	 */
 	static resetSettings(): boolean {
 		try {
-			return this.updateSettings({
+			return TableBuilderService.updateSettings({
 				isGlobalSearch: true,
 				enableHiding: true,
 				enableSorting: true,
 				enableResizing: true,
 				enablePinning: true,
 				enableRowSelection: false,
-				enableRowActions: false,
-				enableDraggable: false,
+				enableCRUD: false,
+				enableColumnDragging: false,
+				enableRowDragging: false,
 				enablePagination: true,
+				tableLayout: {
+					dense: false,
+					cellBorder: false,
+					rowBorder: true,
+					rowRounded: false,
+					stripped: false,
+					headerBorder: true,
+					headerSticky: false,
+					width: "fixed",
+				},
 			});
 		} catch (error) {
 			console.error("Failed to reset settings:", error);
@@ -164,7 +242,7 @@ export class TableBuilderService {
 	static addColumn(type: ColumnConfig["type"]): boolean {
 		try {
 			const columnKey = `column_${Date.now()}`;
-			const columns = this.getColumns();
+			const columns = TableBuilderService.getColumns();
 			const newColumn: ColumnConfig = {
 				id: columnKey,
 				accessor: columnKey,
@@ -174,7 +252,7 @@ export class TableBuilderService {
 				filterable: type === "string",
 			};
 
-			tableBuilderCollection.update(this.TABLE_ID, (draft) => {
+			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
 				draft.table.columns.push(newColumn);
 
 				// Ensure exactly 20 rows exist
@@ -228,7 +306,7 @@ export class TableBuilderService {
 		updates: Partial<ColumnConfig>,
 	): boolean {
 		try {
-			tableBuilderCollection.update(this.TABLE_ID, (draft) => {
+			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
 				const columnIndex = draft.table.columns.findIndex(
 					(col) => col.id === columnId,
 				);
@@ -253,7 +331,7 @@ export class TableBuilderService {
 	 */
 	static deleteColumn(columnId: string): boolean {
 		try {
-			tableBuilderCollection.update(this.TABLE_ID, (draft) => {
+			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
 				draft.table.columns = draft.table.columns.filter(
 					(col) => col.id !== columnId,
 				);
@@ -280,7 +358,7 @@ export class TableBuilderService {
 				order: index,
 			}));
 
-			tableBuilderCollection.update(this.TABLE_ID, (draft) => {
+			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
 				draft.table.columns = reorderedColumns;
 			});
 			return true;
@@ -304,12 +382,15 @@ export class TableBuilderService {
 			}
 
 			const columns = detectColumns(data);
-			await tableBuilderCollection.update(this.TABLE_ID, (draft) => {
-				draft.table = {
-					columns,
-					data,
-				};
-			});
+			await tableBuilderCollection.update(
+				TableBuilderService.TABLE_ID,
+				(draft) => {
+					draft.table = {
+						columns,
+						data,
+					};
+				},
+			);
 			return true;
 		} catch (error) {
 			console.error("Failed to import data:", error);
@@ -322,7 +403,7 @@ export class TableBuilderService {
 	 */
 	static clearData(): boolean {
 		try {
-			tableBuilderCollection.update(this.TABLE_ID, (draft) => {
+			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
 				draft.table.data = [];
 			});
 			return true;
@@ -337,7 +418,7 @@ export class TableBuilderService {
 	 */
 	static resetTable(): boolean {
 		try {
-			tableBuilderCollection.update(this.TABLE_ID, (draft) => {
+			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
 				draft.table = { data: [], columns: [] };
 			});
 			return true;
@@ -361,7 +442,7 @@ export class TableBuilderService {
 				throw new Error(`Template ${templateKey} not found`);
 			}
 
-			tableBuilderCollection.update(this.TABLE_ID, (draft) => {
+			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
 				draft.settings = template.settings;
 				draft.table = {
 					columns: template.columns,
@@ -391,7 +472,7 @@ export class TableBuilderService {
 			// Clear old data to force re-initialization with new schema
 			localStorage.removeItem("table-builder");
 
-			const existing = tableBuilderCollection.get(this.TABLE_ID);
+			const existing = tableBuilderCollection.get(TableBuilderService.TABLE_ID);
 			if (!existing) {
 				const defaultSettings = {
 					isGlobalSearch: true,
@@ -400,14 +481,25 @@ export class TableBuilderService {
 					enableResizing: true,
 					enablePinning: true,
 					enableRowSelection: false,
-					enableRowActions: false,
-					enableDraggable: false,
+					enableCRUD: false,
+					enableColumnDragging: false,
+					enableRowDragging: false,
 					enablePagination: true,
+					tableLayout: {
+						dense: false,
+						cellBorder: false,
+						rowBorder: true,
+						rowRounded: false,
+						stripped: false,
+						headerBorder: true,
+						headerSticky: false,
+						width: "fixed" as const,
+					},
 				};
 
 				tableBuilderCollection.insert([
 					{
-						id: this.TABLE_ID,
+						id: TableBuilderService.TABLE_ID,
 						settings: defaultSettings,
 						table: {
 							columns: [],

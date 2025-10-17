@@ -1,3 +1,7 @@
+import { useLocation } from "@tanstack/react-router";
+import { Brackets } from "lucide-react";
+import { useEffect, useId, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -22,10 +26,6 @@ import { settingsCollection } from "@/db-collections/settings.collections";
 import { useFormBuilder } from "@/hooks/use-form-builder";
 import { useFormStore } from "@/hooks/use-form-store";
 import useSettings from "@/hooks/use-settings";
-import { useLocation } from "@tanstack/react-router";
-import { Brackets } from "lucide-react";
-import { useEffect, useId, useState } from "react";
-import { toast } from "sonner";
 import type { Framework, ValidationSchema } from "./builder/types";
 import CodeDialog from "./code-dialog";
 import {

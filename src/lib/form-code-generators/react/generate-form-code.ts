@@ -1,5 +1,4 @@
 import type { Settings } from "@/components/builder/types";
-import useSettings from "@/hooks/use-settings";
 import {
 	getDefaultFormElement,
 	getDefaultValuesString,

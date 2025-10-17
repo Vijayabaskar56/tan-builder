@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
-	ColumnDef,
+	type ColumnDef,
 	flexRender,
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-
-import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -20,6 +18,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 
 type Item = {
 	id: string;

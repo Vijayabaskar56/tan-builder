@@ -1,3 +1,13 @@
+import { closestCenter, DndContext, type DragEndEvent } from "@dnd-kit/core";
+import {
+	SortableContext,
+	useSortable,
+	verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { Check, CircleX, LucideGripVertical, PlusCircle } from "lucide-react";
+import { Reorder, useDragControls } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 import { FormElementsDropdown } from "@/components/builder/form-elements-dropdown";
 import { RenderFormElement } from "@/components/builder/render-form-element";
 import { StepContainer } from "@/components/builder/step-container";
@@ -13,7 +23,6 @@ import { Label } from "@/components/ui/label";
 import { useAppForm } from "@/components/ui/tanstack-form";
 import type { FormBuilderActions } from "@/hooks/use-form-store";
 import { useFormStore, useIsMultiStep } from "@/hooks/use-form-store";
-
 import { isStatic, logger } from "@/lib/utils";
 import type {
 	FormArray,
@@ -22,20 +31,6 @@ import type {
 	FormStep,
 	Option,
 } from "@/types/form-types";
-import {
-	closestCenter,
-	DndContext,
-	DragEndEvent,
-} from "@dnd-kit/core";
-import {
-	SortableContext,
-	useSortable,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { Check, CircleX, LucideGripVertical, PlusCircle } from "lucide-react";
-import { Reorder, useDragControls } from "motion/react";
-import { useEffect, useRef, useState } from "react";
 import { DeleteIcon } from "../ui/delete";
 import { SquarePenIcon } from "../ui/square-pen";
 import NoFieldPlaceholder from "./no-field-placeholder";
@@ -138,9 +133,7 @@ const SortableOption = ({
 					<div className="flex-1 space-y-2">
 						<div className="flex gap-2">
 							<div className="flex-1">
-								<Label className="text-xs text-muted-foreground">
-									Label
-								</Label>
+								<Label className="text-xs text-muted-foreground">Label</Label>
 								<Input
 									value={editingOption.label as string}
 									onChange={(e) => {
@@ -161,9 +154,7 @@ const SortableOption = ({
 								/>
 							</div>
 							<div className="flex-1">
-								<Label className="text-xs text-muted-foreground">
-									Value
-								</Label>
+								<Label className="text-xs text-muted-foreground">Value</Label>
 								<Input
 									value={editingOption.value}
 									onChange={(e) =>
@@ -202,9 +193,7 @@ const SortableOption = ({
 			) : (
 				<>
 					<div className="flex-1 min-w-0">
-						<div className="text-sm font-medium truncate">
-							{option.label}
-						</div>
+						<div className="text-sm font-medium truncate">{option.label}</div>
 						<div className="text-xs text-muted-foreground truncate">
 							Value: {option.value}
 						</div>
@@ -996,7 +985,11 @@ const SortableFormElement = ({
 	};
 
 	// Handle FormArray
-	if (typeof element === "object" && element !== null && "arrayField" in element) {
+	if (
+		typeof element === "object" &&
+		element !== null &&
+		"arrayField" in element
+	) {
 		const formArrayElement = element as unknown as FormArray;
 		return (
 			<div
@@ -1052,12 +1045,7 @@ const SortableFormElement = ({
 							layout
 							{...getTransitionProps(isLayoutTransitioning)}
 						>
-							<EditFormItem
-								key={el.id}
-								fieldIndex={index}
-								j={j}
-								element={el}
-							/>
+							<EditFormItem key={el.id} fieldIndex={index} j={j} element={el} />
 						</Reorder.Item>
 					))}
 				</Reorder.Group>
@@ -1091,7 +1079,9 @@ export function FormEdit() {
 	const { formElements, actions } = useFormStore();
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [isLayoutTransitioning, setIsLayoutTransitioning] = useState(false);
-	const [optimisticElements, setOptimisticElements] = useState(formElements as FormElementOrList[]);
+	const [optimisticElements, setOptimisticElements] = useState(
+		formElements as FormElementOrList[],
+	);
 
 	useEffect(() => {
 		setOptimisticElements(formElements as FormElementOrList[]);
@@ -1102,10 +1092,10 @@ export function FormEdit() {
 		if (!over || active.id === over.id) return;
 
 		const oldIndex = optimisticElements.findIndex((el) =>
-			Array.isArray(el) ? el[0].id === active.id : el.id === active.id
+			Array.isArray(el) ? el[0].id === active.id : el.id === active.id,
 		);
 		const newIndex = optimisticElements.findIndex((el) =>
-			Array.isArray(el) ? el[0].id === over.id : el.id === over.id
+			Array.isArray(el) ? el[0].id === over.id : el.id === over.id,
 		);
 
 		if (oldIndex !== -1 && newIndex !== -1) {
@@ -1405,7 +1395,7 @@ export function FormEdit() {
 					>
 						<SortableContext
 							items={optimisticElements.map((el) =>
-								Array.isArray(el) ? el[0].id : el.id
+								Array.isArray(el) ? el[0].id : el.id,
 							)}
 							strategy={verticalListSortingStrategy}
 						>

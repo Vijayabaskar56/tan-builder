@@ -1,10 +1,9 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
 import {
-	Column,
-	ColumnDef,
-	ColumnFiltersState,
+	type Column,
+	type ColumnDef,
+	type ColumnFiltersState,
 	flexRender,
 	getCoreRowModel,
 	getFacetedMinMaxValues,
@@ -12,8 +11,8 @@ import {
 	getFacetedUniqueValues,
 	getFilteredRowModel,
 	getSortedRowModel,
-	RowData,
-	SortingState,
+	type RowData,
+	type SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -22,8 +21,7 @@ import {
 	ExternalLinkIcon,
 	SearchIcon,
 } from "lucide-react";
-
-import { cn } from "@/lib/utils";
+import { useId, useMemo, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -42,10 +40,11 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 
 declare module "@tanstack/react-table" {
 	//allows us to define custom properties for our columns
-	interface ColumnMeta<TData extends RowData, TValue> {
+	interface ColumnMeta<_TData extends RowData, _TValue> {
 		filterVariant?: "text" | "range" | "select";
 	}
 }
@@ -133,7 +132,7 @@ const columns: ColumnDef<Item>[] = [
 		header: "Volume",
 		accessorKey: "volume",
 		cell: ({ row }) => {
-			const volume = parseInt(row.getValue("volume"));
+			const volume = parseInt(row.getValue("volume"), 10);
 			return new Intl.NumberFormat("en-US", {
 				notation: "compact",
 				maximumFractionDigits: 1,
@@ -155,7 +154,7 @@ const columns: ColumnDef<Item>[] = [
 		header: "Traffic",
 		accessorKey: "traffic",
 		cell: ({ row }) => {
-			const traffic = parseInt(row.getValue("traffic"));
+			const traffic = parseInt(row.getValue("traffic"), 10);
 			return new Intl.NumberFormat("en-US", {
 				notation: "compact",
 				maximumFractionDigits: 1,
@@ -436,7 +435,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
 
 		// Get unique values and sort them
 		return Array.from(new Set(flattenedValues)).sort();
-	}, [column.getFacetedUniqueValues(), filterVariant]);
+	}, [filterVariant, column.getFacetedUniqueValues]);
 
 	if (filterVariant === "range") {
 		return (

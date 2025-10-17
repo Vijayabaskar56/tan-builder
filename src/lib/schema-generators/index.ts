@@ -1,5 +1,5 @@
 import { useFormStore } from "@/hooks/use-form-store";
-import { FormArray, FormElement, FormStep } from "@/types/form-types";
+import type { FormArray, FormElement, FormStep } from "@/types/form-types";
 import { flattenFormSteps } from "../form-elements-helpers";
 import { getArkTypeSchemaString } from "./generate-arktype-schema";
 import { getValiSchemaString } from "./generate-valibot-schema";

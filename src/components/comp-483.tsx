@@ -1,14 +1,13 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
 import {
-	ColumnDef,
+	type ColumnDef,
 	flexRender,
 	getCoreRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
-	PaginationState,
-	SortingState,
+	type PaginationState,
+	type SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -19,8 +18,7 @@ import {
 	ChevronRightIcon,
 	ChevronUpIcon,
 } from "lucide-react";
-
-import { cn } from "@/lib/utils";
+import { useEffect, useId, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -45,6 +43,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 
 type Item = {
 	id: string;

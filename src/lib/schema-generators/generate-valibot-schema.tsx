@@ -483,7 +483,7 @@ ${schemaEntries}
 				const pickStr = Object.keys(pickObj)
 					.map((key) => `${key}: true`)
 					.join(",\n  ");
-				return `  // Step ${parseInt(stepIndex) + 1}\n  v.pick(${schemaName}, {\n  ${pickStr}\n  })`;
+				return `  // Step ${parseInt(stepIndex, 10) + 1}\n  v.pick(${schemaName}, {\n  ${pickStr}\n  })`;
 			})
 			.join(",\n");
 

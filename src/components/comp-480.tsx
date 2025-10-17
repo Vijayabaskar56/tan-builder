@@ -1,13 +1,12 @@
 "use client";
 
-import { CSSProperties, useEffect, useState } from "react";
 import {
-	Column,
-	ColumnDef,
+	type Column,
+	type ColumnDef,
 	flexRender,
 	getCoreRowModel,
 	getSortedRowModel,
-	SortingState,
+	type SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -16,6 +15,7 @@ import {
 	EllipsisIcon,
 	PinOffIcon,
 } from "lucide-react";
+import { type CSSProperties, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {

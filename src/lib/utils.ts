@@ -1,13 +1,12 @@
-import { createClientOnlyFn } from "@tanstack/react-start";
+import { createClientOnlyFn, createIsomorphicFn } from "@tanstack/react-start";
 import { type ClassValue, clsx } from "clsx";
 import js_beautify from "js-beautify";
 import { twMerge } from "tailwind-merge";
 import {
-	SettingsCollection,
+	type SettingsCollection,
 	settingsCollection,
 } from "@/db-collections/settings.collections";
-import { createIsomorphicFn } from "@tanstack/react-start";
-import { ColumnConfig, JsonData } from "@/types/table-types";
+import type { ColumnConfig, JsonData } from "@/types/table-types";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -176,7 +175,7 @@ export const detectColumnType = (
 		// Try to detect dates
 		const dateRegex =
 			/^\d{4}-\d{2}-\d{2}|^\d{2}\/\d{2}\/\d{4}|^\d{2}-\d{2}-\d{4}/;
-		if (dateRegex.test(value) && !isNaN(Date.parse(value))) {
+		if (dateRegex.test(value) && !Number.isNaN(Date.parse(value))) {
 			return "date";
 		}
 	}

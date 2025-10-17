@@ -1,5 +1,5 @@
-import Component485 from "@/components/comp-485";
 import { createFileRoute } from "@tanstack/react-router";
+import Component485 from "@/components/comp-485";
 
 export const Route = createFileRoute("/table-builder/")({
 	component: RouteComponent,

@@ -35,7 +35,8 @@ const ScrollAreaContext = React.createContext<ScrollAreaContextProps>({
 
 const ScrollArea = React.forwardRef<
 	React.ComponentRef<typeof ScrollAreaPrimitive.Root>,
-	React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> & ScrollAreaProps
+	React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> &
+		ScrollAreaProps
 >(
 	(
 		{
@@ -63,7 +64,7 @@ const ScrollArea = React.forwardRef<
 		const setViewportRef = (el: HTMLDivElement | null) => {
 			internalViewportRef.current = el;
 			if (viewportRef) {
-				if (typeof viewportRef === 'function') {
+				if (typeof viewportRef === "function") {
 					viewportRef(el);
 				} else {
 					viewportRef.current = el;
@@ -114,7 +115,7 @@ const ScrollArea = React.forwardRef<
 				controller.abort();
 				resizeObserver.disconnect();
 			};
-		}, [checkScrollability, isTouch]);
+		}, [checkScrollability]);
 
 		return (
 			<ScrollAreaContext.Provider value={{ isTouch, type }}>
@@ -130,7 +131,6 @@ const ScrollArea = React.forwardRef<
 						<div
 							ref={setViewportRef}
 							className={cn("size-full overflow-auto", viewportClassName)}
-							tabIndex={0}
 						>
 							{children}
 						</div>

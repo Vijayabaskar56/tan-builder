@@ -1,15 +1,14 @@
 "use client";
 
-import { CSSProperties, useEffect, useId, useState } from "react";
 import {
 	closestCenter,
 	DndContext,
+	type DragEndEvent,
 	KeyboardSensor,
 	MouseSensor,
 	TouchSensor,
 	useSensor,
 	useSensors,
-	type DragEndEvent,
 } from "@dnd-kit/core";
 import { restrictToHorizontalAxis } from "@dnd-kit/modifiers";
 import {
@@ -20,16 +19,17 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
-	Cell,
-	ColumnDef,
+	type Cell,
+	type ColumnDef,
 	flexRender,
 	getCoreRowModel,
 	getSortedRowModel,
-	Header,
-	SortingState,
+	type Header,
+	type SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
 import { ChevronDownIcon, ChevronUpIcon, GripVerticalIcon } from "lucide-react";
+import { type CSSProperties, useEffect, useId, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {

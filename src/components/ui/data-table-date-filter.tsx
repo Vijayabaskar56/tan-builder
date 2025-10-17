@@ -1,3 +1,8 @@
+import type { Column } from "@tanstack/react-table";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import * as React from "react";
+import type { DateRange } from "react-day-picker";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -7,11 +12,6 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import type { Column } from "@tanstack/react-table";
-import { CalendarIcon } from "lucide-react";
-import * as React from "react";
-import type { DateRange } from "react-day-picker";
-import { format } from "date-fns";
 
 interface DataTableDateFilterProps<TData, TValue> {
 	column?: Column<TData, TValue>;
@@ -41,7 +41,7 @@ export function DataTableDateFilter<TData, TValue>({
 				const val = row.original[accessorKey];
 				if (val) {
 					const date = new Date(val);
-					return !isNaN(date.getTime()) ? date : undefined;
+					return !Number.isNaN(date.getTime()) ? date : undefined;
 				}
 				return undefined;
 			})
@@ -52,7 +52,7 @@ export function DataTableDateFilter<TData, TValue>({
 		const min = new Date(Math.min(...dateValues.map((d: Date) => d.getTime())));
 		const max = new Date(Math.max(...dateValues.map((d: Date) => d.getTime())));
 		return { min, max };
-	}, [(column as any)?.table?.getCoreRowModel().rows.length]);
+	}, [column]);
 
 	React.useEffect(() => {
 		if (columnFilterValue) {

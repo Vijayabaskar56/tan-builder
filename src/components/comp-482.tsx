@@ -1,16 +1,14 @@
 "use client";
 
-import { Fragment, useEffect, useState } from "react";
 import {
-	ColumnDef,
+	type ColumnDef,
 	flexRender,
 	getCoreRowModel,
 	getExpandedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
 import { ChevronDownIcon, ChevronUpIcon, InfoIcon } from "lucide-react";
-
-import { cn } from "@/lib/utils";
+import { Fragment, useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -22,6 +20,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 
 type Item = {
 	id: string;

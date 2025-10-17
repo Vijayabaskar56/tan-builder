@@ -2,25 +2,24 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { createClientOnlyFn } from "@tanstack/react-start";
 import { Database, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { TableSettingsSidebar } from "@/components/builder/TableSettingsSidebar";
 import { ErrorBoundary } from "@/components/error-boundary";
-
 import { NotFound } from "@/components/not-found";
 import { TableColumnEdit } from "@/components/table-components/table-column-edit";
 import { TableTemplates } from "@/components/table-components/table-templates";
-import { TableSettingsSidebar } from "@/components/builder/TableSettingsSidebar";
 import TableHeader from "@/components/table-header";
+import { AnimatedIconButton } from "@/components/ui/animated-icon-button";
+import { BlocksIcon } from "@/components/ui/blocks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LayoutPanelTopIcon } from "@/components/ui/layout-panel-top";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { SettingsGearIcon } from "@/components/ui/settings-gear";
 import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TableBuilderService } from "@/services/table-builder.service";
 import { useScreenSize } from "@/hooks/use-screen-size";
 import useTableStore from "@/hooks/use-table-store";
 import { cn } from "@/lib/utils";
-import { SettingsGearIcon } from "@/components/ui/settings-gear";
-import { AnimatedIconButton } from "@/components/ui/animated-icon-button";
-import { BlocksIcon } from "@/components/ui/blocks";
-import { LayoutPanelTopIcon } from "@/components/ui/layout-panel-top";
+import { TableBuilderService } from "@/services/table-builder.service";
 
 const initializeTableStore = createClientOnlyFn(async () => {
 	TableBuilderService.initializeTable();
@@ -100,7 +99,7 @@ function RouteComponent() {
 				document.body.style.userSelect = "";
 			};
 		}
-	}, [isResizing, isMdUp]);
+	}, [isResizing, isMdUp, handleMouseMove, handleMouseUp]);
 
 	if (!isTableBuilderInitialized) {
 		return <Spinner />;

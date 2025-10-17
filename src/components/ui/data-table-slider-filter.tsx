@@ -1,3 +1,6 @@
+import type { Column } from "@tanstack/react-table";
+import { SlidersHorizontal } from "lucide-react";
+import * as React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,9 +12,6 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
-import type { Column } from "@tanstack/react-table";
-import { SlidersHorizontal } from "lucide-react";
-import * as React from "react";
 
 interface DataTableSliderFilterProps<TData, TValue> {
 	column?: Column<TData, TValue>;
@@ -52,7 +52,8 @@ export function DataTableSliderFilter<TData, TValue>({
 		const numericValues = rows
 			.map((row: any) => row.original[accessorKey])
 			.filter(
-				(val: any): val is number => typeof val === "number" && !isNaN(val),
+				(val: any): val is number =>
+					typeof val === "number" && !Number.isNaN(val),
 			);
 
 		if (numericValues.length === 0) return [0, 100];
@@ -60,7 +61,7 @@ export function DataTableSliderFilter<TData, TValue>({
 		const min = Math.min(...numericValues);
 		const max = Math.max(...numericValues);
 		return [min, max];
-	}, [(column as any)?.table?.getCoreRowModel().rows.length]);
+	}, [column]);
 
 	React.useEffect(() => {
 		if (columnFilterValue) {

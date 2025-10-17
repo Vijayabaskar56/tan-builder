@@ -1,8 +1,8 @@
+import { env } from "cloudflare:workers";
+import { createFileRoute } from "@tanstack/react-router";
+import { v4 as uuid } from "uuid";
 import { headerRateLimiter } from "@/lib/header-rate-limiter";
 import { logger } from "@/lib/utils";
-import { createFileRoute } from "@tanstack/react-router";
-import { env } from "cloudflare:workers";
-import { v4 as uuid } from "uuid";
 
 const responseHeaders = {
 	"Access-Control-Allow-Origin": "*",
@@ -16,7 +16,7 @@ export const Route = createFileRoute("/r/$id.json")({
 				const id = params["id.json"];
 				const registryId = id?.endsWith(".json") ? id?.slice(0, -5) : id;
 				try {
-					let registryItem = await env.CACHE.get(registryId);
+					const registryItem = await env.CACHE.get(registryId);
 					if (!registryItem) {
 						return new Response("Registry item not found", {
 							status: 404,

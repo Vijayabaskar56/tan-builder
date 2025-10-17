@@ -1,7 +1,10 @@
+import { Loader2Icon, UploadIcon } from "lucide-react";
 import { useState } from "react";
-import { TableBuilderService } from "@/services/table-builder.service";
-import { useAppForm } from "@/components/ui/tanstack-form";
-import { revalidateLogic } from "@/components/ui/tanstack-form";
+import { toast } from "sonner";
+import * as z from "zod";
+import FileUpload from "@/components/file-upload";
+import { AnimatedIconButton } from "@/components/ui/animated-icon-button";
+import { Button } from "@/components/ui/button";
 import {
 	ResponsiveDialog,
 	ResponsiveDialogContent,
@@ -10,14 +13,10 @@ import {
 	ResponsiveDialogTitle,
 	ResponsiveDialogTrigger,
 } from "@/components/ui/revola";
-import { UploadIcon, Loader2Icon } from "lucide-react";
-import { AnimatedIconButton } from "@/components/ui/animated-icon-button";
-import FileUpload from "@/components/file-upload";
+import { revalidateLogic, useAppForm } from "@/components/ui/tanstack-form";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import * as z from "zod";
 import { useDataProcessorWorker } from "@/hooks/use-data-processor-worker";
+import { TableBuilderService } from "@/services/table-builder.service";
 
 const dataFormSchema = z.object({
 	data: z.array(z.any()),
@@ -52,7 +51,7 @@ function DataUploadDialog() {
 		const reader = new FileReader();
 		reader.onload = (e) => {
 			const text = e.target?.result as string;
-			
+
 			// Only read and display the file content in textarea
 			// Actual processing will happen when user clicks "Process Data"
 			setTextareaText(text);
@@ -137,10 +136,7 @@ function DataUploadDialog() {
 								>
 									Clear
 								</Button>
-								<Button
-									onClick={handleTextareaSubmit}
-									disabled={isProcessing}
-								>
+								<Button onClick={handleTextareaSubmit} disabled={isProcessing}>
 									{isProcessing && (
 										<Loader2Icon className="w-4 h-4 mr-2 animate-spin" />
 									)}

@@ -15,9 +15,26 @@ export const TableBuilderSchema = v.object({
 		enableResizing: v.optional(v.boolean(), false),
 		enablePinning: v.optional(v.boolean(), false),
 		enableRowSelection: v.optional(v.boolean(), false),
-		enableRowActions: v.optional(v.boolean(), false),
-		enableDraggable: v.optional(v.boolean(), false),
+		enableCRUD: v.optional(v.boolean(), false),
+		enableColumnDragging: v.optional(v.boolean(), false),
+		enableRowDragging: v.optional(v.boolean(), false),
 		enablePagination: v.optional(v.boolean(), false),
+		tableLayout: v.optional(
+			v.object({
+				dense: v.optional(v.boolean(), false),
+				cellBorder: v.optional(v.boolean(), false),
+				rowBorder: v.optional(v.boolean(), true),
+				rowRounded: v.optional(v.boolean(), false),
+				stripped: v.optional(v.boolean(), false),
+				headerBorder: v.optional(v.boolean(), true),
+				headerSticky: v.optional(v.boolean(), false),
+				width: v.optional(
+					v.union([v.literal("auto"), v.literal("fixed")]),
+					"fixed",
+				),
+			}),
+			{},
+		),
 	}),
 	table: v.object({
 		columns: v.array(

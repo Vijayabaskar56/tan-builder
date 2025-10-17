@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react";
 import {
-	ColumnDef,
+	type ColumnDef,
 	flexRender,
 	getCoreRowModel,
 	getSortedRowModel,
-	SortingState,
+	type SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
-
-import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 import {
 	Table,
 	TableBody,
@@ -18,6 +16,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 
 type Item = {
 	id: string;

@@ -341,7 +341,7 @@ const syncEntriesForFormArray = (formArray: FormArray): FormArrayEntry[] => {
 								.map(
 									(
 										nestedTemplate: FormElement | FormElement[],
-										nestedIndex: number,
+										_nestedIndex: number,
 									) => {
 										if (Array.isArray(nestedTemplate)) {
 											return nestedTemplate.map(
@@ -364,7 +364,7 @@ const syncEntriesForFormArray = (formArray: FormArray): FormArrayEntry[] => {
 					return templateField.map(
 						(
 							nestedTemplate: FormElement | FormElement[],
-							nestedIndex: number,
+							_nestedIndex: number,
 						) => {
 							if (Array.isArray(nestedTemplate)) {
 								return nestedTemplate.map((deepTemplate: any) => ({
@@ -1636,7 +1636,7 @@ const createActions = (
 					}
 				} catch (error) {
 					console.error(
-						`Failed to append element of type ${(element as object)?.["fieldType"]}:`,
+						`Failed to append element of type ${(element as object)?.fieldType}:`,
 						error,
 					);
 					throw error;

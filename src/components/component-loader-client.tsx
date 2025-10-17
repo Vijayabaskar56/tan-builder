@@ -1,6 +1,6 @@
 import { LoaderCircleIcon } from "lucide-react";
 import dynamic from "next/dynamic";
-import { ComponentType } from "react";
+import type { ComponentType } from "react";
 import type { RegistryItem } from "shadcn/registry";
 
 interface ComponentLoaderProps {
