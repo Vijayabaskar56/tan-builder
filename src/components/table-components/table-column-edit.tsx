@@ -41,22 +41,10 @@ import { TableBuilderService } from "@/services/table-builder.service";
 import { ScrollArea } from "../ui/scroll-area";
 import { TableColumnDropdown } from "./table-column-dropdown";
 import { useForcedTransition } from "@/hooks/use-force-transition";
-import {
-	DndContext,
-	closestCenter,
-	KeyboardSensor,
-	PointerSensor,
-	useSensor,
-	useSensors,
-	DragOverEvent,
-} from "@dnd-kit/core";
-import {
-	arrayMove,
-	SortableContext,
-	sortableKeyboardCoordinates,
-	verticalListSortingStrategy,
-	useSortable,
-} from "@dnd-kit/sortable";
+import useTableStore from "@/hooks/use-table-store";
+import { TableBuilderService } from "@/services/table-builder.service";
+import { ScrollArea } from "../ui/scroll-area";
+import { TableColumnDropdown } from "./table-column-dropdown";
 
 export function TableColumnEdit() {
 	const [localColumns, setLocalColumns] = useState<

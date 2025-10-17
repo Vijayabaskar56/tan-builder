@@ -100,7 +100,7 @@ function RouteComponent() {
 				document.body.style.userSelect = "";
 			};
 		}
-	}, [isResizing, isMdUp]);
+	}, [isResizing, isMdUp, handleMouseMove, handleMouseUp]);
 
 	if (!isTableBuilderInitialized) {
 		return <Spinner />;

@@ -37,7 +37,7 @@ import { Separator } from "./ui/separator";
 import { Spinner } from "./ui/spinner";
 import { revalidateLogic, useAppForm } from "./ui/tanstack-form";
 import { TerminalIcon } from "./ui/terminal";
-import { logger } from "@/lib/utils";
+
 const formSchema = z.object({
 	formName: z.string().min(1, { message: "Form name is required" }),
 });

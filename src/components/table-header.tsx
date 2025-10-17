@@ -17,8 +17,6 @@ import DataUploadDialog from "./table-components/table-data-upload-dialog";
 import { AnimatedIconButton } from "./ui/animated-icon-button";
 import { RotateCWIcon } from "./ui/rotate-cw";
 import { ShareIcon } from "./ui/share";
-import useTableStore from "@/hooks/use-table-store";
-import DataUploadDialog from "./table-components/table-data-upload-dialog";
 
 export default function TableHeader() {
 	const tableData = useTableStore();

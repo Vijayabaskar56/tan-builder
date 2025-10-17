@@ -232,7 +232,6 @@ export default function Component485() {
 			pagination,
 			columnVisibility,
 			columnOrder,
-			globalFilter,
 		},
 		onColumnOrderChange: setColumnOrder,
 	});
