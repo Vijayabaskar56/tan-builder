@@ -407,6 +407,21 @@ export class TableBuilderService {
 	}
 
 	/**
+	 * Update the table data
+	 */
+	static updateData(newData: DataRow[]): boolean {
+		try {
+			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
+				draft.table.data = newData;
+			});
+			return true;
+		} catch (error) {
+			console.error("Failed to update data:", error);
+			return false;
+		}
+	}
+
+	/**
 	 * Clear all data but keep columns
 	 */
 	static clearData(): boolean {

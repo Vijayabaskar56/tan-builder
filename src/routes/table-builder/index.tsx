@@ -1,3 +1,4 @@
+"use no memo";
 import type { DragEndEvent, UniqueIdentifier } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { createFileRoute } from "@tanstack/react-router";
@@ -30,15 +31,16 @@ import {
 	generateColumns,
 	generateFilterFields,
 } from "@/lib/table-generator/generate-columns";
+import { TableBuilderService } from "@/services/table-builder.service";
 import type { JsonData } from "@/types/table-types";
 export const Route = createFileRoute("/table-builder/")({
 	component: RouteComponent,
 	ssr: false,
 });
 
+("use no memo");
 function RouteComponent() {
 	const tableData = useTableStore();
-	const [data, setData] = useState<JsonData[]>([]);
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: 0,
 		pageSize: 10,
@@ -48,6 +50,7 @@ function RouteComponent() {
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 	const [columnOrder, setColumnOrder] = useState<string[]>([]);
 	const [filters, setFilters] = useState<Filter[]>([]);
+	const [dataVersion, setDataVersion] = useState(0);
 
 	const columns = useMemo(() => {
 		// Ensure the first string column is filterable
@@ -84,13 +87,9 @@ function RouteComponent() {
 		return generateFilterFields(tableData.table.columns);
 	}, [tableData.table.columns]);
 
-	useEffect(() => {
-		setData(tableData.table.data as JsonData[]);
-	}, [tableData.table.data]);
-
 	// Apply filters to data - only apply filters with non-empty values
 	const filteredData = useMemo(() => {
-		let filtered = [...data];
+		let filtered = [...(tableData.table.data as JsonData[])];
 
 		// Filter out empty filters before applying
 		const activeFilters = filters.filter((filter) => {
@@ -178,7 +177,7 @@ function RouteComponent() {
 		});
 
 		return filtered;
-	}, [data, filters]);
+	}, [tableData.table.data, filters]);
 
 	// Row dragging state
 	const dataIds = useMemo<UniqueIdentifier[]>(
@@ -198,6 +197,10 @@ function RouteComponent() {
 	useEffect(() => {
 		setColumnOrder(columns.map((column) => column.id || ""));
 	}, [columns]);
+
+	useEffect(() => {
+		setDataVersion((v) => v + 1);
+	}, [tableData.table.data]);
 
 	const handleFiltersChange = useCallback((newFilters: Filter[]) => {
 		console.log("Table filters updated:", newFilters);
@@ -253,14 +256,17 @@ function RouteComponent() {
 		(event: DragEndEvent) => {
 			const { active, over } = event;
 			if (active && over && active.id !== over.id) {
-				setData((data) => {
-					const oldIndex = dataIds.indexOf(active.id);
-					const newIndex = dataIds.indexOf(over.id);
-					return arrayMove(data, oldIndex, newIndex);
-				});
+				const oldIndex = dataIds.indexOf(active.id);
+				const newIndex = dataIds.indexOf(over.id);
+				const newData = arrayMove(
+					[...tableData.table.data],
+					oldIndex,
+					newIndex,
+				);
+				TableBuilderService.updateData(newData);
 			}
 		},
-		[dataIds],
+		[dataIds, tableData.table.data],
 	);
 	return (
 		<div className="m-6">
@@ -296,7 +302,9 @@ function RouteComponent() {
 				</div>
 
 				{/* Data Grid */}
+				{/* key={dataVersion} forces re-mount of DataGrid when data changes, ensuring UI updates immediately despite React Compiler memoization */}
 				<DataGrid
+					key={dataVersion}
 					table={table}
 					recordCount={filteredData.length}
 					tableLayout={{
