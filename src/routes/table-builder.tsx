@@ -4,7 +4,7 @@ import { Database, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { TableSettingsSidebar } from "@/components/builder/TableSettingsSidebar";
 import { ErrorBoundary } from "@/components/error-boundary";
-import FormHeader from "@/components/header";
+
 import { NotFound } from "@/components/not-found";
 import { TableColumnEdit } from "@/components/table-components/table-column-edit";
 import { TableTemplates } from "@/components/table-components/table-templates";
@@ -16,11 +16,12 @@ import { LayoutPanelTopIcon } from "@/components/ui/layout-panel-top";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { SettingsGearIcon } from "@/components/ui/settings-gear";
 import { Spinner } from "@/components/ui/spinner";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { useScreenSize } from "@/hooks/use-screen-size";
 import useTableStore from "@/hooks/use-table-store";
 import { cn } from "@/lib/utils";
 import { TableBuilderService } from "@/services/table-builder.service";
+import { Separator } from "@/components/ui/separator";
 
 const initializeTableStore = createClientOnlyFn(async () => {
 	TableBuilderService.initializeTable();
@@ -44,6 +45,7 @@ function RouteComponent() {
 
 	const [isTableBuilderInitialized, setIsTableBuilderInitialized] =
 		useState(false);
+	const [activeTab, setActiveTab] = useState("columns");
 	useEffect(() => {
 		initializeTableStore();
 		setIsTableBuilderInitialized(true);
@@ -121,78 +123,77 @@ function RouteComponent() {
 						{isMdUp ? (
 							<ScrollArea className="h-full">
 								<div className="p-4">
-									<Tabs defaultValue="columns" className="w-full">
-										<TabsList className="mb-3 w-full justify-center">
-											<TabsTrigger value="columns">
-												<AnimatedIconButton
-													renderAs="span"
-													icon={
-														<BlocksIcon
-															className="-ms-0.5 me-1.5 opacity-60"
-															size={16}
-														/>
-													}
-													className="flex"
-													text={
-														(isMdUp && sidebarWidth > 350) || !isMdUp ? (
-															<span className="ml-1">Builder</span>
-														) : (
-															""
-														)
-													}
+									<div className="flex gap-2 mb-2 justify-center items-center content-center text-center self-center w-full">
+										<AnimatedIconButton
+											icon={
+												<BlocksIcon
+													className="-ms-0.5 me-1.5 opacity-60"
+													size={16}
 												/>
-											</TabsTrigger>
-											<TabsTrigger value="templates">
-												<AnimatedIconButton
-													renderAs="span"
-													icon={
-														<LayoutPanelTopIcon
-															className="-ms-0.5 me-1.5 opacity-60"
-															size={16}
-														/>
-													}
-													className="flex"
-													text={
-														(isMdUp && sidebarWidth > 350) || !isMdUp ? (
-															<span className="ml-1">Templates</span>
-														) : (
-															""
-														)
-													}
+											}
+											text={
+												(isMdUp && sidebarWidth > 350) || !isMdUp ? (
+													<span className="ml-1">Builder</span>
+												) : (
+													""
+												)
+											}
+											variant={activeTab === "columns" ? "default" : "ghost"}
+											onClick={() => setActiveTab("columns")}
+										/>
+										<AnimatedIconButton
+											icon={
+												<LayoutPanelTopIcon
+													className="-ms-0.5 me-1.5 opacity-60"
+													size={16}
 												/>
-											</TabsTrigger>
-											<TabsTrigger value="settings">
-												<AnimatedIconButton
-													renderAs="span"
-													icon={
-														<SettingsGearIcon
-															className="-ms-0.5 me-1.5 opacity-60"
-															size={16}
-														/>
-													}
-													className="flex"
-													text={
-														(isMdUp && sidebarWidth > 350) || !isMdUp ? (
-															<span className="ml-1">Settings</span>
-														) : (
-															""
-														)
-													}
+											}
+											text={
+												(isMdUp && sidebarWidth > 350) || !isMdUp ? (
+													<span className="ml-1">Templates</span>
+												) : (
+													""
+												)
+											}
+											variant={activeTab === "templates" ? "default" : "ghost"}
+											onClick={() => setActiveTab("templates")}
+										/>
+										<AnimatedIconButton
+											icon={
+												<SettingsGearIcon
+													className="-ms-0.5 me-1.5 opacity-60"
+													size={16}
 												/>
-											</TabsTrigger>
-										</TabsList>
-										<TabsContent value="columns" className="mt-4">
+											}
+											text={
+												(isMdUp && sidebarWidth > 350) || !isMdUp ? (
+													<span className="ml-1">Settings</span>
+												) : (
+													""
+												)
+											}
+											variant={activeTab === "settings" ? "default" : "ghost"}
+											onClick={() => setActiveTab("settings")}
+										/>
+									</div>
+									<Separator />
+									{activeTab === "columns" && (
+										<div className="mt-4">
 											<div className="w-full">
 												<TableColumnEdit />
 											</div>
-										</TabsContent>
-										<TabsContent value="templates" className="mt-4">
+										</div>
+									)}
+									{activeTab === "templates" && (
+										<div className="mt-4">
 											<TableTemplates />
-										</TabsContent>
-										<TabsContent value="settings" className="mt-4">
+										</div>
+									)}
+									{activeTab === "settings" && (
+										<div className="mt-4">
 											<TableSettingsSidebar />
-										</TabsContent>
-									</Tabs>
+										</div>
+									)}
 								</div>
 							</ScrollArea>
 						) : (
@@ -315,81 +316,81 @@ function RouteComponent() {
 								}
 							>
 								<div className="p-4">
-									<Tabs defaultValue="columns" className="w-full">
-										<ScrollArea className="w-full">
-											<TabsList className="mb-3 w-full justify-center">
-												<TabsTrigger value="columns">
-													<AnimatedIconButton
-														renderAs="span"
-														icon={
-															<BlocksIcon
-																className="-ms-0.5 me-1.5 opacity-60"
-																size={16}
-															/>
-														}
-														className="flex"
-														text={
-															(isMdUp && sidebarWidth > 200) || !isMdUp ? (
-																<span className="ml-1">Builder</span>
-															) : (
-																""
-															)
-														}
+									<ScrollArea className="w-full">
+										<div className="flex gap-2 mb-3">
+											<AnimatedIconButton
+												icon={
+													<BlocksIcon
+														className="-ms-0.5 me-1.5 opacity-60"
+														size={16}
 													/>
-												</TabsTrigger>
-												<TabsTrigger value="templates">
-													<AnimatedIconButton
-														renderAs="span"
-														icon={
-															<LayoutPanelTopIcon
-																className="-ms-0.5 me-1.5 opacity-60"
-																size={16}
-															/>
-														}
-														className="flex"
-														text={
-															(isMdUp && sidebarWidth > 200) || !isMdUp ? (
-																<span className="ml-1">Templates</span>
-															) : (
-																""
-															)
-														}
+												}
+												text={
+													(isMdUp && sidebarWidth > 200) || !isMdUp ? (
+														<span className="ml-1">Builder</span>
+													) : (
+														""
+													)
+												}
+												variant={activeTab === "columns" ? "default" : "ghost"}
+												onClick={() => setActiveTab("columns")}
+											/>
+											<AnimatedIconButton
+												icon={
+													<LayoutPanelTopIcon
+														className="-ms-0.5 me-1.5 opacity-60"
+														size={16}
 													/>
-												</TabsTrigger>
-												<TabsTrigger value="settings">
-													<AnimatedIconButton
-														renderAs="span"
-														icon={
-															<SettingsGearIcon
-																className="-ms-0.5 me-1.5 opacity-60"
-																size={16}
-															/>
-														}
-														className="flex"
-														text={
-															(isMdUp && sidebarWidth > 200) || !isMdUp ? (
-																<span className="ml-1">Settings</span>
-															) : (
-																""
-															)
-														}
+												}
+												text={
+													(isMdUp && sidebarWidth > 200) || !isMdUp ? (
+														<span className="ml-1">Templates</span>
+													) : (
+														""
+													)
+												}
+												variant={
+													activeTab === "templates" ? "default" : "ghost"
+												}
+												onClick={() => setActiveTab("templates")}
+											/>
+											<AnimatedIconButton
+												icon={
+													<SettingsGearIcon
+														className="-ms-0.5 me-1.5 opacity-60"
+														size={16}
 													/>
-												</TabsTrigger>
-											</TabsList>
-											<ScrollBar orientation="horizontal" />
-										</ScrollArea>
-										<TabsContent value="columns" className="mt-4">
+												}
+												text={
+													(isMdUp && sidebarWidth > 200) || !isMdUp ? (
+														<span className="ml-1">Settings</span>
+													) : (
+														""
+													)
+												}
+												variant={activeTab === "settings" ? "default" : "ghost"}
+												onClick={() => setActiveTab("settings")}
+											/>
+										</div>
+										<ScrollBar orientation="horizontal" />
+									</ScrollArea>
+									{activeTab === "columns" && (
+										<div className="mt-4">
 											<div className="w-full">
 												<TableColumnEdit />
 											</div>
-										</TabsContent>
-										<TabsContent value="templates" className="mt-4">
+										</div>
+									)}
+									{activeTab === "templates" && (
+										<div className="mt-4">
 											<TableTemplates />
-										</TabsContent>
-										<TabsContent value="settings" className="mt-4">
+										</div>
+									)}
+									{activeTab === "settings" && (
+										<div className="mt-4">
 											<TableSettingsSidebar />
-										</TabsContent>
-									</Tabs>
+										</div>
+									)}
 								</div>
 							</div>
 

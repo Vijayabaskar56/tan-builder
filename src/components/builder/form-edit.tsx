@@ -1,13 +1,3 @@
-import { closestCenter, DndContext, type DragEndEvent } from "@dnd-kit/core";
-import {
-	SortableContext,
-	useSortable,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { Check, CircleX, LucideGripVertical, PlusCircle } from "lucide-react";
-import { Reorder, useDragControls } from "motion/react";
-import { useEffect, useRef, useState } from "react";
 import { FormElementsDropdown } from "@/components/builder/form-elements-dropdown";
 import { RenderFormElement } from "@/components/builder/render-form-element";
 import { StepContainer } from "@/components/builder/step-container";
@@ -23,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { useAppForm } from "@/components/ui/tanstack-form";
 import type { FormBuilderActions } from "@/hooks/use-form-store";
 import { useFormStore, useIsMultiStep } from "@/hooks/use-form-store";
-import { isStatic, logger } from "@/lib/utils";
+import { isStatic } from "@/lib/utils";
 import type {
 	FormArray,
 	FormElement,
@@ -31,6 +21,10 @@ import type {
 	FormStep,
 	Option,
 } from "@/types/form-types";
+import { Check, CircleX, PlusCircle } from "lucide-react";
+import { Reorder, useDragControls } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { LucideGripVertical } from "lucide-react";
 import { DeleteIcon } from "../ui/delete";
 import { SquarePenIcon } from "../ui/square-pen";
 import NoFieldPlaceholder from "./no-field-placeholder";
@@ -78,159 +72,13 @@ const inputTypes = [
 	},
 ];
 
-// Sortable option component
-const SortableOption = ({
-	option,
-	index,
-	editingIndex,
-	setEditingIndex,
-	editingOption,
-	setEditingOption,
-	saveEdit,
-	cancelEdit,
-	deleteOption,
-}: {
-	option: Option;
-	index: number;
-	editingIndex: number | null;
-	setEditingIndex: (index: number | null) => void;
-	editingOption: Option;
-	setEditingOption: (option: Option) => void;
-	saveEdit: () => void;
-	cancelEdit: () => void;
-	deleteOption: (index: number) => void;
-}) => {
-	const {
-		attributes,
-		listeners,
-		setNodeRef,
-		transform,
-		transition,
-		isDragging,
-	} = useSortable({ id: option.value });
-
-	const style = {
-		transform: CSS.Transform.toString(transform),
-		transition,
-	};
-
-	return (
-		<div
-			ref={setNodeRef}
-			style={style}
-			className={`flex items-center gap-2 py-2 pr-2 pl-4 border rounded-md cursor-grab active:cursor-grabbing group bg-secondary ${
-				isDragging ? "opacity-50" : ""
-			}`}
-			{...attributes}
-			{...listeners}
-		>
-			<LucideGripVertical
-				size={20}
-				className="dark:text-muted-foreground text-muted-foreground"
-			/>
-			{editingIndex === index ? (
-				<>
-					<div className="flex-1 space-y-2">
-						<div className="flex gap-2">
-							<div className="flex-1">
-								<Label className="text-xs text-muted-foreground">Label</Label>
-								<Input
-									value={editingOption.label as string}
-									onChange={(e) => {
-										const newLabel = e.target.value;
-										const newValue = newLabel
-											.toLowerCase()
-											.replace(/[^a-z0-9]/g, "_")
-											.replace(/_+/g, "_")
-											.replace(/^_|_$/g, "");
-										setEditingOption({
-											...editingOption,
-											label: newLabel,
-											value: newValue,
-										});
-									}}
-									placeholder="Option label"
-									className="h-8 text-sm"
-								/>
-							</div>
-							<div className="flex-1">
-								<Label className="text-xs text-muted-foreground">Value</Label>
-								<Input
-									value={editingOption.value}
-									onChange={(e) =>
-										setEditingOption({
-											...editingOption,
-											value: e.target.value,
-										})
-									}
-									placeholder="Option value"
-									className="h-8 text-sm"
-								/>
-							</div>
-						</div>
-					</div>
-					<div className="flex gap-1">
-						<Button
-							type="button"
-							variant="ghost"
-							size="icon"
-							onClick={saveEdit}
-							className="size-8"
-						>
-							<Check className="size-4" />
-						</Button>
-						<Button
-							type="button"
-							variant="ghost"
-							size="icon"
-							onClick={cancelEdit}
-							className="size-8"
-						>
-							<CircleX className="size-4" />
-						</Button>
-					</div>
-				</>
-			) : (
-				<>
-					<div className="flex-1 min-w-0">
-						<div className="text-sm font-medium truncate">{option.label}</div>
-						<div className="text-xs text-muted-foreground truncate">
-							Value: {option.value}
-						</div>
-					</div>
-					<div className="flex gap-1 lg:opacity-0 opacity-100 group-hover:opacity-100 duration-200">
-						<Button
-							type="button"
-							variant="ghost"
-							size="icon"
-							onClick={() => setEditingIndex(index)}
-							className="size-8"
-						>
-							<SquarePenIcon className="size-4" />
-						</Button>
-						<Button
-							type="button"
-							variant="ghost"
-							size="icon"
-							onClick={() => deleteOption(index)}
-							className="size-8"
-						>
-							<DeleteIcon className="size-4" />
-						</Button>
-					</div>
-				</>
-			)}
-		</div>
-	);
-};
-
 function OptionsList({
 	options = [],
 	onChange,
 }: {
 	options: Option[];
 	onChange: (options: Option[]) => void;
-}) {
+}): React.ReactElement {
 	const [localOptions, setLocalOptions] = useState<Option[]>(options);
 	const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
@@ -259,6 +107,11 @@ function OptionsList({
 		onChange(updated);
 	};
 
+	const startEdit = (index: number) => {
+		setEditingIndex(index);
+		setEditingOption({ ...localOptions[index] });
+	};
+
 	const saveEdit = () => {
 		if (editingIndex !== null) {
 			const updated = localOptions.map((option, index) =>
@@ -274,23 +127,10 @@ function OptionsList({
 		setEditingIndex(null);
 		setEditingOption({ value: "", label: "" });
 	};
-
-	const handleDragEnd = (event: DragEndEvent) => {
-		const { active, over } = event;
-		if (!over || active.id === over.id) return;
-
-		const oldIndex = localOptions.findIndex((opt) => opt.value === active.id);
-		const newIndex = localOptions.findIndex((opt) => opt.value === over.id);
-
-		if (oldIndex !== -1 && newIndex !== -1) {
-			const newOrder = [...localOptions];
-			const [moved] = newOrder.splice(oldIndex, 1);
-			newOrder.splice(newIndex, 0, moved);
-			setLocalOptions(newOrder);
-			onChange(newOrder);
-		}
+	const handleReorder = (newOrder: Option[]) => {
+		setLocalOptions(newOrder);
+		onChange(newOrder);
 	};
-
 	return (
 		<div className="space-y-3 w-full">
 			<div className="flex items-center justify-between">
@@ -308,30 +148,124 @@ function OptionsList({
 			</div>
 
 			<div className="space-y-2 max-h-48 overflow-y-auto">
-				<DndContext
-					collisionDetection={closestCenter}
-					onDragEnd={handleDragEnd}
+				<Reorder.Group
+					axis="y"
+					onReorder={handleReorder}
+					values={localOptions}
+					className="space-y-2"
+					layoutScroll
 				>
-					<SortableContext
-						items={localOptions.map((opt) => opt.value)}
-						strategy={verticalListSortingStrategy}
-					>
-						{localOptions.map((option, index) => (
-							<SortableOption
-								key={option.value}
-								option={option}
-								index={index}
-								editingIndex={editingIndex}
-								setEditingIndex={setEditingIndex}
-								editingOption={editingOption}
-								setEditingOption={setEditingOption}
-								saveEdit={saveEdit}
-								cancelEdit={cancelEdit}
-								deleteOption={deleteOption}
+					{localOptions.map((option, index) => (
+						<Reorder.Item
+							key={option.value}
+							value={option}
+							className="flex items-center gap-2 py-2 pr-2 pl-4 border rounded-md cursor-grab active:cursor-grabbing group bg-secondary"
+						>
+							<LucideGripVertical
+								size={20}
+								className="dark:text-muted-foreground text-muted-foreground"
 							/>
-						))}
-					</SortableContext>
-				</DndContext>
+							{editingIndex === index ? (
+								<>
+									<div className="flex-1 space-y-2">
+										<div className="flex gap-2">
+											<div className="flex-1">
+												<Label className="text-xs text-muted-foreground">
+													Label
+												</Label>
+												<Input
+													value={editingOption.label as string}
+													onChange={(e) => {
+														const newLabel = e.target.value;
+														const newValue = newLabel
+															.toLowerCase()
+															.replace(/[^a-z0-9]/g, "_")
+															.replace(/_+/g, "_")
+															.replace(/^_|_$/g, "");
+														setEditingOption({
+															...editingOption,
+															label: newLabel,
+															value: newValue,
+														});
+													}}
+													placeholder="Option label"
+													className="h-8 text-sm"
+												/>
+											</div>
+											<div className="flex-1">
+												<Label className="text-xs text-muted-foreground">
+													Value
+												</Label>
+												<Input
+													value={editingOption.value}
+													onChange={(e) =>
+														setEditingOption({
+															...editingOption,
+															value: e.target.value,
+														})
+													}
+													placeholder="Option value"
+													className="h-8 text-sm"
+												/>
+											</div>
+										</div>
+									</div>
+									<div className="flex gap-1">
+										<Button
+											type="button"
+											variant="ghost"
+											size="icon"
+											onClick={saveEdit}
+											className="size-8"
+										>
+											<Check className="size-4" />
+										</Button>
+										<Button
+											type="button"
+											variant="ghost"
+											size="icon"
+											onClick={cancelEdit}
+											className="size-8"
+										>
+											<CircleX className="size-4" />
+										</Button>
+									</div>
+								</>
+							) : (
+								<>
+									<div className="flex-1 min-w-0">
+										<div className="text-sm font-medium truncate">
+											{option.label}
+										</div>
+										<div className="text-xs text-muted-foreground truncate">
+											Value: {option.value}
+										</div>
+									</div>
+									<div className="flex gap-1 lg:opacity-0 opacity-100 group-hover:opacity-100 duration-200">
+										<Button
+											type="button"
+											variant="ghost"
+											size="icon"
+											onClick={() => startEdit(index)}
+											className="size-8"
+										>
+											<SquarePenIcon className="size-4" />
+										</Button>
+										<Button
+											type="button"
+											variant="ghost"
+											size="icon"
+											onClick={() => deleteOption(index)}
+											className="size-8"
+										>
+											<DeleteIcon className="size-4" />
+										</Button>
+									</div>
+								</>
+							)}
+						</Reorder.Item>
+					))}
+				</Reorder.Group>
 
 				{options.length === 0 && (
 					<div className="text-center py-4 text-sm text-muted-foreground border-2 border-dashed rounded-md">
@@ -364,7 +298,7 @@ const FormElementEditor = ({
 	const { fieldType } = formElement;
 
 	const form = useAppForm({
-		defaultValues: formElement as FormElement,
+		defaultValues: formElement as any,
 		onSubmit: ({ value }) => {
 			if (isFormArrayField && arrayId) {
 				// Use updateTemplate: false for property-only updates
@@ -377,50 +311,6 @@ const FormElementEditor = ({
 					stepIndex,
 				});
 			}
-		},
-		listeners: {
-			onChangeDebounceMs: 500,
-			onChange: ({ formApi }) => {
-				logger("Form element changed:", formApi.baseStore.state.values);
-				if (isFormArrayField && arrayId) {
-					logger("Updating FormArray field:", {
-						arrayId,
-						fieldIndex,
-						value: formApi.baseStore.state.values,
-						j,
-						stepIndex,
-					});
-					// Use updateTemplate: false for property-only updates
-					actions.updateFormArrayField(
-						arrayId,
-						fieldIndex,
-						formApi.baseStore.state.values,
-						j,
-						false,
-					);
-				} else {
-					logger("Updating form element:", {
-						fieldIndex,
-						value: formApi.baseStore.state.values,
-						j,
-						stepIndex,
-					});
-					if (formApi.baseStore.state.values.name) {
-						formApi.baseStore.state.values.name =
-							formApi.baseStore.state.values.name
-								.toLowerCase()
-								.replace(/[^a-z0-9]/g, "_")
-								.replace(/_+/g, "_")
-								.replace(/^_|_$/g, "");
-					}
-					actions.editElement({
-						fieldIndex: fieldIndex,
-						modifiedFormElement: formApi.baseStore.state.values,
-						j,
-						stepIndex,
-					});
-				}
-			},
 		},
 	});
 
@@ -959,153 +849,12 @@ const FormArrayItemContainer = ({
 		</Reorder.Item>
 	);
 };
-// Sortable wrapper for form elements
-const SortableFormElement = ({
-	element,
-	index,
-	isLayoutTransitioning,
-}: {
-	element: FormElementOrList;
-	index: number;
-	isLayoutTransitioning: boolean;
-}) => {
-	const { actions } = useFormStore();
-	const {
-		attributes,
-		listeners,
-		setNodeRef,
-		transform,
-		transition,
-		isDragging,
-	} = useSortable({ id: Array.isArray(element) ? element[0].id : element.id });
-
-	const style = {
-		transform: CSS.Transform.toString(transform),
-		transition,
-	};
-
-	// Handle FormArray
-	if (
-		typeof element === "object" &&
-		element !== null &&
-		"arrayField" in element
-	) {
-		const formArrayElement = element as unknown as FormArray;
-		return (
-			<div
-				ref={setNodeRef}
-				style={style}
-				className={`rounded-xl border-2 border-dashed border-muted-foreground/30 py-3 w-full bg-muted/20 ${
-					isDragging ? "opacity-50" : ""
-				}`}
-				{...attributes}
-				{...listeners}
-			>
-				<FormArrayItemContainer
-					formArrayElement={formArrayElement}
-					actions={actions}
-					mainFieldIndex={index}
-					isLayoutTransitioning={isLayoutTransitioning}
-				/>
-			</div>
-		);
-	}
-
-	// Handle arrays
-	if (Array.isArray(element)) {
-		return (
-			<div
-				ref={setNodeRef}
-				style={style}
-				className={`flex items-center justify-start gap-2 pl-2 ${
-					isDragging ? "opacity-50" : ""
-				}`}
-				{...attributes}
-				{...listeners}
-			>
-				<LucideGripVertical
-					size={20}
-					className="dark:text-muted-foreground text-muted-foreground"
-				/>
-				<Reorder.Group
-					axis="x"
-					onReorder={(newOrder) => {
-						actions.reorder({ newOrder, fieldIndex: index });
-					}}
-					values={element}
-					className="flex items-center justify-start gap-2 w-full relative"
-					tabIndex={-1}
-					{...getTransitionProps(isLayoutTransitioning)}
-				>
-					{element.map((el: FormElement, j: number) => (
-						<Reorder.Item
-							key={el.id}
-							value={el}
-							className="w-full rounded-xl border border-dashed py-1.5 bg-background"
-							layout
-							{...getTransitionProps(isLayoutTransitioning)}
-						>
-							<EditFormItem key={el.id} fieldIndex={index} j={j} element={el} />
-						</Reorder.Item>
-					))}
-				</Reorder.Group>
-			</div>
-		);
-	}
-
-	// Handle single elements
-	return (
-		<div
-			ref={setNodeRef}
-			style={style}
-			className={`rounded-xl border border-dashed py-1.5 w-full bg-background ${
-				isDragging ? "opacity-50" : ""
-			}`}
-			{...attributes}
-			{...listeners}
-		>
-			<EditFormItem
-				key={element.id}
-				fieldIndex={index}
-				element={element as FormElement}
-			/>
-		</div>
-	);
-};
-
 //======================================
 export function FormEdit() {
 	const isMultiStep = useIsMultiStep();
 	const { formElements, actions } = useFormStore();
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [isLayoutTransitioning, setIsLayoutTransitioning] = useState(false);
-	const [optimisticElements, setOptimisticElements] = useState(
-		formElements as FormElementOrList[],
-	);
-
-	useEffect(() => {
-		setOptimisticElements(formElements as FormElementOrList[]);
-	}, [formElements]);
-
-	const handleDragEnd = (event: DragEndEvent) => {
-		const { active, over } = event;
-		if (!over || active.id === over.id) return;
-
-		const oldIndex = optimisticElements.findIndex((el) =>
-			Array.isArray(el) ? el[0].id === active.id : el.id === active.id,
-		);
-		const newIndex = optimisticElements.findIndex((el) =>
-			Array.isArray(el) ? el[0].id === over.id : el.id === over.id,
-		);
-
-		if (oldIndex !== -1 && newIndex !== -1) {
-			const newOrder = [...optimisticElements];
-			const [moved] = newOrder.splice(oldIndex, 1);
-			newOrder.splice(newIndex, 0, moved);
-			setOptimisticElements(newOrder);
-			actions.reorder({ newOrder, fieldIndex: null });
-		}
-	};
 
 	useEffect(() => {
 		const container = containerRef.current;
@@ -1389,28 +1138,94 @@ export function FormEdit() {
 			}
 			return (
 				<div ref={containerRef} className="w-full">
-					<DndContext
-						collisionDetection={closestCenter}
-						onDragEnd={handleDragEnd}
+					<Reorder.Group
+						axis="y"
+						onReorder={(newOrder) => {
+							actions.reorder({ newOrder, fieldIndex: null });
+						}}
+						values={formElements as FormElementOrList[]}
+						className="flex flex-col gap-3 rounded-lg px-3 md:px-4 md:py-5 py-4 border-dashed border bg-muted relative"
+						tabIndex={-1}
+						{...getTransitionProps(isLayoutTransitioning)}
 					>
-						<SortableContext
-							items={optimisticElements.map((el) =>
-								Array.isArray(el) ? el[0].id : el.id,
-							)}
-							strategy={verticalListSortingStrategy}
-						>
-							<div className="flex flex-col gap-3 rounded-lg px-3 md:px-4 md:py-5 py-4 border-dashed border bg-muted relative">
-								{optimisticElements.map((element, i) => (
-									<SortableFormElement
-										key={Array.isArray(element) ? element[0].id : element.id}
-										element={element}
-										index={i}
+						{(formElements as FormElement[]).map((element, i) => {
+							if (
+								typeof element === "object" &&
+								element !== null &&
+								"arrayField" in element
+							) {
+								const formArrayElement = element as unknown as FormArray;
+								return (
+									<FormArrayItemContainer
+										key={formArrayElement.id}
+										formArrayElement={formArrayElement}
+										actions={actions}
+										mainFieldIndex={i}
 										isLayoutTransitioning={isLayoutTransitioning}
 									/>
-								))}
-							</div>
-						</SortableContext>
-					</DndContext>
+								);
+							}
+
+							if (Array.isArray(element)) {
+								return (
+									<Reorder.Item
+										value={element}
+										key={element[0].id}
+										className="flex items-center justify-start gap-2 pl-2"
+										layout
+										{...getTransitionProps(isLayoutTransitioning)}
+									>
+										<LucideGripVertical
+											size={20}
+											className="dark:text-muted-foreground text-muted-foreground"
+										/>
+										<Reorder.Group
+											axis="x"
+											onReorder={(newOrder) => {
+												actions.reorder({ newOrder, fieldIndex: i });
+											}}
+											values={element}
+											className="flex items-center justify-start gap-2 w-full relative"
+											tabIndex={-1}
+											{...getTransitionProps(isLayoutTransitioning)}
+										>
+											{element.map((el: FormElement, j: number) => (
+												<Reorder.Item
+													key={el.id}
+													value={el}
+													className="w-full rounded-xl border border-dashed py-1.5 bg-background"
+													layout
+													{...getTransitionProps(isLayoutTransitioning)}
+												>
+													<EditFormItem
+														key={el.id}
+														fieldIndex={i}
+														j={j}
+														element={el}
+													/>
+												</Reorder.Item>
+											))}
+										</Reorder.Group>
+									</Reorder.Item>
+								);
+							}
+							return (
+								<Reorder.Item
+									key={element.id}
+									value={element}
+									className="rounded-xl border border-dashed py-1.5 w-full bg-background"
+									layout
+									{...getTransitionProps(isLayoutTransitioning)}
+								>
+									<EditFormItem
+										key={element.id}
+										fieldIndex={i}
+										element={element as FormElement}
+									/>
+								</Reorder.Item>
+							);
+						})}
+					</Reorder.Group>
 				</div>
 			);
 	}

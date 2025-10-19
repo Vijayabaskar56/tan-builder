@@ -149,7 +149,7 @@ ${imports}
 export function ${componentName}() {
 
 const ${variableName} = useAppForm({
-   defaultValues: ${getDefaultValuesString(validationSchema, schemaName, formName, formElements)},
+   defaultValues: ${getDefaultValuesString(validationSchema, schemaName, formElements)},
   validationLogic: ${generateValidationLogic(settings)},
   validators: ${generateValidatorsString(settings, schemaName)},
   onSubmit : ({value}) => {
@@ -272,7 +272,7 @@ return (
     } = useFormStepper(stepSchemas);
 
     const ${variableName} = useAppForm({
-      defaultValues: ${getDefaultValuesString(validationSchema, schemaName, formName, formElements)},
+      defaultValues: ${getDefaultValuesString(validationSchema, schemaName, formElements)},
       validationLogic: ${generateValidationLogic(settings)},
       validators: {
         ${settings.validationMethod || "onDynamic"}: currentValidator as typeof ${schemaName},

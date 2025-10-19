@@ -1,22 +1,4 @@
 import {
-	closestCenter,
-	DndContext,
-	type DragOverEvent,
-	KeyboardSensor,
-	PointerSensor,
-	useSensor,
-	useSensors,
-} from "@dnd-kit/core";
-import {
-	arrayMove,
-	SortableContext,
-	sortableKeyboardCoordinates,
-	useSortable,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { LucideGripVertical } from "lucide-react";
-import { useEffect, useOptimistic, useState, useTransition } from "react";
-import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
@@ -38,11 +20,25 @@ import type { TableBuilder } from "@/db-collections/table-builder.collections";
 import { useForcedTransition } from "@/hooks/use-force-transition";
 import useTableStore from "@/hooks/use-table-store";
 import { TableBuilderService } from "@/services/table-builder.service";
-import { ScrollArea } from "../ui/scroll-area";
-import { TableColumnDropdown } from "./table-column-dropdown";
-import { useForcedTransition } from "@/hooks/use-force-transition";
-import useTableStore from "@/hooks/use-table-store";
-import { TableBuilderService } from "@/services/table-builder.service";
+import { Column } from "@/workers/data-processor.worker";
+import {
+	closestCenter,
+	DndContext,
+	type DragOverEvent,
+	KeyboardSensor,
+	PointerSensor,
+	useSensor,
+	useSensors,
+} from "@dnd-kit/core";
+import {
+	arrayMove,
+	SortableContext,
+	sortableKeyboardCoordinates,
+	useSortable,
+	verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { LucideGripVertical } from "lucide-react";
+import { useEffect, useOptimistic, useState, useTransition } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import { TableColumnDropdown } from "./table-column-dropdown";
 
@@ -79,24 +75,6 @@ export function TableColumnEdit() {
 	}
 
 	const columns = tableData.table.columns;
-
-	const generateFakeData = (type: string) => {
-		switch (type) {
-			case "string":
-				return faker.lorem.words(2);
-			case "number":
-				return faker.number.int({ min: 1, max: 1000 });
-			case "boolean":
-				return faker.datatype.boolean();
-			case "date":
-				return faker.date.recent().toISOString().split("T")[0];
-			case "object":
-				return { key: faker.lorem.word(), value: faker.lorem.words(1) };
-			default:
-				return faker.lorem.words(1);
-		}
-	};
-
 	const updateColumn = (
 		columnId: string,
 		updates: Partial<(typeof columns)[0]>,

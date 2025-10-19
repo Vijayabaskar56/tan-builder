@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/revola";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { settingsCollection } from "@/db-collections/settings.collections";
 import { useFormBuilder } from "@/hooks/use-form-builder";
 import { useFormStore } from "@/hooks/use-form-store";
@@ -104,53 +104,38 @@ export default function FormHeader() {
 				{/* Tabs section */}
 				{isFormBuilder && (
 					<div className="order-2 lg:order-1 flex-shrink-0 mr-4 w-full lg:w-auto py-3 border-t-1 md:border-0 mx-3">
-						<Tabs
-							value={activeTab}
-							onValueChange={handleSubTabChange}
-							className="flex"
-						>
-							<TabsList className="bg-background h-auto -space-x-px p-0 shadow-xs w-full lg:w-auto">
-								<TabsTrigger value="builder" className="flex-1">
-									<AnimatedIconButton
-										renderAs="span"
-										icon={
-											<BlocksIcon
-												className="-ms-0.5 me-1.5 opacity-60"
-												size={16}
-											/>
-										}
-										className="flex"
-										text="Builder"
+						<div className="flex gap-2">
+							<AnimatedIconButton
+								icon={
+									<BlocksIcon className="-ms-0.5 me-1.5 opacity-60" size={16} />
+								}
+								text="Builder"
+								variant={activeTab === "builder" ? "default" : "ghost"}
+								onClick={() => handleSubTabChange("builder")}
+							/>
+							<AnimatedIconButton
+								icon={
+									<LayoutPanelTopIcon
+										className="-ms-0.5 me-1.5 opacity-60"
+										size={16}
 									/>
-								</TabsTrigger>
-								<TabsTrigger value="template" className="flex-1">
-									<AnimatedIconButton
-										renderAs="span"
-										icon={
-											<LayoutPanelTopIcon
-												className="-ms-0.5 me-1.5 opacity-60"
-												size={16}
-											/>
-										}
-										className="flex"
-										text="Template"
+								}
+								text="Template"
+								variant={activeTab === "template" ? "default" : "ghost"}
+								onClick={() => handleSubTabChange("template")}
+							/>
+							<AnimatedIconButton
+								icon={
+									<SettingsGearIcon
+										className="-ms-0.5 me-1.5 opacity-60"
+										size={16}
 									/>
-								</TabsTrigger>
-								<TabsTrigger value="settings" className="flex-1">
-									<AnimatedIconButton
-										renderAs="span"
-										icon={
-											<SettingsGearIcon
-												className="-ms-0.5 me-1.5 opacity-60"
-												size={16}
-											/>
-										}
-										className="flex"
-										text="Settings"
-									/>
-								</TabsTrigger>
-							</TabsList>
-						</Tabs>
+								}
+								text="Settings"
+								variant={activeTab === "settings" ? "default" : "ghost"}
+								onClick={() => handleSubTabChange("settings")}
+							/>
+						</div>
 					</div>
 				)}
 				{/* Actions section */}

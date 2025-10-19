@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import * as z from "zod";
 import { useFormStore } from "@/hooks/use-form-store";
 import useSettings from "@/hooks/use-settings";
@@ -55,10 +55,6 @@ function CodeDialog() {
 	const [isGenerateSuccess, setIsGenerateSuccess] = useState(false);
 	const [generatedId, setGeneratedId] = useState<string>("");
 	const id = useId();
-	useEffect(() => {
-		setIsGenerateSuccess(false);
-		setGeneratedId("");
-	}, []);
 	const tabsData = [
 		{
 			value: "pnpm",
@@ -119,6 +115,7 @@ function CodeDialog() {
 		import.meta.env.MODE === "development"
 			? "http://localhost:3000"
 			: "https://tan-form-builder.baskar.dev";
+
 	const mutation = useMutation<CreateRegistryResponse, Error, void>({
 		mutationKey: ["/create-command", formName],
 		mutationFn: async (): Promise<CreateRegistryResponse> => {
@@ -131,20 +128,12 @@ function CodeDialog() {
 			});
 			const data: CreateRegistryResponse = await res.json();
 			if (data.error) {
-				form.setErrorMap({
-					onDynamic: {
-						fields: {
-							formName: {
-								message: data.error,
-							},
-						},
-					},
-				});
 				throw new Error(data.error);
 			}
 			return data;
 		},
 	});
+
 	const form = useAppForm({
 		defaultValues: {
 			formName: formName,
@@ -155,11 +144,25 @@ function CodeDialog() {
 			onDynamicAsyncDebounceMs: 300,
 		},
 		onSubmit: async () => {
-			const result = await mutation.mutateAsync();
-			logger("Response:", result);
-			if (result.data?.id) {
-				setGeneratedId(result.data.id);
-				setIsGenerateSuccess(true);
+			try {
+				const result = await mutation.mutateAsync();
+				logger("Response:", result);
+				if (result.data?.id) {
+					setGeneratedId(result.data.id);
+					setIsGenerateSuccess(true);
+				}
+			} catch (error) {
+				const message =
+					error instanceof Error ? error.message : "An error occurred";
+				form.setErrorMap({
+					onDynamic: {
+						fields: {
+							formName: {
+								message,
+							},
+						},
+					},
+				});
 			}
 		},
 		onSubmitInvalid({ formApi }) {
@@ -191,6 +194,10 @@ function CodeDialog() {
 			},
 		},
 	});
+	useEffect(() => {
+		setIsGenerateSuccess(false);
+		setGeneratedId("");
+	}, []);
 	return (
 		<ResponsiveDialog open={open} onOpenChange={setOpen}>
 			<ResponsiveDialogTrigger asChild>

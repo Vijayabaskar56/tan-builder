@@ -166,7 +166,7 @@ describe("Default Value Generator - Multi-Step Form Support", () => {
 			stores: {} as any,
 		});
 
-		const result = getDefaultValuesString();
+		const result = getDefaultValuesString("zod", "formSchema", multiStepFormElements);
 
 		// Should contain default values from all steps
 		expect(result).toContain('firstName: ""');
@@ -238,7 +238,7 @@ describe("Default Value Generator - Multi-Step Form Support", () => {
 			stores: {} as any,
 		});
 
-		const result = getDefaultValuesString();
+		const result = getDefaultValuesString("zod", "formSchema", multiStepFormWithArrays);
 
 		// Should contain default values from regular fields
 		expect(result).toContain('userName: ""');
@@ -278,7 +278,7 @@ describe("Default Value Generator - Multi-Step Form Support", () => {
 			stores: {} as any,
 		});
 
-		const result = getDefaultValuesString();
+		const result = getDefaultValuesString("zod", "formSchema", emptyMultiStepForm);
 
 		// Should return empty object
 		expect(result).toContain("{}");
@@ -317,7 +317,7 @@ describe("Default Value Generator - Multi-Step Form Support", () => {
 			stores: {} as any,
 		});
 
-		const valibotResult = getDefaultValuesString();
+		const valibotResult = getDefaultValuesString("valibot", "formSchema", simpleMultiStepForm);
 
 		// Test with Arktype
 		mockedUseFormStore.mockReturnValue({
@@ -335,7 +335,7 @@ describe("Default Value Generator - Multi-Step Form Support", () => {
 			stores: {} as any,
 		});
 
-		const arktypeResult = getDefaultValuesString();
+		const arktypeResult = getDefaultValuesString("arktype", "formSchema", simpleMultiStepForm);
 
 		// Should contain correct type assertions
 		expect(valibotResult).toContain("as v.InferInput<typeof formSchema>");
