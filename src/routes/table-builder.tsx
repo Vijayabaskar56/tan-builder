@@ -1,9 +1,10 @@
+/** biome-ignore-all lint/a11y/noLabelWithoutControl: no needed */
+import { TableSettingsSidebar } from "@/components/builder/TableSettingsSidebar";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { createClientOnlyFn } from "@tanstack/react-start";
 import { Database, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { TableSettingsSidebar } from "@/components/builder/TableSettingsSidebar";
-import { ErrorBoundary } from "@/components/error-boundary";
 
 import { NotFound } from "@/components/not-found";
 import { TableColumnEdit } from "@/components/table-components/table-column-edit";
@@ -17,11 +18,11 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { SettingsGearIcon } from "@/components/ui/settings-gear";
 import { Spinner } from "@/components/ui/spinner";
 
+import { Separator } from "@/components/ui/separator";
 import { useScreenSize } from "@/hooks/use-screen-size";
 import useTableStore from "@/hooks/use-table-store";
 import { cn } from "@/lib/utils";
 import { TableBuilderService } from "@/services/table-builder.service";
-import { Separator } from "@/components/ui/separator";
 
 const initializeTableStore = createClientOnlyFn(async () => {
 	TableBuilderService.initializeTable();
@@ -88,6 +89,7 @@ function RouteComponent() {
 	};
 
 	// Add event listeners for mouse move and up
+	// biome-ignore lint/correctness/useExhaustiveDependencies: doesn't needed
 	useEffect(() => {
 		if (isResizing && isMdUp) {
 			document.addEventListener("mousemove", handleMouseMove);
@@ -102,7 +104,7 @@ function RouteComponent() {
 				document.body.style.userSelect = "";
 			};
 		}
-	}, [isResizing, isMdUp, handleMouseMove, handleMouseUp]);
+	}, [isResizing, isMdUp]);
 
 	if (!isTableBuilderInitialized) {
 		return <Spinner />;
@@ -277,7 +279,26 @@ function RouteComponent() {
 								isResizing && "bg-primary/30",
 							)}
 							aria-label="Resize sidebar"
+							aria-orientation="vertical"
 							role="separator"
+							tabIndex={0}
+							onKeyDown={(e) => {
+								// Allow keyboard resizing for accessibility: ArrowLeft/ArrowRight
+								if (!isMdUp) return;
+								const step = 10;
+								if (e.key === "ArrowLeft") {
+									setSidebarWidth((w) => Math.max(200, w - step));
+									e.preventDefault();
+								} else if (e.key === "ArrowRight") {
+									const containerRect =
+										containerRef.current?.getBoundingClientRect();
+									const maxWidth = containerRect
+										? containerRect.width * 0.5
+										: Infinity;
+									setSidebarWidth((w) => Math.min(maxWidth, w + step));
+									e.preventDefault();
+								}
+							}}
 							onMouseDown={handleMouseDown}
 							onTouchStart={(e) => {
 								// Allow touch dragging on larger touch devices

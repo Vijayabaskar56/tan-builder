@@ -20,7 +20,7 @@ import type { TableBuilder } from "@/db-collections/table-builder.collections";
 import { useForcedTransition } from "@/hooks/use-force-transition";
 import useTableStore from "@/hooks/use-table-store";
 import { TableBuilderService } from "@/services/table-builder.service";
-import { Column } from "@/workers/data-processor.worker";
+import type { Column } from "@/workers/data-processor.worker";
 import {
 	closestCenter,
 	DndContext,

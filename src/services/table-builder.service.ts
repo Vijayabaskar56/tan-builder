@@ -383,22 +383,19 @@ export class TableBuilderService {
 	/**
 	 * Import data and automatically detect columns
 	 */
-	static async importData(data: DataRow[]): Promise<boolean> {
+	static importData(data: DataRow[]): boolean {
 		try {
 			if (!Array.isArray(data) || data.length === 0) {
 				throw new Error("Invalid data: must be a non-empty array");
 			}
 
 			const columns = detectColumns(data);
-			await tableBuilderCollection.update(
-				TableBuilderService.TABLE_ID,
-				(draft) => {
-					draft.table = {
-						columns,
-						data,
-					};
-				},
-			);
+			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
+				draft.table = {
+					columns,
+					data,
+				};
+			});
 			return true;
 		} catch (error) {
 			console.error("Failed to import data:", error);
@@ -407,12 +404,12 @@ export class TableBuilderService {
 	}
 
 	/**
-	 * Update the table data
+	 * Update table data
 	 */
-	static updateData(newData: DataRow[]): boolean {
+	static updateData(data: DataRow[]): boolean {
 		try {
 			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
-				draft.table.data = newData;
+				draft.table.data = data;
 			});
 			return true;
 		} catch (error) {

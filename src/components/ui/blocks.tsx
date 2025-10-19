@@ -54,11 +54,14 @@ const BlocksIcon = forwardRef<BlocksIconHandle, BlocksIconProps>(
 			[controls, onMouseLeave],
 		);
 
+
 		return (
 			<div
 				className={cn(className)}
 				onMouseEnter={handleMouseEnter}
 				onMouseLeave={handleMouseLeave}
+				role="button"
+				tabIndex={0}
 				{...props}
 			>
 				<svg

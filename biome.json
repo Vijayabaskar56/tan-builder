@@ -46,7 +46,8 @@
 				"useUniqueElementIds": "off"
 			},
 			"a11y": {
-				"useSemanticElements": "off"
+				"useSemanticElements": "off",
+				"useAriaPropsForRole": "off"
 			}
 		},
 		"includes": ["src/**/*", ".vscode/*", "index.html", "vite.config.js"]

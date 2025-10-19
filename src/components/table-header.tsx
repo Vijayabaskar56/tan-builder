@@ -1,4 +1,3 @@
-import { CodeIcon, ListIcon, SettingsIcon } from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -13,6 +12,12 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import useTableStore from "@/hooks/use-table-store";
 import { TableBuilderService } from "@/services/table-builder.service";
+import {
+	ChevronDownIcon,
+	CodeIcon,
+	ListIcon,
+	SettingsIcon,
+} from "lucide-react";
 import DataUploadDialog from "./table-components/table-data-upload-dialog";
 import { AnimatedIconButton } from "./ui/animated-icon-button";
 import { RotateCWIcon } from "./ui/rotate-cw";
@@ -20,7 +25,7 @@ import { ShareIcon } from "./ui/share";
 
 export default function TableHeader() {
 	const tableData = useTableStore();
-
+	const frameworks = ["react", "vue", "svelte", "angular"];
 	const resetTable = () => {
 		TableBuilderService.resetTable();
 	};
@@ -42,6 +47,37 @@ export default function TableHeader() {
 				{/* Actions section */}
 				<ScrollArea className="md:w-fit w-full py-2 order-1 lg:order-2">
 					<div className="flex items-center gap-2">
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<AnimatedIconButton
+									icon={<ChevronDownIcon className="w-4 h-4 ml-1" />}
+									text={
+										frameworks[0].charAt(0).toUpperCase() +
+										frameworks[0].slice(1)
+									}
+									variant="ghost"
+									size="sm"
+									iconPosition="end"
+								/>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent>
+								{frameworks.map((framework) => (
+									<DropdownMenuItem
+										key={framework}
+										disabled={framework !== "react"}
+										// onClick={() =>
+										// 	actions.setFramework(framework as Framework)
+										// }
+									>
+										{framework.charAt(0).toUpperCase() + framework.slice(1)}
+										{framework !== "react" && (
+											<p className="text-primary">soon!</p>
+										)}
+									</DropdownMenuItem>
+								))}
+							</DropdownMenuContent>
+						</DropdownMenu>
+						<div className="h-4 w-px bg-border" />
 						<DataUploadDialog />
 						<div className="h-4 w-px bg-border" />
 						<AnimatedIconButton

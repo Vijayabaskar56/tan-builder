@@ -32,7 +32,7 @@ import {
 	generateFilterFields,
 } from "@/lib/table-generator/generate-columns";
 import { TableBuilderService } from "@/services/table-builder.service";
-import type { JsonData } from "@/types/table-types";
+import { JsonData } from "@/types/table-types";
 export const Route = createFileRoute("/table-builder/")({
 	component: RouteComponent,
 	ssr: false,
@@ -125,9 +125,11 @@ function RouteComponent() {
 
 				switch (operator) {
 					case "is":
-						return values.includes(fieldValue);
+						return values.some((value) => String(value) === String(fieldValue));
 					case "is_not":
-						return !values.includes(fieldValue);
+						return !values.some(
+							(value) => String(value) === String(fieldValue),
+						);
 					case "contains":
 						return values.some((value) =>
 							String(fieldValue)
@@ -141,9 +143,9 @@ function RouteComponent() {
 								.includes(String(value).toLowerCase()),
 						);
 					case "equals":
-						return fieldValue === values[0];
+						return String(fieldValue) === String(values[0]);
 					case "not_equals":
-						return fieldValue !== values[0];
+						return String(fieldValue) !== String(values[0]);
 					case "greater_than":
 						return Number(fieldValue) > Number(values[0]);
 					case "less_than":
@@ -180,10 +182,9 @@ function RouteComponent() {
 	}, [tableData.table.data, filters]);
 
 	// Row dragging state
-	const dataIds = useMemo<UniqueIdentifier[]>(
-		() => filteredData?.map((_, index) => index.toString()),
-		[filteredData],
-	);
+	const dataIds = useMemo(() => {
+		return filteredData.map((item) => tableData.table.data.indexOf(item).toString());
+	}, [filteredData, tableData.table.data]);
 
 	// Update page size when pagination setting changes
 	useEffect(() => {
@@ -192,7 +193,7 @@ function RouteComponent() {
 		} else {
 			setPagination({ pageIndex: 0, pageSize: 10 });
 		}
-	}, [tableData.settings.enablePagination, filteredData.length]);
+	}, [tableData, filteredData.length]);
 
 	useEffect(() => {
 		setColumnOrder(columns.map((column) => column.id || ""));
@@ -256,8 +257,8 @@ function RouteComponent() {
 		(event: DragEndEvent) => {
 			const { active, over } = event;
 			if (active && over && active.id !== over.id) {
-				const oldIndex = dataIds.indexOf(active.id);
-				const newIndex = dataIds.indexOf(over.id);
+				const oldIndex = dataIds.indexOf(active.id as string);
+				const newIndex = dataIds.indexOf(over.id as string);
 				const newData = arrayMove(
 					[...tableData.table.data],
 					oldIndex,

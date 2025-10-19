@@ -10,7 +10,6 @@ export const generateValidationCode = (
 	validationSchema: string,
 	formElements: any,
 ) => {
-
 	const parsedFormElements = isMS
 		? flattenFormSteps(formElements as FormStep[])
 		: formElements.flat();

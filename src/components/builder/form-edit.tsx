@@ -21,10 +21,9 @@ import type {
 	FormStep,
 	Option,
 } from "@/types/form-types";
-import { Check, CircleX, PlusCircle } from "lucide-react";
+import { Check, CircleX, LucideGripVertical, PlusCircle } from "lucide-react";
 import { Reorder, useDragControls } from "motion/react";
 import { useEffect, useRef, useState } from "react";
-import { LucideGripVertical } from "lucide-react";
 import { DeleteIcon } from "../ui/delete";
 import { SquarePenIcon } from "../ui/square-pen";
 import NoFieldPlaceholder from "./no-field-placeholder";
