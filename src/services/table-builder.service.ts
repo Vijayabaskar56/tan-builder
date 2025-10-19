@@ -1,4 +1,4 @@
-/** biome-ignore-all lint/complexity/noStaticOnlyClass: <explanation> */
+/** biome-ignore-all lint/complexity/noStaticOnlyClass: it's alright */
 import { getStaticData } from "@/constants/static-dummy-data";
 import { tableTemplates } from "@/constants/table-templates";
 import {
@@ -107,7 +107,7 @@ export class TableBuilderService {
 						},
 					};
 				}
-				(draft.settings as any)[key] = value;
+				draft.settings[key] = value;
 			});
 			return true;
 		} catch (error) {
@@ -161,7 +161,8 @@ export class TableBuilderService {
 						width: "fixed",
 					};
 				}
-				(draft.settings.tableLayout as any)[key] = value;
+				(draft.settings.tableLayout as Record<string, boolean | string>)[key] =
+					value;
 			});
 			return true;
 		} catch (error) {
@@ -191,6 +192,13 @@ export class TableBuilderService {
 					};
 				}
 				Object.assign(draft.settings, settings);
+				// Enforce mutual exclusion: only one of column dragging or row dragging can be enabled
+				if (draft.settings.enableColumnDragging) {
+					draft.settings.enableRowDragging = false;
+				}
+				if (draft.settings.enableRowDragging) {
+					draft.settings.enableColumnDragging = false;
+				}
 			});
 			return true;
 		} catch (error) {

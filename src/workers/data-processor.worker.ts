@@ -1,6 +1,18 @@
 // Web Worker for processing CSV/JSON data without blocking the main thread
 // This worker handles parsing, validation, and column type detection
 
+export interface DataRow {
+	[key: string]: string | number | boolean | null | undefined | object;
+}
+
+export interface Column {
+	id: string;
+	accessor: string;
+	label: string;
+	type: "string" | "number" | "boolean" | "date" | "object";
+	order: number;
+}
+
 export interface WorkerRequest {
 	type: "parse";
 	data: {
@@ -11,12 +23,12 @@ export interface WorkerRequest {
 
 export interface WorkerResponse {
 	type: "success" | "error";
-	data?: any[];
+	data?: DataRow[];
 	error?: string;
 }
 
 // Utility: Parse CSV text to array of objects
-const parseCSV = (csvText: string): any[] => {
+const parseCSV = (csvText: string): DataRow[] => {
 	const lines = csvText.trim().split("\n");
 	if (lines.length < 2) {
 		throw new Error("CSV must have at least headers and one data row");
@@ -25,7 +37,7 @@ const parseCSV = (csvText: string): any[] => {
 	const headers = lines[0].split(",").map((h) => h.trim());
 	const data = lines.slice(1).map((line) => {
 		const values = line.split(",");
-		const obj: any = {};
+		const obj: DataRow = {};
 		headers.forEach((header, index) => {
 			obj[header] = values[index]?.trim() || "";
 		});
@@ -35,7 +47,7 @@ const parseCSV = (csvText: string): any[] => {
 };
 
 // Utility: Parse JSON text to array of objects
-const parseJSON = (jsonText: string): any[] => {
+const parseJSON = (jsonText: string): DataRow[] => {
 	const parsed = JSON.parse(jsonText);
 	if (Array.isArray(parsed)) {
 		return parsed;
@@ -66,11 +78,11 @@ const detectColumnType = (
 };
 
 // Utility: Detect columns from data array
-const detectColumns = (data: any[]) => {
+const detectColumns = (data: DataRow[]): Column[] => {
 	if (data.length === 0) return [];
 
 	const firstRow = data[0];
-	const detectedColumns: any[] = [];
+	const detectedColumns: Column[] = [];
 
 	Object.keys(firstRow).forEach((key, index) => {
 		// Sample a few rows to get better type detection
@@ -118,7 +130,7 @@ self.onmessage = (event: MessageEvent<WorkerRequest>) => {
 				return;
 			}
 
-			let parsedData: any[] = [];
+			let parsedData: DataRow[] = [];
 
 			// Parse based on file type
 			if (fileType === "json") {

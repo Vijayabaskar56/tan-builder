@@ -481,8 +481,8 @@ const SavedFormElementAttributes = ({
 	close,
 }: {
 	fieldIndex: number;
-	stepIndex?: number;
-	j?: number;
+	stepIndex: number;
+	j: number;
 	formElement: FormElement;
 	close: () => void;
 }) => (

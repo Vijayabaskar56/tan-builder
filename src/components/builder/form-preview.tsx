@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/useUniqueElementIds: Need this for Focus State */
 import { FormArrayPreview } from "@/components/builder/form-array-preview";
 import { MultiStepFormPreview } from "@/components/builder/multi-step-preview";
 import { RenderFormElement } from "@/components/builder/render-form-element";

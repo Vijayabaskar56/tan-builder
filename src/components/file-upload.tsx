@@ -38,7 +38,18 @@ export default function FileUpload({
 			{/* Drop area */}
 			<div
 				role="button"
-				onClick={openFileDialog}
+				tabIndex={0}
+				aria-disabled={Boolean(file)}
+				onClick={() => {
+					if (!file) openFileDialog();
+				}}
+				onKeyDown={(e) => {
+					if (file) return;
+					if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+						e.preventDefault();
+						openFileDialog();
+					}
+				}}
 				onDragEnter={handleDragEnter}
 				onDragLeave={handleDragLeave}
 				onDragOver={handleDragOver}
