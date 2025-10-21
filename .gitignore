@@ -6,7 +6,7 @@ node_modules
 .nitro
 .output
 .tanstack
-#src/routes/testing.tsx
+src/routes/testing.tsx
 dist
 .wrangler
 .vscode

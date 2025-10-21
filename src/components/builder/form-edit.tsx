@@ -1,3 +1,6 @@
+import { Check, CircleX, LucideGripVertical, PlusCircle } from "lucide-react";
+import { Reorder, useDragControls } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 import { FormElementsDropdown } from "@/components/builder/form-elements-dropdown";
 import { RenderFormElement } from "@/components/builder/render-form-element";
 import { StepContainer } from "@/components/builder/step-container";
@@ -21,9 +24,6 @@ import type {
 	FormStep,
 	Option,
 } from "@/types/form-types";
-import { Check, CircleX, LucideGripVertical, PlusCircle } from "lucide-react";
-import { Reorder, useDragControls } from "motion/react";
-import { useEffect, useRef, useState } from "react";
 import { DeleteIcon } from "../ui/delete";
 import { SquarePenIcon } from "../ui/square-pen";
 import NoFieldPlaceholder from "./no-field-placeholder";

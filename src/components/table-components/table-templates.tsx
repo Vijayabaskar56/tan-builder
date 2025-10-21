@@ -4,8 +4,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { tableTemplates } from "@/constants/table-templates";
-import { TableBuilderService } from "@/services/table-builder.service";
 import type { SavedTableTemplate } from "@/db-collections/table-builder.collections";
+import { TableBuilderService } from "@/services/table-builder.service";
 
 export function TableTemplates() {
 	const [savedTemplates, setSavedTemplates] = useState<SavedTableTemplate[]>(
@@ -21,7 +21,7 @@ export function TableTemplates() {
 
 		// Listen for storage changes to refresh saved templates
 		const handleStorageChange = (e: StorageEvent) => {
-			if (e.key && e.key.startsWith("saved-table-template-")) {
+			if (e.key?.startsWith("saved-table-template-")) {
 				refreshSavedTemplates();
 			}
 		};
@@ -38,7 +38,7 @@ export function TableTemplates() {
 			window.removeEventListener("storage", handleStorageChange);
 			window.removeEventListener("tableTemplateChanged", handleTemplateChange);
 		};
-	}, []);
+	}, [refreshSavedTemplates]);
 
 	const applyTemplate = (templateKey: string) => {
 		const success = TableBuilderService.applyTemplate(templateKey);

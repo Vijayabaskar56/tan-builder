@@ -3,19 +3,9 @@ import { FormArrayPreview } from "@/components/builder/form-array-preview";
 import { MultiStepFormPreview } from "@/components/builder/multi-step-preview";
 import { RenderFormElement } from "@/components/builder/render-form-element";
 import { Button } from "@/components/ui/button";
-import {
-	Empty,
-	EmptyContent,
-	EmptyDescription,
-	EmptyHeader,
-	EmptyMedia,
-	EmptyTitle,
-} from "@/components/ui/empty";
 import type { AppForm } from "@/hooks/use-form-builder";
 import { useFormStore, useIsMultiStep } from "@/hooks/use-form-store";
 import type { FormArray, FormElement, FormStep } from "@/types/form-types";
-import { FrownIcon } from "../ui/frown";
-import { FormElementsDropdown } from "./form-elements-dropdown";
 import NoFieldPlaceholder from "./no-field-placeholder";
 
 interface FormPreviewProps {

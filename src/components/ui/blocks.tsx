@@ -54,7 +54,6 @@ const BlocksIcon = forwardRef<BlocksIconHandle, BlocksIconProps>(
 			[controls, onMouseLeave],
 		);
 
-
 		return (
 			<div
 				className={cn(className)}

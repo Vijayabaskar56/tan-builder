@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TestingRouteImport } from './routes/testing'
 import { Route as TableBuilderRouteImport } from './routes/table-builder'
 import { Route as FormRegistryRouteImport } from './routes/form-registry'
 import { Route as FormBuilderRouteImport } from './routes/form-builder'
@@ -19,11 +18,6 @@ import { Route as FormBuilderIndexRouteImport } from './routes/form-builder/inde
 import { Route as RIdDotjsonRouteImport } from './routes/r/$id[.]json'
 import { Route as FormBuilderShareRouteImport } from './routes/form-builder/share'
 
-const TestingRoute = TestingRouteImport.update({
-  id: '/testing',
-  path: '/testing',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const TableBuilderRoute = TableBuilderRouteImport.update({
   id: '/table-builder',
   path: '/table-builder',
@@ -70,7 +64,6 @@ export interface FileRoutesByFullPath {
   '/form-builder': typeof FormBuilderRouteWithChildren
   '/form-registry': typeof FormRegistryRoute
   '/table-builder': typeof TableBuilderRouteWithChildren
-  '/testing': typeof TestingRoute
   '/form-builder/share': typeof FormBuilderShareRoute
   '/r/$id.json': typeof RIdDotjsonRoute
   '/form-builder/': typeof FormBuilderIndexRoute
@@ -79,7 +72,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/form-registry': typeof FormRegistryRoute
-  '/testing': typeof TestingRoute
   '/form-builder/share': typeof FormBuilderShareRoute
   '/r/$id.json': typeof RIdDotjsonRoute
   '/form-builder': typeof FormBuilderIndexRoute
@@ -91,7 +83,6 @@ export interface FileRoutesById {
   '/form-builder': typeof FormBuilderRouteWithChildren
   '/form-registry': typeof FormRegistryRoute
   '/table-builder': typeof TableBuilderRouteWithChildren
-  '/testing': typeof TestingRoute
   '/form-builder/share': typeof FormBuilderShareRoute
   '/r/$id.json': typeof RIdDotjsonRoute
   '/form-builder/': typeof FormBuilderIndexRoute
@@ -104,7 +95,6 @@ export interface FileRouteTypes {
     | '/form-builder'
     | '/form-registry'
     | '/table-builder'
-    | '/testing'
     | '/form-builder/share'
     | '/r/$id.json'
     | '/form-builder/'
@@ -113,7 +103,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/form-registry'
-    | '/testing'
     | '/form-builder/share'
     | '/r/$id.json'
     | '/form-builder'
@@ -124,7 +113,6 @@ export interface FileRouteTypes {
     | '/form-builder'
     | '/form-registry'
     | '/table-builder'
-    | '/testing'
     | '/form-builder/share'
     | '/r/$id.json'
     | '/form-builder/'
@@ -136,19 +124,11 @@ export interface RootRouteChildren {
   FormBuilderRoute: typeof FormBuilderRouteWithChildren
   FormRegistryRoute: typeof FormRegistryRoute
   TableBuilderRoute: typeof TableBuilderRouteWithChildren
-  TestingRoute: typeof TestingRoute
   RIdDotjsonRoute: typeof RIdDotjsonRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/testing': {
-      id: '/testing'
-      path: '/testing'
-      fullPath: '/testing'
-      preLoaderRoute: typeof TestingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/table-builder': {
       id: '/table-builder'
       path: '/table-builder'
@@ -239,7 +219,6 @@ const rootRouteChildren: RootRouteChildren = {
   FormBuilderRoute: FormBuilderRouteWithChildren,
   FormRegistryRoute: FormRegistryRoute,
   TableBuilderRoute: TableBuilderRouteWithChildren,
-  TestingRoute: TestingRoute,
   RIdDotjsonRoute: RIdDotjsonRoute,
 }
 export const routeTree = rootRouteImport

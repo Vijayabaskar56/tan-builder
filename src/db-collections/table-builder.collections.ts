@@ -3,8 +3,8 @@ import {
 	localOnlyCollectionOptions,
 	localStorageCollectionOptions,
 } from "@tanstack/react-db";
+import { createIsomorphicFn } from "@tanstack/react-start";
 import * as v from "valibot";
-import { settingsCollection } from "./settings.collections";
 
 export const TableBuilderSchema = v.object({
 	id: v.number(),
@@ -61,19 +61,24 @@ export const TableBuilderSchema = v.object({
 
 export type TableBuilder = v.InferOutput<typeof TableBuilderSchema>;
 
-export const tableBuilderCollection = createCollection(
-	!settingsCollection.get("user-settings")?.autoSave
-		? localStorageCollectionOptions({
+export const tableBuilderCollection = createIsomorphicFn()
+	.client(() =>
+		createCollection(
+			localStorageCollectionOptions({
 				storageKey: "table-builder",
 				getKey: (tableBuilder) => tableBuilder.id,
 				schema: TableBuilderSchema,
-				storage: window.localStorage,
-			})
-		: localOnlyCollectionOptions({
+			}),
+		),
+	)
+	.server(() =>
+		createCollection(
+			localOnlyCollectionOptions({
 				getKey: (tableBuilder) => tableBuilder.id,
 				schema: TableBuilderSchema,
 			}),
-);
+		),
+	)();
 
 // Schema for saved table templates
 export const SavedTableTemplateSchema = v.object({

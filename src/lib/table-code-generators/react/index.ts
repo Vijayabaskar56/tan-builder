@@ -1,10 +1,10 @@
 import type { TableBuilder } from "@/db-collections/table-builder.collections";
 import {
-	generateTableImports,
 	extractTableImportDependencies,
+	generateTableImports,
 } from "./generate-imports";
-import { generateTableData, generateTableType } from "./generate-table-data";
 import { generateTableCode } from "./generate-table-code";
+import { generateTableData, generateTableType } from "./generate-table-data";
 
 export const generateTable = (
 	tableBuilder: TableBuilder,
@@ -26,8 +26,7 @@ export const generateTable = (
 		customName,
 	);
 
-	const fullCode = `"use client";
-
+	const fullCode = `
 ${Array.from(imports).join("\n")}
 
 ${typeCode}

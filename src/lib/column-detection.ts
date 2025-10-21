@@ -1,5 +1,5 @@
-import type { Column } from "@/workers/data-processor.worker";
 import type { ColumnConfig, JsonData } from "@/types/table-types";
+import type { Column } from "@/workers/data-processor.worker";
 
 export const detectColumnType = (
 	value: string | number | boolean | null | undefined | object,

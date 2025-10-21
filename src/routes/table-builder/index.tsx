@@ -1,4 +1,3 @@
-"use no memo";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { createFileRoute } from "@tanstack/react-router";
@@ -32,13 +31,12 @@ import {
 	generateFilterFields,
 } from "@/lib/table-generator/generate-columns";
 import { TableBuilderService } from "@/services/table-builder.service";
-import { JsonData } from "@/types/table-types";
+import type { JsonData } from "@/types/table-types";
 export const Route = createFileRoute("/table-builder/")({
 	component: RouteComponent,
-	ssr: false,
+	ssr: true,
 });
 
-("use no memo");
 function RouteComponent() {
 	const tableData = useTableStore();
 	const [pagination, setPagination] = useState<PaginationState>({
@@ -206,7 +204,17 @@ function RouteComponent() {
 
 	useEffect(() => {
 		setDataVersion((v) => v + 1);
-	}, [tableData.table.data]);
+	}, []);
+
+	useEffect(() => {
+		const maxPage = Math.max(
+			0,
+			Math.ceil(filteredData.length / pagination.pageSize) - 1,
+		);
+		if (pagination.pageIndex > maxPage) {
+			setPagination((prev) => ({ ...prev, pageIndex: maxPage }));
+		}
+	}, [filteredData.length, pagination.pageSize, pagination.pageIndex]);
 
 	const handleFiltersChange = useCallback((newFilters: Filter[]) => {
 		console.log("Table filters updated:", newFilters);
@@ -238,6 +246,7 @@ function RouteComponent() {
 			columnOrder,
 		},
 		onColumnOrderChange: setColumnOrder,
+		pageCount: Math.ceil((filteredData.length || 0) / pagination.pageSize),
 	});
 
 	const handleDragEnd = useCallback((event: DragEndEvent) => {
@@ -309,9 +318,9 @@ function RouteComponent() {
 				</div>
 
 				{/* Data Grid */}
-				{/* key={dataVersion} forces re-mount of DataGrid when data changes, ensuring UI updates immediately despite React Compiler memoization */}
+				{/* key forces re-mount of DataGrid when data or pagination changes, ensuring UI updates immediately despite React Compiler memoization */}
 				<DataGrid
-					key={dataVersion}
+					key={`${dataVersion}-${pagination.pageIndex}-${pagination.pageSize}`}
 					table={table}
 					recordCount={filteredData.length}
 					tableLayout={{

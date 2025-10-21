@@ -1,4 +1,4 @@
-"use client";
+"use no memo";
 
 import type {
 	ColumnFiltersState,
@@ -206,4 +206,4 @@ function DataGridContainer({
 	);
 }
 
-export { useDataGrid, DataGridProvider, DataGrid, DataGridContainer };
+export { DataGrid, DataGridContainer, DataGridProvider, useDataGrid };

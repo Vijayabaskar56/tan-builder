@@ -2,9 +2,9 @@
 import { getStaticData } from "@/constants/static-dummy-data";
 import { tableTemplates } from "@/constants/table-templates";
 import {
+	type SavedTableTemplate,
 	type TableBuilder,
 	tableBuilderCollection,
-	type SavedTableTemplate,
 } from "@/db-collections/table-builder.collections";
 import { detectColumns } from "@/lib/table-generator/generate-columns";
 import type { ColumnConfig, DataRow } from "@/types/table-types";
@@ -414,7 +414,7 @@ export class TableBuilderService {
 				finalColumns = columns.map((col) => ({
 					...col,
 					filterable: col.type === "enum" ? true : true, // enums are filterable
-					hasFacetedFilter: col.type === "enum" ? true : false,
+					hasFacetedFilter: col.type === "enum",
 					options: undefined,
 					optionsMode: "auto" as const,
 				}));
@@ -626,7 +626,7 @@ export class TableBuilderService {
 				if (key.startsWith("saved-table-template-")) {
 					try {
 						const template = JSON.parse(localStorage.getItem(key) || "{}");
-						if (template && template.id && template.name && template.data) {
+						if (template?.id && template.name && template.data) {
 							templates.push(template);
 						}
 					} catch (e) {

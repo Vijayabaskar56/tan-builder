@@ -1,13 +1,11 @@
-"use client";
-
 import {
-	ColumnDef,
+	type ColumnDef,
 	getCoreRowModel,
 	getFilteredRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
-	PaginationState,
-	SortingState,
+	type PaginationState,
+	type SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -659,7 +657,7 @@ export default function DataGridWithFiltersDemo() {
 
 	const table = useReactTable({
 		columns,
-		data: filteredData,
+		data: demoData,
 		pageCount: Math.ceil((filteredData?.length || 0) / pagination.pageSize),
 		getRowId: (row: IData) => row.id,
 		state: {

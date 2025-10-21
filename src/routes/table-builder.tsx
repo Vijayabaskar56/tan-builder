@@ -1,10 +1,11 @@
 /** biome-ignore-all lint/a11y/noLabelWithoutControl: no needed */
-import { TableSettingsSidebar } from "@/components/builder/TableSettingsSidebar";
-import { ErrorBoundary } from "@/components/error-boundary";
+
 import { createFileRoute, Outlet, useSearch } from "@tanstack/react-router";
 import { createClientOnlyFn } from "@tanstack/react-start";
 import { Database, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { TableSettingsSidebar } from "@/components/builder/TableSettingsSidebar";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 import { NotFound } from "@/components/not-found";
 import { TableColumnEdit } from "@/components/table-components/table-column-edit";
@@ -12,12 +13,9 @@ import { TableTemplates } from "@/components/table-components/table-templates";
 import TableHeader from "@/components/table-header";
 import { AnimatedIconButton } from "@/components/ui/animated-icon-button";
 import { BlocksIcon } from "@/components/ui/blocks";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LayoutPanelTopIcon } from "@/components/ui/layout-panel-top";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { SettingsGearIcon } from "@/components/ui/settings-gear";
-import { Spinner } from "@/components/ui/spinner";
-import { Button } from "@/components/ui/button";
 import {
 	ResponsiveDialog,
 	ResponsiveDialogContent,
@@ -25,13 +23,15 @@ import {
 	ResponsiveDialogHeader,
 	ResponsiveDialogTitle,
 } from "@/components/ui/revola";
-
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { SettingsGearIcon } from "@/components/ui/settings-gear";
+import { Spinner } from "@/components/ui/spinner";
+import { tableBuilderCollection } from "@/db-collections/table-builder.collections";
 import { useScreenSize } from "@/hooks/use-screen-size";
 import useTableStore from "@/hooks/use-table-store";
 import { cn } from "@/lib/utils";
 import { TableBuilderService } from "@/services/table-builder.service";
-import { tableBuilderCollection } from "@/db-collections/table-builder.collections";
 
 const initializeTableStore = createClientOnlyFn(async () => {
 	TableBuilderService.initializeTable();
@@ -41,7 +41,7 @@ export const Route = createFileRoute("/table-builder")({
 	component: RouteComponent,
 	errorComponent: ErrorBoundary,
 	notFoundComponent: NotFound,
-	ssr: false,
+	ssr: true,
 	validateSearch: (search) => ({
 		share: search.share as string | undefined,
 	}),
@@ -83,6 +83,20 @@ function RouteComponent() {
 		}
 	}, [isMdUp]);
 
+	const handleReplace = () => {
+		if (sharedData) {
+			tableBuilderCollection.update(1, (draft) => {
+				draft.tableName = sharedData.tableName;
+				draft.settings = sharedData.settings;
+				draft.table.columns = sharedData.table.columns;
+				draft.table.data = []; // Shared data doesn't include data
+			});
+		}
+		setShareDialogOpen(false);
+		setSharedData(null);
+		// Clean up URL
+		window.history.replaceState({}, "", "/table-builder");
+	};
 	// Handle share parameter
 	useEffect(() => {
 		if (share && isTableBuilderInitialized) {
@@ -107,23 +121,10 @@ function RouteComponent() {
 		share,
 		isTableBuilderInitialized,
 		tableBuilder.table.columns.length,
-		tableBuilder.table.data.length,
+		tableBuilder.table.data.length, // Load directly if no existing data
+		handleReplace,
 	]);
 
-	const handleReplace = () => {
-		if (sharedData) {
-			tableBuilderCollection.update(1, (draft) => {
-				draft.tableName = sharedData.tableName;
-				draft.settings = sharedData.settings;
-				draft.table.columns = sharedData.table.columns;
-				draft.table.data = []; // Shared data doesn't include data
-			});
-		}
-		setShareDialogOpen(false);
-		setSharedData(null);
-		// Clean up URL
-		window.history.replaceState({}, "", "/table-builder");
-	};
 
 	const handleCancel = () => {
 		setShareDialogOpen(false);

@@ -1,7 +1,7 @@
 import type { TableBuilder } from "@/db-collections/table-builder.collections";
 import { generateFilterFields } from "@/lib/table-generator/generate-columns";
-import { JsonData } from "@/types/table-types";
 import { toJSLiteral } from "@/lib/utils";
+import type { JsonData } from "@/types/table-types";
 
 const getComponentName = (
 	tableBuilder: TableBuilder,

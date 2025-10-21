@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import { generateTable } from '@/lib/table-code-generators/react/index';
+import { describe, expect, it } from 'vitest';
 
 describe('generateTable', () => {
 	it('should generate complete table code', () => {
@@ -42,7 +42,6 @@ describe('generateTable', () => {
 		const result = generateTable(tableBuilder, 'UserTable');
 
 		expect(result.file).toBe('usertable.tsx');
-		expect(result.code).toContain('"use client";');
 		expect(result.code).toContain('import { useMemo, useState } from "react"');
 		expect(result.code).toContain('export interface UserTableData');
 		expect(result.code).toContain('export const UserTableData: UserTableData[]');

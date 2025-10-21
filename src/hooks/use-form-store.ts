@@ -160,7 +160,8 @@ const isFormArrayForm = (
 // Function to get initial state with shared data check
 const getInitialCoreState = (): FormBuilderCoreState => {
 	let shared: string | null = null;
-	let initialFormElements = templates.contactUs.template as FormElementOrList[];
+	const initialFormElements = templates.contactUs
+		.template as FormElementOrList[];
 
 	try {
 		// Only check for shared data on client side
