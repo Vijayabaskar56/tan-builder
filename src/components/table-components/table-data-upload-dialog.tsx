@@ -1,4 +1,3 @@
-import { setDefaultResultOrder } from "node:dns/promises";
 import { Loader2Icon, UploadIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -18,6 +17,7 @@ import { revalidateLogic, useAppForm } from "@/components/ui/tanstack-form";
 import { Textarea } from "@/components/ui/textarea";
 import { useDataProcessorWorker } from "@/hooks/use-data-processor-worker";
 import { TableBuilderService } from "@/services/table-builder.service";
+import type { Column } from "@/workers/data-processor.worker";
 
 const dataFormSchema = z.object({
 	data: z.array(z.any()),
@@ -40,8 +40,8 @@ function DataUploadDialog() {
 		},
 	});
 
-	const updateTableData = (data: any[]) => {
-		TableBuilderService.importData(data);
+	const updateTableData = (data: any[], columns?: Column[]) => {
+		TableBuilderService.importData(data, columns);
 		dataForm.setFieldValue("data", data);
 	};
 
@@ -76,8 +76,8 @@ function DataUploadDialog() {
 		parseData({
 			content: textareaText,
 			fileType: "auto",
-			onSuccess: (data) => {
-				updateTableData(data);
+			onSuccess: (data, columns) => {
+				updateTableData(data, columns);
 				setIsProcessing(false);
 				toast.success("Data processed successfully");
 				setOpen(false);

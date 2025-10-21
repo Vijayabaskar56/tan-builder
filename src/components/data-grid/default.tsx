@@ -8,7 +8,6 @@ import {
 	type SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
-import Link from "next/link";
 import { useMemo, useState } from "react";
 import { DataGrid, DataGridContainer } from "@/components/ui/data-grid";
 import { DataGridPagination } from "@/components/ui/data-grid-pagination";
@@ -228,12 +227,12 @@ export default function DataGridDemo() {
 				accessorKey: "email",
 				header: "Email",
 				cell: (info) => (
-					<Link
+					<a
 						href={`mailto:${info.getValue()}`}
 						className="hover:text-primary hover:underline"
 					>
 						{info.getValue() as string}
-					</Link>
+					</a>
 				),
 				size: 150,
 				meta: {

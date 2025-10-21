@@ -383,16 +383,32 @@ export class TableBuilderService {
 	/**
 	 * Import data and automatically detect columns
 	 */
-	static importData(data: DataRow[]): boolean {
+	static importData(
+		data: DataRow[],
+		columns?: import("@/workers/data-processor.worker").Column[],
+	): boolean {
 		try {
 			if (!Array.isArray(data) || data.length === 0) {
 				throw new Error("Invalid data: must be a non-empty array");
 			}
 
-			const columns = detectColumns(data);
+			let finalColumns: ColumnConfig[];
+			if (columns) {
+				// Convert worker's Column[] to ColumnConfig[]
+				finalColumns = columns.map((col) => ({
+					...col,
+					filterable: true,
+					hasFacetedFilter: false,
+					options: undefined,
+					optionsMode: "auto" as const,
+				}));
+			} else {
+				finalColumns = detectColumns(data);
+			}
+
 			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
 				draft.table = {
-					columns,
+					columns: finalColumns,
 					data,
 				};
 			});

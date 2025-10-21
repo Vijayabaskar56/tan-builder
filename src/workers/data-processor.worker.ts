@@ -24,6 +24,7 @@ export interface WorkerRequest {
 export interface WorkerResponse {
 	type: "success" | "error";
 	data?: DataRow[];
+	columns?: Column[];
 	error?: string;
 }
 
@@ -85,16 +86,22 @@ const detectColumns = (data: DataRow[]): Column[] => {
 	const detectedColumns: Column[] = [];
 
 	Object.keys(firstRow).forEach((key, index) => {
-		// Sample a few rows to get better type detection
-		const sampleValues = data
-			.slice(0, Math.min(5, data.length))
-			.map((row) => row[key]);
+		// Sample all rows for accurate type detection
+		const sampleValues = data.map((row) => row[key]);
 		const types = sampleValues.map(detectColumnType);
-		const mostCommonType = types.reduce((a, b, _, arr) =>
+		let mostCommonType = types.reduce((a, b, _, arr) =>
 			arr.filter((v) => v === a).length >= arr.filter((v) => v === b).length
 				? a
 				: b,
 		);
+
+		// If type is string, check if it has exactly 2 unique values (boolean-like)
+		if (mostCommonType === "string") {
+			const uniqueValues = [...new Set(sampleValues.map((v) => String(v)))];
+			if (uniqueValues.length === 2) {
+				mostCommonType = "boolean";
+			}
+		}
 
 		detectedColumns.push({
 			id: key,
@@ -169,6 +176,7 @@ self.onmessage = (event: MessageEvent<WorkerRequest>) => {
 			self.postMessage({
 				type: "success",
 				data: parsedData,
+				columns,
 			} as WorkerResponse);
 		} catch (error) {
 			self.postMessage({

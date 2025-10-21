@@ -11,3 +11,4 @@ dist
 .wrangler
 .vscode
 .env
+sample-data.json

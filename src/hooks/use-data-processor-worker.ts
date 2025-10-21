@@ -7,7 +7,10 @@ import type {
 interface ParseDataOptions {
 	content: string;
 	fileType: "csv" | "json" | "auto";
-	onSuccess: (data: any[]) => void;
+	onSuccess: (
+		data: any[],
+		columns?: import("@/workers/data-processor.worker").Column[],
+	) => void;
 	onError: (error: string) => void;
 }
 
@@ -38,10 +41,10 @@ export function useDataProcessorWorker() {
 
 			// Set up one-time message handler
 			const handleMessage = (event: MessageEvent<WorkerResponse>) => {
-				const { type, data, error } = event.data;
+				const { type, data, columns, error } = event.data;
 
 				if (type === "success" && data) {
-					onSuccess(data);
+					onSuccess(data, columns);
 				} else if (type === "error" && error) {
 					onError(error);
 				}
