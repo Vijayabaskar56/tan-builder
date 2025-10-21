@@ -1,4 +1,22 @@
 import {
+	closestCenter,
+	DndContext,
+	type DragOverEvent,
+	KeyboardSensor,
+	PointerSensor,
+	useSensor,
+	useSensors,
+} from "@dnd-kit/core";
+import {
+	arrayMove,
+	SortableContext,
+	sortableKeyboardCoordinates,
+	useSortable,
+	verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { LucideGripVertical } from "lucide-react";
+import { useEffect, useOptimistic, useState, useTransition } from "react";
+import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
@@ -21,24 +39,6 @@ import { useForcedTransition } from "@/hooks/use-force-transition";
 import useTableStore from "@/hooks/use-table-store";
 import { TableBuilderService } from "@/services/table-builder.service";
 import type { Column } from "@/workers/data-processor.worker";
-import {
-	closestCenter,
-	DndContext,
-	type DragOverEvent,
-	KeyboardSensor,
-	PointerSensor,
-	useSensor,
-	useSensors,
-} from "@dnd-kit/core";
-import {
-	arrayMove,
-	SortableContext,
-	sortableKeyboardCoordinates,
-	useSortable,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { LucideGripVertical } from "lucide-react";
-import { useEffect, useOptimistic, useState, useTransition } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import { TableColumnDropdown } from "./table-column-dropdown";
 

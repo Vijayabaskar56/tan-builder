@@ -1,5 +1,5 @@
 "use no memo";
-import type { DragEndEvent, UniqueIdentifier } from "@dnd-kit/core";
+import type { DragEndEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { createFileRoute } from "@tanstack/react-router";
 import {
@@ -183,7 +183,9 @@ function RouteComponent() {
 
 	// Row dragging state
 	const dataIds = useMemo(() => {
-		return filteredData.map((item) => tableData.table.data.indexOf(item).toString());
+		return filteredData.map((item) =>
+			tableData.table.data.indexOf(item).toString(),
+		);
 	}, [filteredData, tableData.table.data]);
 
 	// Update page size when pagination setting changes
@@ -275,16 +277,17 @@ function RouteComponent() {
 				{/* Filters */}
 				<div className="flex flex-wrap items-start gap-2.5 mb-3.5">
 					<div className="flex items-center gap-3">
-						{tableData.settings.enableHiding && (
-							<DataGridColumnVisibility
-								table={table}
-								trigger={
-									<Button variant="outline" size="sm">
-										Columns
-									</Button>
-								}
-							/>
-						)}
+						{tableData.settings.enableHiding &&
+							tableData.table.columns.length > 0 && (
+								<DataGridColumnVisibility
+									table={table}
+									trigger={
+										<Button variant="outline" size="sm">
+											Columns
+										</Button>
+									}
+								/>
+							)}
 					</div>
 					<div className="flex-1">
 						<Filters
@@ -341,7 +344,8 @@ function RouteComponent() {
 								<ScrollBar orientation="horizontal" />
 							</ScrollArea>
 						</DataGridContainer>
-						{tableData.settings.enablePagination && <DataGridPagination />}
+						{tableData.settings.enablePagination &&
+							tableData.table.data.length > 0 && <DataGridPagination />}
 					</div>
 				</DataGrid>
 			</div>

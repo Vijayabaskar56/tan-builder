@@ -27,7 +27,7 @@ const NoFieldPlaceholder = ({
 					<EmptyMedia variant="icon">
 						<FrownIcon size={40} />
 					</EmptyMedia>
-					<EmptyTitle>{title}</EmptyTitle>
+					<EmptyTitle className="">{title}</EmptyTitle>
 					<EmptyDescription>{description}</EmptyDescription>
 				</EmptyHeader>
 				<EmptyContent>

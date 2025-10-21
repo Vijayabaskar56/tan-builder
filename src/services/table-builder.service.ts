@@ -489,45 +489,54 @@ export class TableBuilderService {
 				return false;
 			}
 
-			// Clear old data to force re-initialization with new schema
-			localStorage.removeItem("table-builder");
-
-			const existing = tableBuilderCollection.get(TableBuilderService.TABLE_ID);
-			if (!existing) {
-				const defaultSettings = {
-					isGlobalSearch: true,
-					enableHiding: true,
-					enableSorting: true,
-					enableResizing: true,
-					enablePinning: true,
-					enableRowSelection: false,
-					enableCRUD: false,
-					enableColumnDragging: false,
-					enableRowDragging: false,
-					enablePagination: true,
-					tableLayout: {
-						dense: false,
-						cellBorder: false,
-						rowBorder: true,
-						rowRounded: false,
-						stripped: false,
-						headerBorder: true,
-						headerSticky: false,
-						width: "fixed" as const,
-					},
-				};
-
-				tableBuilderCollection.insert([
-					{
-						id: TableBuilderService.TABLE_ID,
-						settings: defaultSettings,
-						table: {
-							columns: [],
-							data: [],
-						},
-					},
-				]);
+			// Clear old data only if invalid to force re-initialization with new schema
+			try {
+				const existing = tableBuilderCollection.get(
+					TableBuilderService.TABLE_ID,
+				);
+				if (existing) {
+					// Data exists and is valid, no need to initialize
+					return true;
+				}
+			} catch (error) {
+				// Data is invalid or corrupted, clear it
+				localStorage.removeItem("table-builder");
 			}
+
+			// Initialize with defaults if no valid data exists
+			const defaultSettings = {
+				isGlobalSearch: true,
+				enableHiding: true,
+				enableSorting: true,
+				enableResizing: true,
+				enablePinning: true,
+				enableRowSelection: false,
+				enableCRUD: false,
+				enableColumnDragging: false,
+				enableRowDragging: false,
+				enablePagination: true,
+				tableLayout: {
+					dense: false,
+					cellBorder: false,
+					rowBorder: true,
+					rowRounded: false,
+					stripped: false,
+					headerBorder: true,
+					headerSticky: false,
+					width: "fixed" as const,
+				},
+			};
+
+			tableBuilderCollection.insert([
+				{
+					id: TableBuilderService.TABLE_ID,
+					settings: defaultSettings,
+					table: {
+						columns: [],
+						data: [],
+					},
+				},
+			]);
 			return true;
 		} catch (error) {
 			console.error("Failed to initialize table:", error);

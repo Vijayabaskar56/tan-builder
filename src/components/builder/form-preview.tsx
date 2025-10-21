@@ -16,6 +16,7 @@ import { useFormStore, useIsMultiStep } from "@/hooks/use-form-store";
 import type { FormArray, FormElement, FormStep } from "@/types/form-types";
 import { FrownIcon } from "../ui/frown";
 import { FormElementsDropdown } from "./form-elements-dropdown";
+import NoFieldPlaceholder from "./no-field-placeholder";
 
 interface FormPreviewProps {
 	form: AppForm;
@@ -26,25 +27,11 @@ export function SingleStepFormPreview({ form }: FormPreviewProps) {
 	const isMS = useIsMultiStep();
 	if (formElements.length < 1)
 		return (
-			<div className="h-full py-10 px-3">
-				<Empty>
-					<EmptyHeader>
-						<EmptyMedia variant="icon">
-							<FrownIcon size={40} />
-						</EmptyMedia>
-						<EmptyTitle>No Field To Preview Yet</EmptyTitle>
-						<EmptyDescription>
-							You haven&apos;t added any form elements yet. Get started by
-							creating your first form element.
-						</EmptyDescription>
-					</EmptyHeader>
-					<EmptyContent>
-						<div className="flex gap-2">
-							<FormElementsDropdown />
-						</div>
-					</EmptyContent>
-				</Empty>
-			</div>
+			<NoFieldPlaceholder
+				title="No Field To Preview Yet"
+				description="	You haven&apos;t added any form elements yet. Get started by
+				creating your first form element."
+			/>
 		);
 	return (
 		<div className="w-full animate-in rounded-md">

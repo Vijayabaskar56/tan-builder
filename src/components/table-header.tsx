@@ -1,4 +1,10 @@
 import {
+	ChevronDownIcon,
+	CodeIcon,
+	ListIcon,
+	SettingsIcon,
+} from "lucide-react";
+import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuGroup,
@@ -12,12 +18,6 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import useTableStore from "@/hooks/use-table-store";
 import { TableBuilderService } from "@/services/table-builder.service";
-import {
-	ChevronDownIcon,
-	CodeIcon,
-	ListIcon,
-	SettingsIcon,
-} from "lucide-react";
 import DataUploadDialog from "./table-components/table-data-upload-dialog";
 import { AnimatedIconButton } from "./ui/animated-icon-button";
 import { RotateCWIcon } from "./ui/rotate-cw";

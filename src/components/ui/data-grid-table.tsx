@@ -12,6 +12,7 @@ import { type CSSProperties, Fragment, type ReactNode } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useDataGrid } from "@/components/ui/data-grid";
 import { cn } from "@/lib/utils";
+import NoFieldPlaceholder from "../builder/no-field-placeholder";
 
 const headerCellSpacingVariants = cva("", {
 	variants: {
@@ -397,11 +398,14 @@ function DataGridTableEmpty() {
 
 	return (
 		<tr>
-			<td
-				colSpan={totalColumns}
-				className="text-center text-muted-foreground py-6"
-			>
-				{props.emptyMessage || "No data available"}
+			<td colSpan={totalColumns} className="text-center py-6">
+				{props.emptyMessage || (
+					<NoFieldPlaceholder
+						title="No Coloums are Data to Preview Yet"
+						description="Start by Importing JSON data or Adding Coloums"
+						showbutton={false}
+					/>
+				)}
 			</td>
 		</tr>
 	);

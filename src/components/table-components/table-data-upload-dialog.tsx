@@ -1,3 +1,8 @@
+import { setDefaultResultOrder } from "node:dns/promises";
+import { Loader2Icon, UploadIcon } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import * as z from "zod";
 import FileUpload from "@/components/file-upload";
 import { AnimatedIconButton } from "@/components/ui/animated-icon-button";
 import { Button } from "@/components/ui/button";
@@ -13,10 +18,6 @@ import { revalidateLogic, useAppForm } from "@/components/ui/tanstack-form";
 import { Textarea } from "@/components/ui/textarea";
 import { useDataProcessorWorker } from "@/hooks/use-data-processor-worker";
 import { TableBuilderService } from "@/services/table-builder.service";
-import { Loader2Icon, UploadIcon } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
-import * as z from "zod";
 
 const dataFormSchema = z.object({
 	data: z.array(z.any()),
@@ -65,6 +66,7 @@ function DataUploadDialog() {
 			dataForm.setFieldValue("data", []);
 			TableBuilderService.importData([]);
 			toast.success("Data cleared");
+			setTextareaText("[]");
 			setOpen(false);
 			return;
 		}
