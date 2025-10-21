@@ -26,13 +26,20 @@ import {
 	transformToStepFormList,
 } from "../lib/form-elements-helpers";
 
-const getShared = createClientOnlyFn(() => {
-	return localStorage.getItem("share");
-});
+// Client-only functions defined inside the initialization function to avoid SSR issues
+const getSharedData = () => {
+	const getShared = createClientOnlyFn(() => {
+		return localStorage.getItem("share");
+	});
+	return getShared();
+};
 
-const removeShared = createClientOnlyFn(() => {
-	return localStorage.removeItem("share");
-});
+const removeSharedData = () => {
+	const removeShared = createClientOnlyFn(() => {
+		return localStorage.removeItem("share");
+	});
+	return removeShared();
+};
 
 // Core state type without actions
 type FormBuilderCoreState = {
@@ -150,22 +157,38 @@ const isFormArrayForm = (
 ): formElements is FormArray[] => {
 	return formElements.length > 0 && isFormArray(formElements[0]);
 };
-const shared = getShared();
-if (shared) {
-	removeShared();
-}
-const initialFormElements = templates.contactUs.template as FormElementOrList[];
-export const initialCoreState: FormBuilderCoreState = {
-	formElements: shared ? JSON.parse(shared) : initialFormElements,
-	isMS: shared
-		? isMultiStepForm(JSON.parse(shared))
-		: isMultiStepForm(initialFormElements),
-	formName: "draft",
-	schemaName: "draftFormSchema",
-	validationSchema: "zod",
-	framework: "react",
-	lastAddedStepIndex: undefined,
+// Function to get initial state with shared data check
+const getInitialCoreState = (): FormBuilderCoreState => {
+	let shared: string | null = null;
+	let initialFormElements = templates.contactUs.template as FormElementOrList[];
+
+	try {
+		// Only check for shared data on client side
+		if (typeof window !== "undefined") {
+			shared = getSharedData();
+			if (shared) {
+				removeSharedData();
+			}
+		}
+	} catch (error) {
+		// If there's an error (e.g., SSR), use default
+		console.warn("Could not access shared data:", error);
+	}
+
+	return {
+		formElements: shared ? JSON.parse(shared) : initialFormElements,
+		isMS: shared
+			? isMultiStepForm(JSON.parse(shared))
+			: isMultiStepForm(initialFormElements),
+		formName: "draft",
+		schemaName: "draftFormSchema",
+		validationSchema: "zod",
+		framework: "react",
+		lastAddedStepIndex: undefined,
+	};
 };
+
+export const initialCoreState: FormBuilderCoreState = getInitialCoreState();
 
 const formBuilderCoreStore = new Store<FormBuilderCoreState>(initialCoreState, {
 	updateFn: (prevState) => (updater) => {

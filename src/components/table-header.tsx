@@ -1,9 +1,12 @@
 import {
 	ChevronDownIcon,
-	CodeIcon,
+	HeartIcon,
 	ListIcon,
 	SettingsIcon,
 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -13,11 +16,21 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+	ResponsiveDialog,
+	ResponsiveDialogContent,
+	ResponsiveDialogDescription,
+	ResponsiveDialogHeader,
+	ResponsiveDialogTitle,
+	ResponsiveDialogTrigger,
+} from "@/components/ui/revola";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import useTableStore from "@/hooks/use-table-store";
 import { TableBuilderService } from "@/services/table-builder.service";
+import TableCodeDialog from "./table-code-dialog";
 import DataUploadDialog from "./table-components/table-data-upload-dialog";
 import { AnimatedIconButton } from "./ui/animated-icon-button";
 import { RotateCWIcon } from "./ui/rotate-cw";
@@ -26,8 +39,28 @@ import { ShareIcon } from "./ui/share";
 export default function TableHeader() {
 	const tableData = useTableStore();
 	const frameworks = ["react", "vue", "svelte", "angular"];
+
+	// Save dialog state
+	const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+	const [saveTableName, setSaveTableName] = useState("");
+
 	const resetTable = () => {
 		TableBuilderService.resetTable();
+	};
+
+	const handleSaveTable = () => {
+		if (saveTableName.trim()) {
+			const success = TableBuilderService.saveTableTemplate(
+				saveTableName.trim(),
+			);
+			if (success) {
+				toast("Table saved successfully");
+				setSaveDialogOpen(false);
+				setSaveTableName("");
+			} else {
+				toast("Failed to save table");
+			}
+		}
 	};
 
 	const togglePagination = () => {
@@ -39,6 +72,21 @@ export default function TableHeader() {
 
 	const updateTableLayoutSetting = (key: string, value: boolean | string) => {
 		TableBuilderService.updateTableLayoutSetting(key, value);
+	};
+
+	const handleShare = () => {
+		const shareData = {
+			tableName: tableData.tableName,
+			settings: tableData.settings,
+			table: { columns: tableData.table.columns },
+		};
+		const baseUri = import.meta.env.DEV
+			? "http://localhost:3000"
+			: "https://tan-form-builder.baskar.dev";
+		navigator.clipboard.writeText(
+			`${baseUri}/table-builder?share=${encodeURIComponent(JSON.stringify(shareData))}`,
+		);
+		toast("Link Copied to clipboard");
 	};
 
 	return (
@@ -91,7 +139,7 @@ export default function TableHeader() {
 							icon={<ShareIcon className="w-4 h-4 mr-1" />}
 							text={<span className="hidden xl:block ml-1">Share</span>}
 							variant="ghost"
-							disabled
+							onClick={handleShare}
 						/>
 						<div className="h-4 w-px bg-border" />
 						<div className="h-4 w-px bg-border" />
@@ -247,12 +295,69 @@ export default function TableHeader() {
 							</DropdownMenuContent>
 						</DropdownMenu>
 						<div className="h-4 w-px bg-border" />
-						<AnimatedIconButton
-							icon={<CodeIcon className="w-4 h-4 mr-1" />}
-							text={<span className="hidden xl:block ml-1">Code</span>}
-							variant="ghost"
-							disabled
-						/>
+
+						<ResponsiveDialog
+							open={saveDialogOpen}
+							onOpenChange={setSaveDialogOpen}
+						>
+							<ResponsiveDialogTrigger asChild>
+								<AnimatedIconButton
+									icon={<HeartIcon className="w-4 h-4 mr-1" />}
+									text={<span className="hidden xl:block ml-1">Save</span>}
+									variant="ghost"
+									size="sm"
+								/>
+							</ResponsiveDialogTrigger>
+
+							<ResponsiveDialogContent>
+								<div className="m-5">
+									<ResponsiveDialogHeader>
+										<ResponsiveDialogTitle>Save Table</ResponsiveDialogTitle>
+										<ResponsiveDialogDescription>
+											Enter a name for your table to save it for later use.
+										</ResponsiveDialogDescription>
+									</ResponsiveDialogHeader>
+									<div className="space-y-4 mt-4">
+										<div>
+											<Label className="mb-4" htmlFor="table_name">
+												Table Name
+											</Label>
+											<Input
+												id="table_name"
+												placeholder="Enter table name..."
+												value={saveTableName}
+												onChange={(e) => setSaveTableName(e.target.value)}
+												onKeyDown={(e) => {
+													if (e.key === "Enter") {
+														handleSaveTable();
+													}
+												}}
+											/>
+										</div>
+										<div className="flex justify-end gap-2">
+											<Button
+												variant="outline"
+												onClick={() => {
+													setSaveDialogOpen(false);
+													setSaveTableName("");
+												}}
+											>
+												Cancel
+											</Button>
+											<Button
+												onClick={handleSaveTable}
+												disabled={!saveTableName.trim()}
+											>
+												Save
+											</Button>
+										</div>
+									</div>
+								</div>
+							</ResponsiveDialogContent>
+						</ResponsiveDialog>
+
+						<div className="h-4 w-px bg-border" />
+						<TableCodeDialog />
 					</div>
 					<ScrollBar orientation="horizontal" />
 				</ScrollArea>

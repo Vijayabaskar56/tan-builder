@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/a11y/noLabelWithoutControl: no needed */
 import { TableSettingsSidebar } from "@/components/builder/TableSettingsSidebar";
 import { ErrorBoundary } from "@/components/error-boundary";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useSearch } from "@tanstack/react-router";
 import { createClientOnlyFn } from "@tanstack/react-start";
 import { Database, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -17,12 +17,21 @@ import { LayoutPanelTopIcon } from "@/components/ui/layout-panel-top";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { SettingsGearIcon } from "@/components/ui/settings-gear";
 import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
+import {
+	ResponsiveDialog,
+	ResponsiveDialogContent,
+	ResponsiveDialogDescription,
+	ResponsiveDialogHeader,
+	ResponsiveDialogTitle,
+} from "@/components/ui/revola";
 
 import { Separator } from "@/components/ui/separator";
 import { useScreenSize } from "@/hooks/use-screen-size";
 import useTableStore from "@/hooks/use-table-store";
 import { cn } from "@/lib/utils";
 import { TableBuilderService } from "@/services/table-builder.service";
+import { tableBuilderCollection } from "@/db-collections/table-builder.collections";
 
 const initializeTableStore = createClientOnlyFn(async () => {
 	TableBuilderService.initializeTable();
@@ -33,6 +42,9 @@ export const Route = createFileRoute("/table-builder")({
 	errorComponent: ErrorBoundary,
 	notFoundComponent: NotFound,
 	ssr: false,
+	validateSearch: (search) => ({
+		share: search.share as string | undefined,
+	}),
 });
 
 function RouteComponent() {
@@ -43,10 +55,13 @@ function RouteComponent() {
 	const screenSize = useScreenSize();
 	const isMdUp = screenSize.greaterThanOrEqual("md");
 	const tableBuilder = useTableStore();
+	const { share } = useSearch({ from: "/table-builder" });
 
 	const [isTableBuilderInitialized, setIsTableBuilderInitialized] =
 		useState(false);
 	const [activeTab, setActiveTab] = useState("columns");
+	const [shareDialogOpen, setShareDialogOpen] = useState(false);
+	const [sharedData, setSharedData] = useState<any>(null);
 	useEffect(() => {
 		initializeTableStore();
 		setIsTableBuilderInitialized(true);
@@ -67,6 +82,55 @@ function RouteComponent() {
 			setSidebarWidth(Math.max(minWidth, oneThird));
 		}
 	}, [isMdUp]);
+
+	// Handle share parameter
+	useEffect(() => {
+		if (share && isTableBuilderInitialized) {
+			try {
+				const parsed = JSON.parse(decodeURIComponent(share));
+				setSharedData(parsed);
+				// Show dialog if there's existing data
+				if (
+					tableBuilder.table.columns.length > 0 ||
+					tableBuilder.table.data.length > 0
+				) {
+					setShareDialogOpen(true);
+				} else {
+					// Load directly if no existing data
+					handleReplace();
+				}
+			} catch (error) {
+				console.error("Invalid share data:", error);
+			}
+		}
+	}, [
+		share,
+		isTableBuilderInitialized,
+		tableBuilder.table.columns.length,
+		tableBuilder.table.data.length,
+	]);
+
+	const handleReplace = () => {
+		if (sharedData) {
+			tableBuilderCollection.update(1, (draft) => {
+				draft.tableName = sharedData.tableName;
+				draft.settings = sharedData.settings;
+				draft.table.columns = sharedData.table.columns;
+				draft.table.data = []; // Shared data doesn't include data
+			});
+		}
+		setShareDialogOpen(false);
+		setSharedData(null);
+		// Clean up URL
+		window.history.replaceState({}, "", "/table-builder");
+	};
+
+	const handleCancel = () => {
+		setShareDialogOpen(false);
+		setSharedData(null);
+		// Clean up URL
+		window.history.replaceState({}, "", "/table-builder");
+	};
 
 	const handleMouseDown = (e: React.MouseEvent) => {
 		setIsResizing(true);
@@ -425,6 +489,32 @@ function RouteComponent() {
 					</ScrollArea>
 				</div>
 			)}
+
+			{/* Share Replace Dialog */}
+			<ResponsiveDialog
+				open={shareDialogOpen}
+				onOpenChange={setShareDialogOpen}
+			>
+				<ResponsiveDialogContent>
+					<div className="m-5">
+						<ResponsiveDialogHeader>
+							<ResponsiveDialogTitle>Load Shared Table</ResponsiveDialogTitle>
+							<ResponsiveDialogDescription>
+								You have existing table data. Do you want to replace it with the
+								shared table configuration?
+							</ResponsiveDialogDescription>
+						</ResponsiveDialogHeader>
+						<div className="space-y-4 mt-4">
+							<div className="flex justify-end gap-2">
+								<Button variant="outline" onClick={handleCancel}>
+									Cancel
+								</Button>
+								<Button onClick={handleReplace}>Replace</Button>
+							</div>
+						</div>
+					</div>
+				</ResponsiveDialogContent>
+			</ResponsiveDialog>
 		</main>
 	);
 }

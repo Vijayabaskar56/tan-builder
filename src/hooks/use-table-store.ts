@@ -6,6 +6,7 @@ const useTableStore = () => {
 		q
 			.from({ tableBuilder: tableBuilderCollection })
 			.select(({ tableBuilder }) => ({
+				tableName: tableBuilder.tableName,
 				settings: tableBuilder.settings,
 				table: tableBuilder.table,
 			})),
@@ -13,6 +14,7 @@ const useTableStore = () => {
 
 	return (
 		data?.[0] || {
+			tableName: "table",
 			settings: {
 				isGlobalSearch: false,
 				enableHiding: false,

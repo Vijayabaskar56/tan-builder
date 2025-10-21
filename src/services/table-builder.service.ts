@@ -4,6 +4,7 @@ import { tableTemplates } from "@/constants/table-templates";
 import {
 	type TableBuilder,
 	tableBuilderCollection,
+	type SavedTableTemplate,
 } from "@/db-collections/table-builder.collections";
 import { detectColumns } from "@/lib/table-generator/generate-columns";
 import type { ColumnConfig, DataRow } from "@/types/table-types";
@@ -203,6 +204,21 @@ export class TableBuilderService {
 			return true;
 		} catch (error) {
 			console.error("Failed to update settings:", error);
+			return false;
+		}
+	}
+
+	/**
+	 * Set table name
+	 */
+	static setTableName(name: string): boolean {
+		try {
+			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
+				draft.tableName = name;
+			});
+			return true;
+		} catch (error) {
+			console.error("Failed to set table name:", error);
 			return false;
 		}
 	}
@@ -514,7 +530,7 @@ export class TableBuilderService {
 					// Data exists and is valid, no need to initialize
 					return true;
 				}
-			} catch (error) {
+			} catch (_error) {
 				// Data is invalid or corrupted, clear it
 				localStorage.removeItem("table-builder");
 			}
@@ -556,6 +572,118 @@ export class TableBuilderService {
 			return true;
 		} catch (error) {
 			console.error("Failed to initialize table:", error);
+			return false;
+		}
+	}
+
+	// ============================================================================
+	// Saved Templates Operations
+	// ============================================================================
+
+	/**
+	 * Save current table as a template
+	 */
+	static saveTableTemplate(name: string): boolean {
+		try {
+			if (typeof window === "undefined") return false;
+
+			const currentTable = TableBuilderService.getTableData();
+			if (!currentTable) {
+				throw new Error("No table data to save");
+			}
+
+			// Create a safe key from the name
+			const safeKey = `saved-table-template-${name.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase()}`;
+
+			const template: SavedTableTemplate = {
+				id: safeKey,
+				name,
+				data: currentTable,
+				createdAt: new Date().toISOString(),
+			};
+
+			localStorage.setItem(safeKey, JSON.stringify(template));
+			// Dispatch custom event to notify components of template changes
+			window.dispatchEvent(new CustomEvent("tableTemplateChanged"));
+			return true;
+		} catch (error) {
+			console.error("Failed to save table template:", error);
+			return false;
+		}
+	}
+
+	/**
+	 * Get all saved table templates
+	 */
+	static getSavedTableTemplates(): SavedTableTemplate[] {
+		try {
+			if (typeof window === "undefined") return [];
+
+			const templates: SavedTableTemplate[] = [];
+			const keys = Object.keys(localStorage);
+
+			for (const key of keys) {
+				if (key.startsWith("saved-table-template-")) {
+					try {
+						const template = JSON.parse(localStorage.getItem(key) || "{}");
+						if (template && template.id && template.name && template.data) {
+							templates.push(template);
+						}
+					} catch (e) {
+						// Skip invalid entries
+						console.warn(`Invalid saved template in key ${key}:`, e);
+					}
+				}
+			}
+
+			// Sort by creation date, newest first
+			return templates.sort(
+				(a, b) =>
+					new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+			);
+		} catch (error) {
+			console.error("Failed to get saved table templates:", error);
+			return [];
+		}
+	}
+
+	/**
+	 * Load a saved table template
+	 */
+	static loadTableTemplate(templateId: string): boolean {
+		try {
+			if (typeof window === "undefined") return false;
+
+			const templateData = localStorage.getItem(templateId);
+			if (!templateData) {
+				throw new Error(`Template ${templateId} not found`);
+			}
+
+			const template: SavedTableTemplate = JSON.parse(templateData);
+
+			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
+				Object.assign(draft, template.data);
+			});
+			return true;
+		} catch (error) {
+			console.error(`Failed to load table template ${templateId}:`, error);
+			return false;
+		}
+	}
+
+	/**
+	 * Delete a saved table template
+	 */
+	static deleteTableTemplate(templateId: string): boolean {
+		try {
+			if (typeof window === "undefined") return false;
+
+			localStorage.removeItem(templateId);
+			// Dispatch custom event to notify components of template changes
+			window.dispatchEvent(new CustomEvent("tableTemplateChanged"));
+			return true;
+		} catch (error) {
+			console.error(`Failed to delete table template ${templateId}:`, error);
 			return false;
 		}
 	}

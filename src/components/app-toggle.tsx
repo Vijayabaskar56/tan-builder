@@ -46,6 +46,7 @@ export default function AppToggle() {
 					className="group-data-[state=off]:text-muted-foreground/70 relative z-10 inline-flex h-full min-w-8 cursor-pointer items-center justify-center px-3 whitespace-nowrap transition-colors select-none"
 				>
 					Table Builder
+					<span className="absolute text-primary -top-2 -right-3">Beta</span>
 					<RadioGroupItem id={`${id}-2`} value="on" className="sr-only" />
 				</label>
 			</RadioGroup>

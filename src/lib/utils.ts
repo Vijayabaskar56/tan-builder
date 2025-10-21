@@ -164,6 +164,21 @@ export const logger = createIsomorphicFn()
 		}
 	});
 
+export const toJSLiteral = (value: any): string => {
+	if (typeof value === "string") return JSON.stringify(value);
+	if (typeof value === "number" || typeof value === "boolean")
+		return String(value);
+	if (value === null) return "null";
+	if (Array.isArray(value)) return `[${value.map(toJSLiteral).join(", ")}]`;
+	if (typeof value === "object") {
+		const entries = Object.entries(value).map(
+			([k, v]) => `${k}: ${toJSLiteral(v)}`,
+		);
+		return `{ ${entries.join(", ")} }`;
+	}
+	return "undefined";
+};
+
 import { detectColumnsConfig } from "./column-detection";
 
 export const detectColumns = (data: JsonData[]) => detectColumnsConfig(data);

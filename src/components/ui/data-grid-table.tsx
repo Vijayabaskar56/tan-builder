@@ -401,7 +401,7 @@ function DataGridTableEmpty() {
 			<td colSpan={totalColumns} className="text-center py-6">
 				{props.emptyMessage || (
 					<NoFieldPlaceholder
-						title="No Coloums are Data to Preview Yet"
+						title="No Coloums or Data to Preview Yet"
 						description="Start by Importing JSON data or Adding Coloums"
 						showbutton={false}
 					/>

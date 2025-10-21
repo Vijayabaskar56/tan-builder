@@ -1,22 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useId, useState } from "react";
 import * as z from "zod";
-import { useFormStore } from "@/hooks/use-form-store";
-import useSettings from "@/hooks/use-settings";
-import { generateFormCode } from "@/lib/form-code-generators/react/generate-form-code";
-import {
-	extractImportDependencies,
-	generateImports,
-} from "@/lib/form-code-generators/react/generate-imports";
-import { generateValidationCode } from "@/lib/schema-generators";
+import useTableStore from "@/hooks/use-table-store";
+
+import { generateTable } from "@/lib/table-code-generators/react/index";
 import { logger } from "@/lib/utils";
-import type {
-	CreateRegistryResponse,
-	FormArray,
-	FormElement,
-	FormElementOrList,
-} from "@/types/form-types";
-import { GeneratedFormCodeViewer } from "./generated-code/code-viewer";
+import { TableBuilderService } from "@/services/table-builder.service";
+import type { CreateRegistryResponse } from "@/types/form-types";
+import { GeneratedTableCodeViewer } from "@/components/generated-code/table-code-viewer";
 import { AnimatedIconButton } from "./ui/animated-icon-button";
 import {
 	InputGroup,
@@ -38,23 +29,18 @@ import { Spinner } from "./ui/spinner";
 import { revalidateLogic, useAppForm } from "./ui/tanstack-form";
 import { TerminalIcon } from "./ui/terminal";
 
-const formSchema = z.object({
-	formName: z.string().min(1, { message: "Form name is required" }),
+const tableSchema = z.object({
+	tableName: z.string().min(1, { message: "Table name is required" }),
 });
-function CodeDialog() {
-	const {
-		formName,
-		actions,
-		formElements,
-		validationSchema,
-		isMS,
-		schemaName,
-	} = useFormStore();
-	const settings = useSettings();
+
+function TableCodeDialog() {
+	const tableData = useTableStore();
+
 	const [open, setOpen] = useState(false);
 	const [isGenerateSuccess, setIsGenerateSuccess] = useState(false);
 	const [generatedId, setGeneratedId] = useState<string>("");
 	const id = useId();
+
 	const tabsData = [
 		{
 			value: "pnpm",
@@ -73,53 +59,36 @@ function CodeDialog() {
 			registery: `bunx --bun shadcn@canary add ${generatedId}`,
 		},
 	];
-	const generatedCode = generateFormCode({
-		formElements: formElements as FormElementOrList[],
-		isMS,
-		validationSchema,
-		settings,
-		formName,
-	});
-	const validationCode = generateValidationCode(
-		isMS,
-		schemaName,
-		validationSchema,
-		formElements,
+
+	const { code, dependencies } = generateTable(
+		{ id: 1, ...tableData },
+		tableData.tableName,
 	);
-	const importDependencies = generateImports(
-		formElements as (FormElement | FormArray)[],
-		validationSchema,
-		isMS,
-		schemaName,
-	);
+
 	const files = [
 		{
-			path: `components/${formName}.tsx`,
-			content: generatedCode?.[0].code,
+			path: `components/${tableData.tableName}.tsx`,
+			content: code,
 			type: "registry:component",
 			target: "",
 		},
-		{
-			path: `lib/${schemaName}.tsx`,
-			content: validationCode,
-			type: "registry:lib",
-			target: "",
-		},
 	];
+
 	const payload = {
-		...extractImportDependencies(importDependencies),
+		...dependencies,
 		files,
-		name: formName,
+		name: tableData.tableName,
 	};
+
 	const url =
 		import.meta.env.MODE === "development"
 			? "http://localhost:3000"
 			: "https://tan-form-builder.baskar.dev";
 
 	const mutation = useMutation<CreateRegistryResponse, Error, void>({
-		mutationKey: ["/create-command", formName],
+		mutationKey: ["/create-command", tableData.tableName],
 		mutationFn: async (): Promise<CreateRegistryResponse> => {
-			const res = await fetch(`${url}/r/${formName}`, {
+			const res = await fetch(`${url}/r/${tableData.tableName}`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -136,11 +105,11 @@ function CodeDialog() {
 
 	const form = useAppForm({
 		defaultValues: {
-			formName: formName,
-		} as z.input<typeof formSchema>,
+			tableName: tableData.tableName,
+		} as z.input<typeof tableSchema>,
 		validationLogic: revalidateLogic(),
 		validators: {
-			onDynamic: formSchema,
+			onDynamic: tableSchema,
 			onDynamicAsyncDebounceMs: 300,
 		},
 		onSubmit: async () => {
@@ -157,7 +126,7 @@ function CodeDialog() {
 				form.setErrorMap({
 					onDynamic: {
 						fields: {
-							formName: {
+							tableName: {
 								message,
 							},
 						},
@@ -194,14 +163,16 @@ function CodeDialog() {
 							word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
 					)
 					.join("");
-				actions.setFormName(fieldApi.state.value as string);
+				TableBuilderService.setTableName(fieldApi.state.value as string);
 			},
 		},
 	});
+
 	useEffect(() => {
 		setIsGenerateSuccess(false);
 		setGeneratedId("");
 	}, []);
+
 	return (
 		<ResponsiveDialog open={open} onOpenChange={setOpen}>
 			<ResponsiveDialogTrigger asChild>
@@ -222,20 +193,20 @@ function CodeDialog() {
 					</ResponsiveDialogHeader>
 					<form.AppForm>
 						<form.Form id={id} className="px-6 pt-4">
-							<form.AppField name={"formName"}>
+							<form.AppField name={"tableName"}>
 								{(field) => (
 									<field.FieldSet className="w-full">
 										<field.Field
 											aria-invalid={!!field.state.meta.errors.length}
 										>
-											<field.FieldLabel htmlFor={"formName"}>
-												Form Name
+											<field.FieldLabel htmlFor={"tableName"}>
+												Table Name
 											</field.FieldLabel>
 											<InputGroup>
 												<InputGroupInput
-													name={"formName"}
+													name={"tableName"}
 													aria-invalid={!!field.state.meta.errors.length}
-													placeholder="Enter your form name eg:- ContactUs"
+													placeholder="Enter your table name eg:- UserTable"
 													type="string"
 													value={field.state.value as string}
 													onChange={(e) => field.handleChange(e.target.value)}
@@ -274,10 +245,11 @@ function CodeDialog() {
 					</form.AppForm>
 					<Separator className="my-4" />
 					<ScrollArea className="flex-1 px-6 py-4">
-						<GeneratedFormCodeViewer
+						<GeneratedTableCodeViewer
 							isGenerateSuccess={isGenerateSuccess}
 							generatedId={generatedId}
 							tabsData={tabsData}
+							code={code}
 						/>
 					</ScrollArea>
 				</div>
@@ -286,4 +258,4 @@ function CodeDialog() {
 	);
 }
 
-export default CodeDialog;
+export default TableCodeDialog;

@@ -8,6 +8,7 @@ import { settingsCollection } from "./settings.collections";
 
 export const TableBuilderSchema = v.object({
 	id: v.number(),
+	tableName: v.optional(v.string(), "table"),
 	settings: v.object({
 		isGlobalSearch: v.optional(v.boolean(), false),
 		enableHiding: v.optional(v.boolean(), false),
@@ -73,3 +74,13 @@ export const tableBuilderCollection = createCollection(
 				schema: TableBuilderSchema,
 			}),
 );
+
+// Schema for saved table templates
+export const SavedTableTemplateSchema = v.object({
+	id: v.string(),
+	name: v.string(),
+	data: TableBuilderSchema,
+	createdAt: v.string(),
+});
+
+export type SavedTableTemplate = v.InferOutput<typeof SavedTableTemplateSchema>;
