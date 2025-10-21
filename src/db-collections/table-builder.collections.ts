@@ -48,6 +48,7 @@ export const TableBuilderSchema = v.object({
 					v.literal("boolean"),
 					v.literal("date"),
 					v.literal("object"),
+					v.literal("enum"),
 				]),
 				order: v.number(),
 				filterable: v.optional(v.boolean(), false),

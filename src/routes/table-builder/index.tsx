@@ -84,8 +84,11 @@ function RouteComponent() {
 	}, [tableData.table.columns, tableData.settings]);
 
 	const filterFields = useMemo(() => {
-		return generateFilterFields(tableData.table.columns);
-	}, [tableData.table.columns]);
+		return generateFilterFields(
+			tableData.table.columns,
+			tableData.table.data as JsonData[],
+		);
+	}, [tableData.table.columns, tableData.table.data]);
 
 	// Apply filters to data - only apply filters with non-empty values
 	const filteredData = useMemo(() => {

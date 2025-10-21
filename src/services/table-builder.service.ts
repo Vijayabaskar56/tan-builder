@@ -397,8 +397,8 @@ export class TableBuilderService {
 				// Convert worker's Column[] to ColumnConfig[]
 				finalColumns = columns.map((col) => ({
 					...col,
-					filterable: true,
-					hasFacetedFilter: false,
+					filterable: col.type === "enum" ? true : true, // enums are filterable
+					hasFacetedFilter: col.type === "enum" ? true : false,
 					options: undefined,
 					optionsMode: "auto" as const,
 				}));

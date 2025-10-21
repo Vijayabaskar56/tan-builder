@@ -1374,7 +1374,6 @@ function FilterValueSelector<T = unknown>({
 					<Switch
 						checked={isChecked}
 						onCheckedChange={(checked) => onChange([checked as T])}
-						size="sm"
 					/>
 					{field.onLabel && field.offLabel && (
 						<span className="text-xs text-muted-foreground">
@@ -2282,7 +2281,8 @@ export function Filters<T = unknown>({
 														);
 													});
 
-													if (groupFields.length === 0) return null;
+													if (!groupFields || groupFields.length === 0)
+														return null;
 
 													return (
 														<CommandGroup

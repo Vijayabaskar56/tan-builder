@@ -96,6 +96,28 @@ export const STATIC_DUMMY_DATA = {
 		{ key: "source", value: "organic" },
 		{ key: "channel", value: "direct" },
 	],
+	enum: [
+		"Excellent",
+		"Very Good",
+		"Good",
+		"Outstanding",
+		"Excellent",
+		"Very Good",
+		"Good",
+		"Outstanding",
+		"Excellent",
+		"Very Good",
+		"Good",
+		"Outstanding",
+		"Excellent",
+		"Very Good",
+		"Good",
+		"Outstanding",
+		"Excellent",
+		"Very Good",
+		"Good",
+		"Outstanding",
+	],
 } as const;
 
 /**

@@ -9,7 +9,7 @@ export interface Column {
 	id: string;
 	accessor: string;
 	label: string;
-	type: "string" | "number" | "boolean" | "date" | "object";
+	type: "string" | "number" | "boolean" | "date" | "object" | "enum";
 	order: number;
 }
 
@@ -62,7 +62,7 @@ const parseJSON = (jsonText: string): DataRow[] => {
 // Utility: Detect column type from value
 const detectColumnType = (
 	value: string | number | boolean | null | undefined | object,
-): "string" | "number" | "boolean" | "date" | "object" => {
+): "string" | "number" | "boolean" | "date" | "object" | "enum" => {
 	if (value === null || value === undefined) return "string";
 	if (typeof value === "boolean") return "boolean";
 	if (typeof value === "number") return "number";
@@ -100,6 +100,13 @@ const detectColumns = (data: DataRow[]): Column[] => {
 			const uniqueValues = [...new Set(sampleValues.map((v) => String(v)))];
 			if (uniqueValues.length === 2) {
 				mostCommonType = "boolean";
+			} else if (
+				uniqueValues.length > 2 &&
+				uniqueValues.length <= 10 &&
+				sampleValues.length >= uniqueValues.length * 2
+			) {
+				// If we have 3-10 unique values and the field repeats (at least 2x more rows than unique values), classify as enum
+				mostCommonType = "enum";
 			}
 		}
 

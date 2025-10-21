@@ -17,7 +17,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { FilterFieldConfig } from "@/components/ui/filters";
-import type { ColumnConfig, JsonData } from "@/types/table-types";
+import type { ColumnConfig, DataRow, JsonData } from "@/types/table-types";
 
 interface ColumnSettings {
 	enableSorting?: boolean;
@@ -186,6 +186,7 @@ export function generateColumns(
  */
 export function generateFilterFields(
 	columns: ColumnConfig[],
+	data?: DataRow[],
 ): FilterFieldConfig[] {
 	return columns
 		.filter((col) => col.filterable)
@@ -202,7 +203,9 @@ export function generateFilterFields(
 								? "boolean"
 								: col.type === "date"
 									? "date"
-									: "text",
+									: col.type === "enum"
+										? "select"
+										: "text",
 				placeholder: `Filter by ${col.label.toLowerCase()}...`,
 			};
 
@@ -210,6 +213,25 @@ export function generateFilterFields(
 			if (col.type === "boolean") {
 				baseConfig.onLabel = "True";
 				baseConfig.offLabel = "False";
+			}
+
+			// For enum columns, generate options from data
+			if (col.type === "enum" && data) {
+				const uniqueValues = [
+					...new Set(
+						data
+							.map((row) => String(row[col.accessor] || ""))
+							.filter((val) => val),
+					),
+				];
+				baseConfig.options = uniqueValues.map((value) => ({
+					label: value,
+					value: value,
+				}));
+				// For enum fields with few options, disable search
+				baseConfig.searchable = uniqueValues.length <= 5;
+				// Set appropriate width for enum fields
+				baseConfig.className = "w-[160px]";
 			}
 
 			return baseConfig;
