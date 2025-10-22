@@ -63,7 +63,7 @@ export default function TableHeader() {
 		}
 	};
 
-	const togglePagination = () => {
+	const _togglePagination = () => {
 		TableBuilderService.updateSetting(
 			"enablePagination",
 			!tableData.settings.enablePagination,

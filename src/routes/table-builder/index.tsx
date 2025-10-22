@@ -29,6 +29,7 @@ import useTableStore from "@/hooks/use-table-store";
 import {
 	generateColumns,
 	generateFilterFields,
+	applyFilters,
 } from "@/lib/table-generator/generate-columns";
 import { TableBuilderService } from "@/services/table-builder.service";
 import type { JsonData } from "@/types/table-types";
@@ -114,117 +115,14 @@ function RouteComponent() {
 		);
 	}, [tableData.table.columns, tableData.table.data]);
 
-	// Apply filters to data - only apply filters with non-empty values
+	// Apply filters to data
 	const filteredData = useMemo(() => {
-		let filtered = [...(tableData.table.data as JsonData[])];
-
-		// Filter out empty filters before applying
-		const activeFilters = filters.filter((filter) => {
-			const { values } = filter;
-
-			// Check if filter has meaningful values
-			if (!values || values.length === 0) return false;
-
-			// For text/string values, check if they're not empty strings
-			if (
-				values.every(
-					(value) => typeof value === "string" && value.trim() === "",
-				)
-			)
-				return false;
-
-			// For number values, check if they're not null/undefined
-			if (values.every((value) => value === null || value === undefined))
-				return false;
-
-			// For arrays, check if they're not empty
-			if (values.every((value) => Array.isArray(value) && value.length === 0))
-				return false;
-
-			return true;
-		});
-
-		activeFilters.forEach((filter) => {
-			const { field, operator, values } = filter;
-
-			filtered = filtered.filter((item) => {
-				const fieldValue = item[field];
-
-				switch (operator) {
-					case "is_any_of":
-						if (Array.isArray(fieldValue)) {
-							// For multiselect on array columns, check if any selected values are in the array
-							return values.some((selectedValue) =>
-								fieldValue.includes(String(selectedValue)),
-							);
-						}
-						return values.some((value) => String(value) === String(fieldValue));
-					case "is_not_any_of":
-						if (Array.isArray(fieldValue)) {
-							// For multiselect on array columns, check if none of the selected values are in the array
-							return !values.some((selectedValue) =>
-								fieldValue.includes(String(selectedValue)),
-							);
-						}
-						return !values.some(
-							(value) => String(value) === String(fieldValue),
-						);
-					case "is":
-						return values.some((value) => String(value) === String(fieldValue));
-					case "is_not":
-						return !values.some(
-							(value) => String(value) === String(fieldValue),
-						);
-					case "contains":
-						return values.some((value) =>
-							String(fieldValue)
-								.toLowerCase()
-								.includes(String(value).toLowerCase()),
-						);
-					case "not_contains":
-						return !values.some((value) =>
-							String(fieldValue)
-								.toLowerCase()
-								.includes(String(value).toLowerCase()),
-						);
-					case "equals":
-						return String(fieldValue) === String(values[0]);
-					case "not_equals":
-						return String(fieldValue) !== String(values[0]);
-					case "greater_than":
-						return Number(fieldValue) > Number(values[0]);
-					case "less_than":
-						return Number(fieldValue) < Number(values[0]);
-					case "greater_than_or_equal":
-						return Number(fieldValue) >= Number(values[0]);
-					case "less_than_or_equal":
-						return Number(fieldValue) <= Number(values[0]);
-					case "between":
-						if (values.length >= 2) {
-							const min = Number(values[0]);
-							const max = Number(values[1]);
-							return Number(fieldValue) >= min && Number(fieldValue) <= max;
-						}
-						return true;
-					case "not_between":
-						if (values.length >= 2) {
-							const min = Number(values[0]);
-							const max = Number(values[1]);
-							return Number(fieldValue) < min || Number(fieldValue) > max;
-						}
-						return true;
-					case "before":
-						return new Date(String(fieldValue)) < new Date(String(values[0]));
-					case "after":
-						return new Date(String(fieldValue)) > new Date(String(values[0]));
-					default:
-						return true;
-				}
-			});
-		});
-
-		return filtered;
-	}, [tableData.table.data, filters]);
+		return applyFilters(
+			tableData.table.data as JsonData[],
+			filters,
+			tableData.table.columns,
+		);
+	}, [tableData.table.data, filters, tableData.table.columns]);
 
 	// Row dragging state
 	const dataIds = useMemo(() => {

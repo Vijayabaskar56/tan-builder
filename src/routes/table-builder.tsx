@@ -1,11 +1,11 @@
 /** biome-ignore-all lint/a11y/noLabelWithoutControl: no needed */
 
+import { TableSettingsSidebar } from "@/components/builder/TableSettingsSidebar";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { createFileRoute, Outlet, useSearch } from "@tanstack/react-router";
 import { createClientOnlyFn } from "@tanstack/react-start";
 import { Database, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { TableSettingsSidebar } from "@/components/builder/TableSettingsSidebar";
-import { ErrorBoundary } from "@/components/error-boundary";
 
 import { NotFound } from "@/components/not-found";
 import { TableColumnEdit } from "@/components/table-components/table-column-edit";

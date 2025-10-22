@@ -330,6 +330,169 @@ export function generateFilterFields(
 		});
 }
 
+/**
+ * Apply filters to data based on column types and filter configurations
+ */
+export function applyFilters(
+	data: JsonData[],
+	filters: Array<{
+		field: string;
+		operator: string;
+		values: unknown[];
+	}>,
+	columns: ColumnConfig[],
+): JsonData[] {
+	let filtered = [...data];
+
+	// Filter out empty filters before applying
+	const activeFilters = filters.filter((filter) => {
+		const { operator, values } = filter;
+
+		// Empty and not_empty operators don't require values
+		if (operator === "empty" || operator === "not_empty") return true;
+
+		// Check if filter has meaningful values
+		if (!values || values.length === 0) return false;
+
+		// For text/string values, check if they're not empty strings
+		if (
+			values.every((value) => typeof value === "string" && value.trim() === "")
+		)
+			return false;
+
+		// For number values, check if they're not null/undefined
+		if (values.every((value) => value === null || value === undefined))
+			return false;
+
+		// For arrays, check if they're not empty
+		if (values.every((value) => Array.isArray(value) && value.length === 0))
+			return false;
+
+		return true;
+	});
+
+	activeFilters.forEach((filter) => {
+		const { field, operator, values } = filter;
+
+		// Find the column type for this field
+		const column = columns.find((col) => col.accessor === field);
+		const columnType = column?.type || "string";
+
+		filtered = filtered.filter((item) => {
+			const fieldValue = item[field];
+
+			switch (operator) {
+				case "is_any_of":
+					if (columnType === "array" && Array.isArray(fieldValue)) {
+						// For multiselect on array columns, check if any selected values are in the array
+						return values.some((selectedValue) =>
+							fieldValue.includes(String(selectedValue)),
+						);
+					}
+					return values.some((value) => String(value) === String(fieldValue));
+				case "is_not_any_of":
+					if (columnType === "array" && Array.isArray(fieldValue)) {
+						// For multiselect on array columns, check if none of the selected values are in the array
+						return !values.some((selectedValue) =>
+							fieldValue.includes(String(selectedValue)),
+						);
+					}
+					return !values.some((value) => String(value) === String(fieldValue));
+				case "includes_all":
+					if (columnType === "array" && Array.isArray(fieldValue)) {
+						// For array columns, check if all selected values are in the array
+						return values.every((selectedValue) =>
+							fieldValue.includes(String(selectedValue)),
+						);
+					}
+					return false; // includes_all only makes sense for arrays
+				case "excludes_all":
+					if (columnType === "array" && Array.isArray(fieldValue)) {
+						// For array columns, check if none of the selected values are in the array
+						return !values.some((selectedValue) =>
+							fieldValue.includes(String(selectedValue)),
+						);
+					}
+					return true; // excludes_all only makes sense for arrays
+				case "is":
+					return values.some((value) => String(value) === String(fieldValue));
+				case "is_not":
+					return !values.some((value) => String(value) === String(fieldValue));
+				case "contains":
+					return values.some((value) =>
+						String(fieldValue)
+							.toLowerCase()
+							.includes(String(value).toLowerCase()),
+					);
+				case "not_contains":
+					return !values.some((value) =>
+						String(fieldValue)
+							.toLowerCase()
+							.includes(String(value).toLowerCase()),
+					);
+				case "starts_with":
+					return values.some((value) =>
+						String(fieldValue)
+							.toLowerCase()
+							.startsWith(String(value).toLowerCase()),
+					);
+				case "ends_with":
+					return values.some((value) =>
+						String(fieldValue)
+							.toLowerCase()
+							.endsWith(String(value).toLowerCase()),
+					);
+				case "equals":
+					return String(fieldValue) === String(values[0]);
+				case "not_equals":
+					return String(fieldValue) !== String(values[0]);
+				case "greater_than":
+					return Number(fieldValue) > Number(values[0]);
+				case "less_than":
+					return Number(fieldValue) < Number(values[0]);
+				case "greater_than_or_equal":
+					return Number(fieldValue) >= Number(values[0]);
+				case "less_than_or_equal":
+					return Number(fieldValue) <= Number(values[0]);
+				case "between":
+					if (values.length >= 2) {
+						const min = Number(values[0]);
+						const max = Number(values[1]);
+						return Number(fieldValue) >= min && Number(fieldValue) <= max;
+					}
+					return true;
+				case "not_between":
+					if (values.length >= 2) {
+						const min = Number(values[0]);
+						const max = Number(values[1]);
+						return Number(fieldValue) < min || Number(fieldValue) > max;
+					}
+					return true;
+				case "before":
+					return new Date(String(fieldValue)) < new Date(String(values[0]));
+				case "after":
+					return new Date(String(fieldValue)) > new Date(String(values[0]));
+				case "empty":
+					return (
+						fieldValue === null ||
+						fieldValue === undefined ||
+						String(fieldValue).trim() === ""
+					);
+				case "not_empty":
+					return (
+						fieldValue !== null &&
+						fieldValue !== undefined &&
+						String(fieldValue).trim() !== ""
+					);
+				default:
+					return true;
+			}
+		});
+	});
+
+	return filtered;
+}
+
 import { detectColumnsConfig } from "@/lib/column-detection";
 
 export const detectColumns = (data: JsonData[]) => detectColumnsConfig(data);

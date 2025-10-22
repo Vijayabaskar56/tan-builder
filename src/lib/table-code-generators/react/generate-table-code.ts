@@ -1,6 +1,9 @@
 // @ts-nocheck
 import type { TableBuilder } from "@/db-collections/table-builder.collections";
-import { generateFilterFields } from "@/lib/table-generator/generate-columns";
+import {
+	generateFilterFields,
+	applyFilters,
+} from "@/lib/table-generator/generate-columns";
 import { toCamelCase, toJSLiteral } from "@/lib/utils";
 import type { JsonData } from "@/types/table-types";
 
@@ -298,7 +301,8 @@ import type { PaginationState, SortingState } from "@/types/table-types";
 		imports += `import { Button } from "@/components/ui/button";
 import { FunnelX } from "lucide-react";
 import { Filters } from "@/components/ui/filters";
-import type { Filter, FilterFieldConfig } from "@/types/table-types";
+import { applyFilters } from "@/lib/table-generator/generate-columns";
+import type { Filter, FilterFieldConfig } from "@/components/ui/filters";
 `;
 	}
 
@@ -343,129 +347,20 @@ import type { Filter, FilterFieldConfig } from "@/types/table-types";
 
 	if (settings.isGlobalSearch) {
 		code += "\n\t" + generateFilterFieldsCode(table, settings) + "\n";
-		code +=
-			"\t// Apply filters to data - only apply filters with non-empty values\n";
+		code += "\t// Apply filters to data\n";
 		code += "\tconst filteredData = useMemo(() => {\n";
-		code += "\t\tlet filtered = [..." + toCamelCase(dataName) + "];\n";
-		code += "\n";
-		code += "\t\t// Filter out empty filters before applying\n";
-		code += "\t\tconst activeFilters = filters.filter((filter) => {\n";
-		code += "\t\t\tconst { values } = filter;\n";
-		code += "\n";
-		code += "\t\t\t// Check if filter has meaningful values\n";
-		code += "\t\t\tif (!values || values.length === 0) return false;\n";
-		code += "\n";
 		code +=
-			"\t\t\t// For text/string values, check if they're not empty strings\n";
-		code += "\t\t\tif (\n";
-		code += "\t\t\t\tvalues.every(\n";
-		code +=
-			'\t\t\t\t\t(value) => typeof value === "string" && value.trim() === "",\n';
-		code += "\t\t\t\t)\n";
-		code += "\t\t\t)\n";
-		code += "\t\t\t\treturn false;\n";
-		code += "\n";
-		code += "\t\t\t// For number values, check if they're not null/undefined\n";
-		code +=
-			"\t\t\tif (values.every((value) => value === null || value === undefined))\n";
-		code += "\t\t\t\treturn false;\n";
-		code += "\n";
-		code += "\t\t\t// For arrays, check if they're not empty\n";
-		code +=
-			"\t\t\tif (values.every((value) => Array.isArray(value) && value.length === 0))\n";
-		code += "\t\t\t\treturn false;\n";
-		code += "\n";
-		code += "\t\t\treturn true;\n";
-		code += "\t\t});\n";
-		code += "\n";
-		code += "\t\tactiveFilters.forEach((filter) => {\n";
-		code += "\t\t\tconst { field, operator, values } = filter;\n";
-		code += "\n";
-		code += "\t\t\tfiltered = filtered.filter((item) => {\n";
-		code +=
-			"\t\t\t\tconst fieldValue = item[field as keyof typeof " +
+			"\t\treturn applyFilters(" +
 			toCamelCase(dataName) +
-			"[0]];\n";
-		code += "\n";
-		code += "\t\t\t\tswitch (operator) {\n";
-		code += '\t\t\t\t\tcase "is_any_of":\n';
-		code += "\t\t\t\t\t\tif (Array.isArray(fieldValue)) {\n";
+			", filters, " +
+			toCamelCase(dataName) +
+			"Columns);\n";
 		code +=
-			"\t\t\t\t\t\t\t// For multiselect on array columns, check if any selected values are in the array\n";
-		code += "\t\t\t\t\t\t\treturn values.some((selectedValue) =>\n";
-		code += "\t\t\t\t\t\t\t\tfieldValue.includes(String(selectedValue)),\n";
-		code += "\t\t\t\t\t\t\t);\n";
-		code += "\t\t\t\t\t\t}\n";
-		code +=
-			"\t\t\t\t\t\treturn values.some((value) => String(value) === String(fieldValue));\n";
-		code += '\t\t\t\t\tcase "is_not_any_of":\n';
-		code += "\t\t\t\t\t\tif (Array.isArray(fieldValue)) {\n";
-		code +=
-			"\t\t\t\t\t\t\t// For multiselect on array columns, check if none of the selected values are in the array\n";
-		code += "\t\t\t\t\t\t\treturn !values.some((selectedValue) =>\n";
-		code += "\t\t\t\t\t\t\t\tfieldValue.includes(String(selectedValue)),\n";
-		code += "\t\t\t\t\t\t\t);\n";
-		code += "\t\t\t\t\t\t}\n";
-		code +=
-			"\t\t\t\t\t\treturn !values.some((value) => String(value) === String(fieldValue));\n";
-		code += '\t\t\t\t\tcase "is":\n';
-		code += "\t\t\t\t\t\treturn values.includes(fieldValue);\n";
-		code += '\t\t\t\t\tcase "is_not":\n';
-		code += "\t\t\t\t\t\treturn !values.includes(fieldValue);\n";
-		code += '\t\t\t\t\tcase "contains":\n';
-		code += "\t\t\t\t\t\treturn values.some((value) =>\n";
-		code += "\t\t\t\t\t\t\tString(fieldValue)\n";
-		code += "\t\t\t\t\t\t\t\t.toLowerCase()\n";
-		code += "\t\t\t\t\t\t\t\t.includes(String(value).toLowerCase()),\n";
-		code += "\t\t\t\t\t\t);\n";
-		code += '\t\t\t\t\tcase "not_contains":\n';
-		code += "\t\t\t\t\t\treturn !values.some((value) =>\n";
-		code += "\t\t\t\t\t\t\tString(fieldValue)\n";
-		code += "\t\t\t\t\t\t\t\t.toLowerCase()\n";
-		code += "\t\t\t\t\t\t\t\t.includes(String(value).toLowerCase()),\n";
-		code += "\t\t\t\t\t\t);\n";
-		code += '\t\t\t\t\tcase "equals":\n';
-		code += "\t\t\t\t\t\treturn fieldValue === values[0];\n";
-		code += '\t\t\t\t\tcase "not_equals":\n';
-		code += "\t\t\t\t\t\treturn fieldValue !== values[0];\n";
-		code += '\t\t\t\t\tcase "greater_than":\n';
-		code += "\t\t\t\t\t\treturn Number(fieldValue) > Number(values[0]);\n";
-		code += '\t\t\t\t\tcase "less_than":\n';
-		code += "\t\t\t\t\t\treturn Number(fieldValue) < Number(values[0]);\n";
-		code += '\t\t\t\t\tcase "greater_than_or_equal":\n';
-		code += "\t\t\t\t\t\treturn Number(fieldValue) >= Number(values[0]);\n";
-		code += '\t\t\t\t\tcase "less_than_or_equal":\n';
-		code += "\t\t\t\t\t\treturn Number(fieldValue) <= Number(values[0]);\n";
-		code += '\t\t\t\t\tcase "between":\n';
-		code += "\t\t\t\t\t\tif (values.length >= 2) {\n";
-		code += "\t\t\t\t\t\t\tconst min = Number(values[0]);\n";
-		code += "\t\t\t\t\t\t\tconst max = Number(values[1]);\n";
-		code +=
-			"\t\t\t\t\t\t\treturn Number(fieldValue) >= min && Number(fieldValue) <= max;\n";
-		code += "\t\t\t\t\t\t}\n";
-		code += "\t\t\t\t\t\treturn true;\n";
-		code += '\t\t\t\t\tcase "not_between":\n';
-		code += "\t\t\t\t\t\tif (values.length >= 2) {\n";
-		code += "\t\t\t\t\t\t\tconst min = Number(values[0]);\n";
-		code += "\t\t\t\t\t\t\tconst max = Number(values[1]);\n";
-		code +=
-			"\t\t\t\t\t\t\treturn Number(fieldValue) < min || Number(fieldValue) > max;\n";
-		code += "\t\t\t\t\t\t}\n";
-		code += "\t\t\t\t\t\treturn true;\n";
-		code += '\t\t\t\t\tcase "before":\n';
-		code +=
-			"\t\t\t\t\t\treturn new Date(String(fieldValue)) < new Date(String(values[0]));\n";
-		code += '\t\t\t\t\tcase "after":\n';
-		code +=
-			"\t\t\t\t\t\treturn new Date(String(fieldValue)) > new Date(String(values[0]));\n";
-		code += "\t\t\t\t\tdefault:\n";
-		code += "\t\t\t\t\t\treturn true;\n";
-		code += "\t\t\t\t}\n";
-		code += "\t\t\t});\n";
-		code += "\t\t});\n";
-		code += "\n";
-		code += "\t\treturn filtered;\n";
-		code += "\t}, [filters]);\n";
+			"\t}, [filters, " +
+			toCamelCase(dataName) +
+			", " +
+			toCamelCase(dataName) +
+			"Columns]);\n";
 		code += "\n";
 		code +=
 			"\tconst handleFiltersChange = useCallback((filters: Filter[]) => {\n";
