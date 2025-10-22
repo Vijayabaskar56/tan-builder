@@ -1,6 +1,7 @@
+// @ts-nocheck
 import type { TableBuilder } from "@/db-collections/table-builder.collections";
 import { generateFilterFields } from "@/lib/table-generator/generate-columns";
-import { toJSLiteral } from "@/lib/utils";
+import { toCamelCase, toJSLiteral } from "@/lib/utils";
 import type { JsonData } from "@/types/table-types";
 
 const getComponentName = (
@@ -70,6 +71,60 @@ const generateCellRenderer = (
 				}`;
 		case "object":
 			return `cell: (info) => <span className="text-xs text-muted-foreground">{JSON.stringify(info.getValue())}</span>`;
+		case "array":
+			return `cell: ({ row }) => {
+					const value = row.getValue("${column.accessor}") as any[];
+					if (!Array.isArray(value)) {
+						return <div>{String(value || "")}</div>;
+					}
+
+					const rowId = row.id + "-" + JSON.stringify(value);
+					const isExpanded = expandedArrayRows?.has(rowId) || false;
+					const displayItems = isExpanded ? value : value.slice(0, 2);
+					const hasMoreItems = value.length > 2;
+
+					return (
+						<div className="flex flex-wrap gap-1">
+							{displayItems.map((item, index) => {
+								const colors = [
+									"border-blue-500",
+									"border-green-500",
+									"border-yellow-500",
+									"border-purple-500",
+									"border-pink-500",
+									"border-indigo-500",
+									"border-red-500",
+									"border-orange-500",
+									"border-teal-500",
+									"border-cyan-500",
+								];
+								const colorIndex = index % colors.length;
+								return (
+									<Badge
+										key={index}
+										variant="outline"
+										className={"text-xs " + colors[colorIndex]}
+									>
+										{String(item)}
+									</Badge>
+								);
+							})}
+							{hasMoreItems && (
+								<Badge
+									variant="outline"
+									className="text-xs cursor-pointer hover:bg-secondary transition-colors"
+									onClick={() => {
+										if (handleToggleArrayExpand) {
+											handleToggleArrayExpand("${column.id}", rowId);
+										}
+									}}
+								>
+									{isExpanded ? "−" : "+" + (value.length - 2)}
+								</Badge>
+							)}
+						</div>
+					);
+				}`;
 		case "enum":
 			return `cell: (info) => <span>{info.getValue() as string}</span>`;
 		default:
@@ -100,16 +155,18 @@ const generateColumnsCode = (
 	table: TableBuilder["table"],
 	settings: TableBuilder["settings"],
 	typeName: string,
+	hasArrayColumns: boolean = false,
 ): string => {
 	const columnDefs = table.columns.map((col) =>
 		generateColumnDef(col, settings),
 	);
 
+	const dependencies = hasArrayColumns ? "[expandedArrayRows]" : "[]";
 	let columnsCode = `const columns = useMemo<ColumnDef<${typeName}>[]>(
 			() => [
 				${columnDefs.join(",\n\t\t\t\t")}
 			],
-			[],
+			${dependencies},
 		);`;
 
 	if (settings.enableRowSelection) {
@@ -127,7 +184,7 @@ const generateColumnsCode = (
 				},
 				${columnDefs.join(",\n\t\t\t\t")}
 			],
-			[],
+			${dependencies},
 		);`;
 	}
 
@@ -225,7 +282,32 @@ export const generateTableCode = (
 	const settings = tableBuilder.settings;
 	const table = tableBuilder.table;
 
-	let code = `export default function ${componentName}() {
+	// Check if there are any array columns
+	const hasArrayColumns = table.columns.some((col) => col.type === "array");
+
+	let imports = `import { useState, useCallback, useMemo } from "react";
+import { useReactTable, getCoreRowModel, getPaginationRowModel, getSortedRowModel, ColumnDef } from "@tanstack/react-table";
+import { DataGrid, DataGridContainer, DataGridTable, DataGridPagination, DataGridColumnHeader, DataGridTableRowSelectAll, DataGridTableRowSelect } from "@/components/ui/data-grid";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { EllipsisIcon } from "lucide-react";
+import type { PaginationState, SortingState } from "@/types/table-types";
+`;
+
+	if (settings.isGlobalSearch) {
+		imports += `import { Button } from "@/components/ui/button";
+import { FunnelX } from "lucide-react";
+import { Filters } from "@/components/ui/filters";
+import type { Filter, FilterFieldConfig } from "@/types/table-types";
+`;
+	}
+
+	if (hasArrayColumns) {
+		imports += `import { Badge } from "@/components/ui/badge";
+`;
+	}
+
+	let code = `${imports}export default function ${componentName}() {
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: 0,
 		pageSize: 10,
@@ -234,161 +316,230 @@ export const generateTableCode = (
 `;
 
 	if (settings.isGlobalSearch) {
-		code += `	const [filters, setFilters] = useState<Filter[]>([]);
-`;
+		code += "\tconst [filters, setFilters] = useState<Filter[]>([]);\n";
 	}
 
-	code += `
-	${generateColumnsCode(table, settings, typeName)}
-`;
+	if (hasArrayColumns) {
+		code +=
+			"\tconst [expandedArrayRows, setExpandedArrayRows] = useState<Set<string>>(new Set());\n";
+		code +=
+			"\tconst handleToggleArrayExpand = useCallback((columnId: string, rowId: string) => {\n";
+		code += "\t\tsetExpandedArrayRows((prev) => {\n";
+		code += "\t\t\tconst newSet = new Set(prev);\n";
+		code += "\t\t\tif (newSet.has(rowId)) {\n";
+		code += "\t\t\t\tnewSet.delete(rowId);\n";
+		code += "\t\t\t} else {\n";
+		code += "\t\t\t\tnewSet.add(rowId);\n";
+		code += "\t\t\t}\n";
+		code += "\t\t\treturn newSet;\n";
+		code += "\t\t});\n";
+		code += "\t}, []);\n";
+	}
+
+	code +=
+		"\n\t" +
+		generateColumnsCode(table, settings, typeName, hasArrayColumns) +
+		"\n";
 
 	if (settings.isGlobalSearch) {
-		code += `
-	${generateFilterFieldsCode(table, settings)}
+		code += "\n\t" + generateFilterFieldsCode(table, settings) + "\n";
+		code +=
+			"\t// Apply filters to data - only apply filters with non-empty values\n";
+		code += "\tconst filteredData = useMemo(() => {\n";
+		code += "\t\tlet filtered = [..." + toCamelCase(dataName) + "];\n";
+		code += "\n";
+		code += "\t\t// Filter out empty filters before applying\n";
+		code += "\t\tconst activeFilters = filters.filter((filter) => {\n";
+		code += "\t\t\tconst { values } = filter;\n";
+		code += "\n";
+		code += "\t\t\t// Check if filter has meaningful values\n";
+		code += "\t\t\tif (!values || values.length === 0) return false;\n";
+		code += "\n";
+		code +=
+			"\t\t\t// For text/string values, check if they're not empty strings\n";
+		code += "\t\t\tif (\n";
+		code += "\t\t\t\tvalues.every(\n";
+		code +=
+			'\t\t\t\t\t(value) => typeof value === "string" && value.trim() === "",\n';
+		code += "\t\t\t\t)\n";
+		code += "\t\t\t)\n";
+		code += "\t\t\t\treturn false;\n";
+		code += "\n";
+		code += "\t\t\t// For number values, check if they're not null/undefined\n";
+		code +=
+			"\t\t\tif (values.every((value) => value === null || value === undefined))\n";
+		code += "\t\t\t\treturn false;\n";
+		code += "\n";
+		code += "\t\t\t// For arrays, check if they're not empty\n";
+		code +=
+			"\t\t\tif (values.every((value) => Array.isArray(value) && value.length === 0))\n";
+		code += "\t\t\t\treturn false;\n";
+		code += "\n";
+		code += "\t\t\treturn true;\n";
+		code += "\t\t});\n";
+		code += "\n";
+		code += "\t\tactiveFilters.forEach((filter) => {\n";
+		code += "\t\t\tconst { field, operator, values } = filter;\n";
+		code += "\n";
+		code += "\t\t\tfiltered = filtered.filter((item) => {\n";
+		code +=
+			"\t\t\t\tconst fieldValue = item[field as keyof typeof " +
+			toCamelCase(dataName) +
+			"[0]];\n";
+		code += "\n";
+		code += "\t\t\t\tswitch (operator) {\n";
+		code += '\t\t\t\t\tcase "is_any_of":\n';
+		code += "\t\t\t\t\t\tif (Array.isArray(fieldValue)) {\n";
+		code +=
+			"\t\t\t\t\t\t\t// For multiselect on array columns, check if any selected values are in the array\n";
+		code += "\t\t\t\t\t\t\treturn values.some((selectedValue) =>\n";
+		code += "\t\t\t\t\t\t\t\tfieldValue.includes(String(selectedValue)),\n";
+		code += "\t\t\t\t\t\t\t);\n";
+		code += "\t\t\t\t\t\t}\n";
+		code +=
+			"\t\t\t\t\t\treturn values.some((value) => String(value) === String(fieldValue));\n";
+		code += '\t\t\t\t\tcase "is_not_any_of":\n';
+		code += "\t\t\t\t\t\tif (Array.isArray(fieldValue)) {\n";
+		code +=
+			"\t\t\t\t\t\t\t// For multiselect on array columns, check if none of the selected values are in the array\n";
+		code += "\t\t\t\t\t\t\treturn !values.some((selectedValue) =>\n";
+		code += "\t\t\t\t\t\t\t\tfieldValue.includes(String(selectedValue)),\n";
+		code += "\t\t\t\t\t\t\t);\n";
+		code += "\t\t\t\t\t\t}\n";
+		code +=
+			"\t\t\t\t\t\treturn !values.some((value) => String(value) === String(fieldValue));\n";
+		code += '\t\t\t\t\tcase "is":\n';
+		code += "\t\t\t\t\t\treturn values.includes(fieldValue);\n";
+		code += '\t\t\t\t\tcase "is_not":\n';
+		code += "\t\t\t\t\t\treturn !values.includes(fieldValue);\n";
+		code += '\t\t\t\t\tcase "contains":\n';
+		code += "\t\t\t\t\t\treturn values.some((value) =>\n";
+		code += "\t\t\t\t\t\t\tString(fieldValue)\n";
+		code += "\t\t\t\t\t\t\t\t.toLowerCase()\n";
+		code += "\t\t\t\t\t\t\t\t.includes(String(value).toLowerCase()),\n";
+		code += "\t\t\t\t\t\t);\n";
+		code += '\t\t\t\t\tcase "not_contains":\n';
+		code += "\t\t\t\t\t\treturn !values.some((value) =>\n";
+		code += "\t\t\t\t\t\t\tString(fieldValue)\n";
+		code += "\t\t\t\t\t\t\t\t.toLowerCase()\n";
+		code += "\t\t\t\t\t\t\t\t.includes(String(value).toLowerCase()),\n";
+		code += "\t\t\t\t\t\t);\n";
+		code += '\t\t\t\t\tcase "equals":\n';
+		code += "\t\t\t\t\t\treturn fieldValue === values[0];\n";
+		code += '\t\t\t\t\tcase "not_equals":\n';
+		code += "\t\t\t\t\t\treturn fieldValue !== values[0];\n";
+		code += '\t\t\t\t\tcase "greater_than":\n';
+		code += "\t\t\t\t\t\treturn Number(fieldValue) > Number(values[0]);\n";
+		code += '\t\t\t\t\tcase "less_than":\n';
+		code += "\t\t\t\t\t\treturn Number(fieldValue) < Number(values[0]);\n";
+		code += '\t\t\t\t\tcase "greater_than_or_equal":\n';
+		code += "\t\t\t\t\t\treturn Number(fieldValue) >= Number(values[0]);\n";
+		code += '\t\t\t\t\tcase "less_than_or_equal":\n';
+		code += "\t\t\t\t\t\treturn Number(fieldValue) <= Number(values[0]);\n";
+		code += '\t\t\t\t\tcase "between":\n';
+		code += "\t\t\t\t\t\tif (values.length >= 2) {\n";
+		code += "\t\t\t\t\t\t\tconst min = Number(values[0]);\n";
+		code += "\t\t\t\t\t\t\tconst max = Number(values[1]);\n";
+		code +=
+			"\t\t\t\t\t\t\treturn Number(fieldValue) >= min && Number(fieldValue) <= max;\n";
+		code += "\t\t\t\t\t\t}\n";
+		code += "\t\t\t\t\t\treturn true;\n";
+		code += '\t\t\t\t\tcase "not_between":\n';
+		code += "\t\t\t\t\t\tif (values.length >= 2) {\n";
+		code += "\t\t\t\t\t\t\tconst min = Number(values[0]);\n";
+		code += "\t\t\t\t\t\t\tconst max = Number(values[1]);\n";
+		code +=
+			"\t\t\t\t\t\t\treturn Number(fieldValue) < min || Number(fieldValue) > max;\n";
+		code += "\t\t\t\t\t\t}\n";
+		code += "\t\t\t\t\t\treturn true;\n";
+		code += '\t\t\t\t\tcase "before":\n';
+		code +=
+			"\t\t\t\t\t\treturn new Date(String(fieldValue)) < new Date(String(values[0]));\n";
+		code += '\t\t\t\t\tcase "after":\n';
+		code +=
+			"\t\t\t\t\t\treturn new Date(String(fieldValue)) > new Date(String(values[0]));\n";
+		code += "\t\t\t\t\tdefault:\n";
+		code += "\t\t\t\t\t\treturn true;\n";
+		code += "\t\t\t\t}\n";
+		code += "\t\t\t});\n";
+		code += "\t\t});\n";
+		code += "\n";
+		code += "\t\treturn filtered;\n";
+		code += "\t}, [filters]);\n";
+		code += "\n";
+		code +=
+			"\tconst handleFiltersChange = useCallback((filters: Filter[]) => {\n";
+		code += '\t\tconsole.log("Filters updated:", filters);\n';
+		code += "\t\tsetFilters(filters);\n";
+		code += "\t\tsetPagination((prev) => ({ ...prev, pageIndex: 0 }));\n";
+		code += "\t}, []);\n";
+	}
+	code += "\n";
+	code += "\tconst table = useReactTable({\n";
+	code += "\t\tcolumns,\n";
+	code +=
+		"\t\tdata: " +
+		(settings.isGlobalSearch ? "filteredData" : toCamelCase(dataName)) +
+		",\n";
+	code +=
+		"\t\tpageCount: Math.ceil((" +
+		(settings.isGlobalSearch ? "filteredData" : toCamelCase(dataName)) +
+		"?.length || 0) / pagination.pageSize),\n";
+	code += "\t\tstate: {\n";
+	code += "\t\t\tpagination,\n";
+	code += "\t\t\tsorting,\n";
+	code += "\t\t},\n";
+	code += "\t\tonPaginationChange: setPagination,\n";
+	code += "\t\tonSortingChange: setSorting,\n";
+	code += "\t\tgetCoreRowModel: getCoreRowModel(),\n";
+	code += "\t\tgetPaginationRowModel: getPaginationRowModel(),\n";
+	code += "\t\tgetSortedRowModel: getSortedRowModel(),\n";
+	code += "\t});\n";
+	code += "\n";
+	code += "\treturn (\n";
+	code +=
+		"\t\t<DataGrid table={table} recordCount={" +
+		(settings.isGlobalSearch ? "filteredData" : toCamelCase(dataName)) +
+		"?.length || 0}" +
+		generateTableLayoutProps(settings.tableLayout) +
+		">\n";
+	code += '\t\t\t<div className="w-full space-y-2.5">\n';
 
-	// Apply filters to data - only apply filters with non-empty values
-	const filteredData = useMemo(() => {
-		let filtered = [...${dataName}];
-
-		// Filter out empty filters before applying
-		const activeFilters = filters.filter((filter) => {
-			const { values } = filter;
-
-			// Check if filter has meaningful values
-			if (!values || values.length === 0) return false;
-
-			// For text/string values, check if they're not empty strings
-			if (
-				values.every(
-					(value) => typeof value === "string" && value.trim() === "",
-				)
-			)
-				return false;
-
-			// For number values, check if they're not null/undefined
-			if (values.every((value) => value === null || value === undefined))
-				return false;
-
-			// For arrays, check if they're not empty
-			if (values.every((value) => Array.isArray(value) && value.length === 0))
-				return false;
-
-			return true;
-		});
-
-		activeFilters.forEach((filter) => {
-			const { field, operator, values } = filter;
-
-			filtered = filtered.filter((item) => {
-				const fieldValue = item[field as keyof typeof ${dataName}[0]];
-
-				switch (operator) {
-					case "is":
-						return values.includes(fieldValue);
-					case "is_not":
-						return !values.includes(fieldValue);
-					case "contains":
-						return values.some((value) =>
-							String(fieldValue)
-								.toLowerCase()
-								.includes(String(value).toLowerCase()),
-						);
-					case "not_contains":
-						return !values.some((value) =>
-							String(fieldValue)
-								.toLowerCase()
-								.includes(String(value).toLowerCase()),
-						);
-					case "equals":
-						return fieldValue === values[0];
-					case "not_equals":
-						return fieldValue !== values[0];
-					case "greater_than":
-						return Number(fieldValue) > Number(values[0]);
-					case "less_than":
-						return Number(fieldValue) < Number(values[0]);
-					case "greater_than_or_equal":
-						return Number(fieldValue) >= Number(values[0]);
-					case "less_than_or_equal":
-						return Number(fieldValue) <= Number(values[0]);
-					case "between":
-						if (values.length >= 2) {
-							const min = Number(values[0]);
-							const max = Number(values[1]);
-							return Number(fieldValue) >= min && Number(fieldValue) <= max;
-						}
-						return true;
-					case "not_between":
-						if (values.length >= 2) {
-							const min = Number(values[0]);
-							const max = Number(values[1]);
-							return Number(fieldValue) < min || Number(fieldValue) > max;
-						}
-						return true;
-					case "before":
-						return new Date(String(fieldValue)) < new Date(String(values[0]));
-					case "after":
-						return new Date(String(fieldValue)) > new Date(String(values[0]));
-					default:
-						return true;
-				}
-			});
-		});
-
-		return filtered;
-	}, [filters]);
-
-	const handleFiltersChange = useCallback((filters: Filter[]) => {
-		console.log("Filters updated:", filters);
-		setFilters(filters);
-		setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-	}, []);
-`;
+	if (settings.isGlobalSearch) {
+		code += "\t\t\t<Filters\n";
+		code += "\t\t\t\tfilters={filters}\n";
+		code += "\t\t\t\tfields={filterFields}\n";
+		code += '\t\t\t\tvariant="outline"\n';
+		code += "\t\t\t\tonChange={handleFiltersChange}\n";
+		code += "\t\t\t/>\n";
+		code += "\t\t\t{filters.length > 0 && (\n";
+		code +=
+			'\t\t\t\t<Button variant="outline" onClick={() => setFilters([])}>\n';
+		code += "\t\t\t\t\t<FunnelX /> Clear\n";
+		code += "\t\t\t\t</Button>\n";
+		code += "\t\t\t)}\n";
 	}
 
-	code += `
-	const table = useReactTable({
-		columns,
-		data: ${settings.isGlobalSearch ? "filteredData" : dataName},
-		pageCount: Math.ceil((${settings.isGlobalSearch ? "filteredData" : dataName}?.length || 0) / pagination.pageSize),
-		state: {
-			pagination,
-			sorting,
-		},
-		onPaginationChange: setPagination,
-		onSortingChange: setSorting,
-		getCoreRowModel: getCoreRowModel(),
-		getPaginationRowModel: getPaginationRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-	});
+	code += "\t\t\t\t<DataGridContainer>\n";
+	code += "\t\t\t\t\t<ScrollArea>\n";
+	code += "\t\t\t\t\t\t<DataGridTable />\n";
+	code += '\t\t\t\t\t\t<ScrollBar orientation="horizontal" />\n';
+	code += "\t\t\t\t\t</ScrollArea>\n";
+	code += "\t\t\t\t</DataGridContainer>\n";
+	code +=
+		"\t\t\t\t" +
+		(settings.enablePagination ? "<DataGridPagination />" : "") +
+		"\n";
+	code += "\t\t\t</div>\n";
+	code += "\t\t</DataGrid>\n";
+	code += "\t);\n";
+	code += "};\n";
 
-	return (
-		<DataGrid table={table} recordCount={${settings.isGlobalSearch ? "filteredData" : dataName}?.length || 0}${generateTableLayoutProps(settings.tableLayout)}>
-			<div className="w-full space-y-2.5">
-				${
-					settings.isGlobalSearch
-						? `<Filters
-					filters={filters}
-					fields={filterFields}
-					variant="outline"
-					onChange={handleFiltersChange}
-				/>`
-						: ""
-				}
-				<DataGridContainer>
-					<ScrollArea>
-						<DataGridTable />
-						<ScrollBar orientation="horizontal" />
-					</ScrollArea>
-				</DataGridContainer>
-				${settings.enablePagination ? `<DataGridPagination />` : ""}
-			</div>
-		</DataGrid>
-	);
-}`;
+	const componentCodeWithImport = `import { ${toCamelCase(dataName)} } from './data';
+${code}`;
 
 	return {
 		file: `${componentName.toLowerCase()}.tsx`,
-		code,
+		code: componentCodeWithImport,
 	};
 };

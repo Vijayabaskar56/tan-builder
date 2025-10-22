@@ -59,7 +59,7 @@ function TableCodeDialog() {
 		},
 	];
 
-	const { code, dependencies } = generateTable(
+	const { files: generatedFiles, dependencies } = generateTable(
 		{ id: 1, ...tableData },
 		tableData.tableName,
 	);
@@ -67,7 +67,7 @@ function TableCodeDialog() {
 	const files = [
 		{
 			path: `components/${tableData.tableName}.tsx`,
-			content: code,
+			content: generatedFiles[0].code,
 			type: "registry:component",
 			target: "",
 		},
@@ -248,7 +248,7 @@ function TableCodeDialog() {
 							isGenerateSuccess={isGenerateSuccess}
 							generatedId={generatedId}
 							tabsData={tabsData}
-							code={code}
+							files={generatedFiles}
 						/>
 					</ScrollArea>
 				</div>

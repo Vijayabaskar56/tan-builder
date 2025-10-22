@@ -118,6 +118,28 @@ export const STATIC_DUMMY_DATA = {
 		"Good",
 		"Outstanding",
 	],
+	array: [
+		["item1", "item2"],
+		["apple", "banana", "cherry"],
+		[1, 2, 3],
+		["red", "green", "blue"],
+		["task1", "task2", "task3"],
+		["optionA", "optionB"],
+		["tag1", "tag2", "tag3", "tag4"],
+		[100, 200, 300],
+		["category1", "category2"],
+		["step1", "step2", "step3"],
+		["feature1", "feature2"],
+		["value1", "value2", "value3", "value4"],
+		[10, 20],
+		["typeA", "typeB", "typeC"],
+		["level1", "level2"],
+		["component1", "component2", "component3"],
+		["status1", "status2"],
+		["priority1", "priority2", "priority3"],
+		["group1", "group2"],
+		["itemA", "itemB", "itemC", "itemD"],
+	],
 } as const;
 
 /**

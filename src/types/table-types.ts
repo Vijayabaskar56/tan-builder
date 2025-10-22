@@ -1,13 +1,13 @@
 export type JsonData = Record<
 	string,
-	string | number | boolean | null | undefined | object
+	string | number | boolean | null | undefined | object | any[]
 >;
 
 export interface ColumnConfig {
 	id: string;
 	accessor: string;
 	label: string;
-	type: "string" | "number" | "boolean" | "date" | "object" | "enum";
+	type: "string" | "number" | "boolean" | "date" | "object" | "array" | "enum";
 	order: number;
 	filterable?: boolean;
 	hasFacetedFilter?: boolean;
@@ -16,5 +16,5 @@ export interface ColumnConfig {
 }
 
 export interface DataRow {
-	[key: string]: string | number | boolean | null | undefined | object;
+	[key: string]: string | number | boolean | null | undefined | object | any[];
 }

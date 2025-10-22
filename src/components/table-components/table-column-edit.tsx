@@ -310,8 +310,8 @@ function SortableItem({
 																"type",
 																value as TableBuilder["table"]["columns"][0]["type"],
 															);
-															// Also update filterable if type changes to string
-															if (value === "string") {
+															// Also update filterable if type changes to string or enum
+															if (value === "string" || value === "enum") {
 																form.setFieldValue("filterable", true);
 															}
 														}}
@@ -325,6 +325,8 @@ function SortableItem({
 															<SelectItem value="boolean">Boolean</SelectItem>
 															<SelectItem value="date">Date</SelectItem>
 															<SelectItem value="object">Object</SelectItem>
+															<SelectItem value="enum">Enum</SelectItem>
+															<SelectItem value="array">Array</SelectItem>
 														</SelectContent>
 													</Select>
 												)}

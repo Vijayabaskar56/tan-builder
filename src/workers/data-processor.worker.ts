@@ -2,14 +2,14 @@
 // This worker handles parsing, validation, and column type detection
 
 export interface DataRow {
-	[key: string]: string | number | boolean | null | undefined | object;
+	[key: string]: string | number | boolean | null | undefined | object | any[];
 }
 
 export interface Column {
 	id: string;
 	accessor: string;
 	label: string;
-	type: "string" | "number" | "boolean" | "date" | "object" | "enum";
+	type: "string" | "number" | "boolean" | "date" | "object" | "array" | "enum";
 	order: number;
 }
 
@@ -62,10 +62,11 @@ const parseJSON = (jsonText: string): DataRow[] => {
 // Utility: Detect column type from value
 const detectColumnType = (
 	value: string | number | boolean | null | undefined | object,
-): "string" | "number" | "boolean" | "date" | "object" | "enum" => {
+): "string" | "number" | "boolean" | "date" | "object" | "array" | "enum" => {
 	if (value === null || value === undefined) return "string";
 	if (typeof value === "boolean") return "boolean";
 	if (typeof value === "number") return "number";
+	if (Array.isArray(value)) return "array";
 	if (typeof value === "object") return "object";
 	if (typeof value === "string") {
 		// Try to detect dates

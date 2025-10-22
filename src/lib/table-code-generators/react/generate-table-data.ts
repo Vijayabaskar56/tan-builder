@@ -13,6 +13,8 @@ const getTypeScriptType = (type: ColumnConfig["type"]): string => {
 			return "string"; // Dates stored as strings
 		case "object":
 			return "any";
+		case "array":
+			return "any[]";
 		case "enum":
 			return "string";
 		default:
@@ -47,6 +49,8 @@ const formatValue = (value: any, type: ColumnConfig["type"]): string => {
 		case "date":
 			return `"${String(value)}"`;
 		case "object":
+			return JSON.stringify(value);
+		case "array":
 			return JSON.stringify(value);
 		case "enum":
 			return `"${String(value)}"`;

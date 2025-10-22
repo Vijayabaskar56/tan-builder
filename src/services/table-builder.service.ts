@@ -306,12 +306,12 @@ export class TableBuilderService {
 					}
 					// Add data to existing rows for the new column
 					for (let i = 0; i < currentDataLength; i++) {
-						draft.table.data[i]![columnKey] = getStaticData(newColumn.type, i);
+						draft.table.data[i][columnKey] = getStaticData(newColumn.type, i);
 					}
 				} else {
 					// Add data to existing rows for the new column
 					for (let i = 0; i < 20; i++) {
-						draft.table.data[i]![columnKey] = getStaticData(newColumn.type, i);
+						draft.table.data[i][columnKey] = getStaticData(newColumn.type, i);
 					}
 				}
 			});
@@ -413,7 +413,7 @@ export class TableBuilderService {
 				// Convert worker's Column[] to ColumnConfig[]
 				finalColumns = columns.map((col) => ({
 					...col,
-					filterable: col.type === "enum" ? true : true, // enums are filterable
+					filterable: true, // enums are filterable
 					hasFacetedFilter: col.type === "enum",
 					options: undefined,
 					optionsMode: "auto" as const,

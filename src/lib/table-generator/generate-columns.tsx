@@ -73,7 +73,13 @@ function RowActions({ row: _row }: { row: any }) {
 }
 
 // Generate cell content based on column type
-function renderCell(value: any, type: ColumnConfig["type"]) {
+function renderCell(
+	value: any,
+	type: ColumnConfig["type"],
+	columnId?: string,
+	onToggleExpand?: (columnId: string, rowId: string) => void,
+	expandedRows?: Set<string>,
+) {
 	switch (type) {
 		case "string":
 			return <div className="font-medium">{String(value || "")}</div>;
@@ -99,6 +105,58 @@ function renderCell(value: any, type: ColumnConfig["type"]) {
 					{value ? JSON.stringify(value) : ""}
 				</div>
 			);
+		case "array": {
+			if (!Array.isArray(value)) {
+				return <div>{String(value || "")}</div>;
+			}
+
+			const rowId = columnId ? `${columnId}-${JSON.stringify(value)}` : "";
+			const isExpanded = expandedRows?.has(rowId) || false;
+			const displayItems = isExpanded ? value : value.slice(0, 2);
+			const hasMoreItems = value.length > 2;
+
+			return (
+				<div className="flex flex-wrap gap-1">
+					{displayItems.map((item, index) => {
+						const colors = [
+							"border-blue-500",
+							"border-green-500",
+							"border-yellow-500",
+							"border-purple-500",
+							"border-pink-500",
+							"border-indigo-500",
+							"border-red-500",
+							"border-orange-500",
+							"border-teal-500",
+							"border-cyan-500",
+						];
+						const colorIndex = index % colors.length;
+						return (
+							<Badge
+								key={index}
+								variant="outline"
+								className={`text-xs ${colors[colorIndex]}`}
+							>
+								{String(item)}
+							</Badge>
+						);
+					})}
+					{hasMoreItems && (
+						<Badge
+							variant="outline"
+							className="text-xs cursor-pointer hover:bg-secondary transition-colors"
+							onClick={() => {
+								if (onToggleExpand && columnId) {
+									onToggleExpand(columnId, rowId);
+								}
+							}}
+						>
+							{isExpanded ? "−" : `+${value.length - 2}`}
+						</Badge>
+					)}
+				</div>
+			);
+		}
 		default:
 			return <div>{String(value || "")}</div>;
 	}
@@ -107,6 +165,10 @@ function renderCell(value: any, type: ColumnConfig["type"]) {
 export function generateColumns(
 	columns: ColumnConfig[],
 	settings?: ColumnSettings,
+	expandableOptions?: {
+		expandedRows?: Set<string>;
+		onToggleExpand?: (columnId: string, rowId: string) => void;
+	},
 ): ColumnDef<JsonData>[] {
 	const generatedColumns: ColumnDef<JsonData>[] = columns.map((col) => {
 		const base = {
@@ -116,7 +178,13 @@ export function generateColumns(
 				<DataGridColumnHeader title={col.label} column={column} />
 			),
 			cell: ({ row }: { row: any }) =>
-				renderCell(row.getValue(col.accessor), col.type),
+				renderCell(
+					row.getValue(col.accessor),
+					col.type,
+					col.id,
+					expandableOptions?.onToggleExpand,
+					expandableOptions?.expandedRows,
+				),
 			size: 180, // Default size, can be customized
 			enableSorting: settings?.enableSorting ?? true,
 			enableHiding: settings?.enableHiding ?? true,
@@ -205,7 +273,9 @@ export function generateFilterFields(
 									? "date"
 									: col.type === "enum"
 										? "select"
-										: "text",
+										: col.type === "array"
+											? "multiselect"
+											: "text",
 				placeholder: `Filter by ${col.label.toLowerCase()}...`,
 			};
 
@@ -232,6 +302,28 @@ export function generateFilterFields(
 				baseConfig.searchable = uniqueValues.length <= 5;
 				// Set appropriate width for enum fields
 				baseConfig.className = "w-[160px]";
+			}
+
+			// For array columns, generate options from all unique array items
+			if (col.type === "array" && data) {
+				const uniqueValues = [
+					...new Set(
+						data
+							.flatMap((row) => {
+								const value = row[col.accessor];
+								return Array.isArray(value) ? value.map(String) : [];
+							})
+							.filter((val) => val),
+					),
+				];
+				baseConfig.options = uniqueValues.map((value) => ({
+					label: value,
+					value: value,
+				}));
+				// Enable search for array fields since they can have many items
+				baseConfig.searchable = true;
+				// Set appropriate width for array fields
+				baseConfig.className = "w-[200px]";
 			}
 
 			return baseConfig;

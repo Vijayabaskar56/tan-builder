@@ -120,11 +120,26 @@ const TableCodeBlockPackagesInstallation = () => {
 	);
 };
 
-const TableCodeBlockTSX = ({ code }: { code: string }) => {
-	const formattedCode = formatCode(code);
+const TableCodeBlockCode = ({ files }: { files: { file: string; code: string }[] }) => {
+	const codeFile = files.find(f => f.file.endsWith('.tsx'));
+	if (!codeFile) return null;
+	const formattedCode = formatCode(codeFile.code);
 	return (
 		<div className="relative max-w-full">
-			<Wrapper title="table.tsx" language="tsx">
+			<Wrapper title={codeFile.file} language="tsx">
+				{formattedCode}
+			</Wrapper>
+		</div>
+	);
+};
+
+const TableCodeBlockData = ({ files }: { files: { file: string; code: string }[] }) => {
+	const dataFile = files.find(f => f.file.endsWith('.ts'));
+	if (!dataFile) return null;
+	const formattedCode = formatCode(dataFile.code);
+	return (
+		<div className="relative max-w-full">
+			<Wrapper title={dataFile.file} language="typescript">
 				{formattedCode}
 			</Wrapper>
 		</div>
@@ -135,22 +150,23 @@ export function GeneratedTableCodeViewer({
 	isGenerateSuccess,
 	generatedId,
 	tabsData,
-	code,
+	files,
 }: {
 	isGenerateSuccess: boolean;
 	generatedId: string;
 	tabsData: { value: string; registery: string }[];
-	code: string;
+	files: { file: string; code: string }[];
 }) {
 	const settings = useSettings();
 	return (
-		<Tabs defaultValue="tsx" className="w-full min-w-full flex">
+		<Tabs defaultValue="code" className="w-full min-w-full flex">
 			<div className="flex justify-between">
 				<TabsList>
-					<TabsTrigger value="tsx">TSX</TabsTrigger>
+					<TabsTrigger value="code">Code</TabsTrigger>
+					<TabsTrigger value="data">Data</TabsTrigger>
 				</TabsList>
 			</div>
-			<TabsContent value="tsx" tabIndex={-1}>
+			<TabsContent value="code" tabIndex={-1}>
 				<AnimatePresence>
 					{isGenerateSuccess && generatedId && (
 						<motion.div
@@ -194,7 +210,12 @@ export function GeneratedTableCodeViewer({
 				</AnimatePresence>
 				<TableCodeBlockPackagesInstallation />
 				<div className="border-t border-dashed w-full mt-6" />
-				<TableCodeBlockTSX code={code} />
+				<TableCodeBlockCode files={files} />
+			</TabsContent>
+			<TabsContent value="data" tabIndex={-1}>
+				<ScrollArea className="h-[60vh]">
+					<TableCodeBlockData files={files} />
+				</ScrollArea>
 			</TabsContent>
 		</Tabs>
 	);

@@ -49,6 +49,24 @@ function RouteComponent() {
 	const [columnOrder, setColumnOrder] = useState<string[]>([]);
 	const [filters, setFilters] = useState<Filter[]>([]);
 	const [dataVersion, setDataVersion] = useState(0);
+	const [expandedArrayRows, setExpandedArrayRows] = useState<Set<string>>(
+		new Set(),
+	);
+
+	const handleToggleArrayExpand = useCallback(
+		(_columnId: string, rowId: string) => {
+			setExpandedArrayRows((prev) => {
+				const newSet = new Set(prev);
+				if (newSet.has(rowId)) {
+					newSet.delete(rowId);
+				} else {
+					newSet.add(rowId);
+				}
+				return newSet;
+			});
+		},
+		[],
+	);
 
 	const columns = useMemo(() => {
 		// Ensure the first string column is filterable
@@ -62,7 +80,10 @@ function RouteComponent() {
 			return col;
 		});
 
-		let finalColumns = generateColumns(modifiedColumns, tableData.settings);
+		let finalColumns = generateColumns(modifiedColumns, tableData.settings, {
+			expandedRows: expandedArrayRows,
+			onToggleExpand: handleToggleArrayExpand,
+		});
 
 		// Add drag handle column if row dragging is enabled
 		if (tableData.settings.enableRowDragging) {
@@ -79,7 +100,12 @@ function RouteComponent() {
 		}
 
 		return finalColumns;
-	}, [tableData.table.columns, tableData.settings]);
+	}, [
+		tableData.table.columns,
+		tableData.settings,
+		expandedArrayRows,
+		handleToggleArrayExpand,
+	]);
 
 	const filterFields = useMemo(() => {
 		return generateFilterFields(
@@ -125,6 +151,24 @@ function RouteComponent() {
 				const fieldValue = item[field];
 
 				switch (operator) {
+					case "is_any_of":
+						if (Array.isArray(fieldValue)) {
+							// For multiselect on array columns, check if any selected values are in the array
+							return values.some((selectedValue) =>
+								fieldValue.includes(String(selectedValue)),
+							);
+						}
+						return values.some((value) => String(value) === String(fieldValue));
+					case "is_not_any_of":
+						if (Array.isArray(fieldValue)) {
+							// For multiselect on array columns, check if none of the selected values are in the array
+							return !values.some((selectedValue) =>
+								fieldValue.includes(String(selectedValue)),
+							);
+						}
+						return !values.some(
+							(value) => String(value) === String(fieldValue),
+						);
 					case "is":
 						return values.some((value) => String(value) === String(fieldValue));
 					case "is_not":

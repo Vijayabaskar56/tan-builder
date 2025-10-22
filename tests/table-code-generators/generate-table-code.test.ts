@@ -42,9 +42,9 @@ describe('generateTableCode', () => {
 		expect(result.code).toContain('export default function UserTable()');
 		expect(result.code).toContain('useState<PaginationState>');
 		expect(result.code).toContain('useState<SortingState>');
-		expect(result.code).toContain('useState([])');
+		expect(result.code).toContain('useState<Filter[]>([])');
 		expect(result.code).toContain('const columns = useMemo<ColumnDef<UserTableData>');
-		expect(result.code).toContain('const filterFields = useMemo(() => [');
+		expect(result.code).toContain('import { userTableData } from \'./data\';');
 		expect(result.code).toContain('useReactTable');
 		expect(result.code).toContain('DataGrid');
 		expect(result.code).toContain('tableLayout=');

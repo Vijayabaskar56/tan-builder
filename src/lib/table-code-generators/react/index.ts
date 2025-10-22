@@ -10,8 +10,7 @@ export const generateTable = (
 	tableBuilder: TableBuilder,
 	customName?: string,
 ): {
-	file: string;
-	code: string;
+	files: { file: string; code: string }[];
 	dependencies: { registryDependencies: string[]; dependencies: string[] };
 } => {
 	const imports = generateTableImports(tableBuilder.settings);
@@ -26,20 +25,19 @@ export const generateTable = (
 		customName,
 	);
 
-	const fullCode = `
-${Array.from(imports).join("\n")}
+	const fullComponentCode = `${Array.from(imports).join("\n")}
 
 ${typeCode}
-
-${dataCode}
 
 ${componentCode}`;
 
 	const dependencies = extractTableImportDependencies(imports);
 
 	return {
-		file,
-		code: fullCode,
+		files: [
+			{ file, code: fullComponentCode },
+			{ file: 'data.ts', code: dataCode },
+		],
 		dependencies,
 	};
 };

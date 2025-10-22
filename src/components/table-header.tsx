@@ -142,7 +142,8 @@ export default function TableHeader() {
 							onClick={handleShare}
 						/>
 						<div className="h-4 w-px bg-border" />
-						<AnimatedIconButton
+						{/* <AnimatedIconButton
+						//TODO: Infinite scroll Feature
 							icon={<ListIcon className="w-4 h-4 mr-1" />}
 							text={<span className="hidden xl:block ml-1">Pagination</span>}
 							variant={
@@ -150,7 +151,7 @@ export default function TableHeader() {
 							}
 							onClick={togglePagination}
 						/>
-						<div className="h-4 w-px bg-border" />
+						<div className="h-4 w-px bg-border" /> */}
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<AnimatedIconButton

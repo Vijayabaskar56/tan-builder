@@ -46,6 +46,7 @@ interface IData {
 	joined: string;
 	location: string;
 	balance: number;
+	skills: string[];
 }
 
 const demoData: IData[] = [
@@ -62,6 +63,7 @@ const demoData: IData[] = [
 		joined: "2021-04-15",
 		location: "San Francisco, USA",
 		balance: 5143.03,
+		skills: ["Leadership", "Strategy", "Innovation", "Product Vision","testing",'testing'],
 	},
 	{
 		id: "2",
@@ -76,6 +78,7 @@ const demoData: IData[] = [
 		joined: "2020-07-20",
 		location: "London, UK",
 		balance: 4321.87,
+		skills: ["AI/ML", "System Architecture", "Team Leadership", "Research"],
 	},
 	{
 		id: "3",
@@ -90,6 +93,7 @@ const demoData: IData[] = [
 		joined: "2019-03-12",
 		location: "Toronto, Canada",
 		balance: 7654.98,
+		skills: ["UI/UX Design", "Figma", "User Research", "Prototyping"],
 	},
 	{
 		id: "4",
@@ -104,6 +108,7 @@ const demoData: IData[] = [
 		joined: "2022-01-18",
 		location: "Sydney, Australia",
 		balance: 3456.45,
+		skills: ["React", "TypeScript", "Node.js", "Python"],
 	},
 	{
 		id: "5",
@@ -118,6 +123,7 @@ const demoData: IData[] = [
 		joined: "2023-05-23",
 		location: "Berlin, Germany",
 		balance: 9876.54,
+		skills: ["Contract Law", "Compliance", "Negotiation", "Legal Research"],
 	},
 	{
 		id: "6",
@@ -132,6 +138,7 @@ const demoData: IData[] = [
 		joined: "2018-11-30",
 		location: "Kuala Lumpur, MY",
 		balance: 6214.22,
+		skills: ["Business Strategy", "Operations", "Team Management", "Analytics"],
 	},
 	{
 		id: "7",
@@ -146,6 +153,7 @@ const demoData: IData[] = [
 		joined: "2021-06-14",
 		location: "Barcelona, Spain",
 		balance: 5321.77,
+		skills: ["Product Strategy", "Agile", "User Stories", "Roadmapping"],
 	},
 	{
 		id: "8",
@@ -160,6 +168,7 @@ const demoData: IData[] = [
 		joined: "2020-10-22",
 		location: "Tokyo, Japan",
 		balance: 8452.39,
+		skills: ["Digital Marketing", "SEO", "Content Strategy", "Analytics"],
 	},
 	{
 		id: "9",
@@ -174,6 +183,7 @@ const demoData: IData[] = [
 		joined: "2019-09-17",
 		location: "Paris, France",
 		balance: 7345.1,
+		skills: ["Python", "Machine Learning", "SQL", "Data Visualization"],
 	},
 	{
 		id: "10",
@@ -188,6 +198,7 @@ const demoData: IData[] = [
 		joined: "2023-02-11",
 		location: "Milan, Italy",
 		balance: 5214.88,
+		skills: ["Mechanical Engineering", "CAD", "Project Management", "Safety"],
 	},
 	{
 		id: "11",
@@ -202,6 +213,7 @@ const demoData: IData[] = [
 		joined: "2022-12-01",
 		location: "Rio de Janeiro, Brazil",
 		balance: 9421.5,
+		skills: ["Java", "Spring Boot", "Microservices", "AWS"],
 	},
 	{
 		id: "12",
@@ -216,6 +228,7 @@ const demoData: IData[] = [
 		joined: "2020-03-27",
 		location: "Mumbai, India",
 		balance: 4521.67,
+		skills: ["Sales Strategy", "CRM", "Negotiation", "Client Relations"],
 	},
 ];
 
@@ -272,6 +285,9 @@ export default function DataGridWithFiltersDemo() {
 	const [filters, setFilters] = useState<Filter[]>([
 		createFilter("status", "is", ["active"]),
 	]);
+	const [expandedSkillsRows, setExpandedSkillsRows] = useState<Set<string>>(
+		new Set(),
+	);
 
 	// Filter field configurations
 	const fields: FilterFieldConfig[] = [
@@ -435,6 +451,20 @@ export default function DataGridWithFiltersDemo() {
 			step: 100,
 			className: "w-32",
 		},
+		{
+			key: "skills",
+			label: "Skills",
+			icon: <User className="size-3.5" />,
+			type: "multiselect",
+			searchable: true,
+			className: "w-48",
+			options: Array.from(
+				new Set(demoData.flatMap((person) => person.skills)),
+			).map((skill) => ({
+				value: skill,
+				label: skill,
+			})),
+		},
 	];
 
 	// Apply filters to data - only apply filters with non-empty values
@@ -474,17 +504,63 @@ export default function DataGridWithFiltersDemo() {
 				const fieldValue = item[field as keyof IData];
 
 				switch (operator) {
+					case "is_any_of":
+						if (field === "skills" && Array.isArray(fieldValue)) {
+							// For multiselect, check if any of the selected skills are in the person's skills
+							return values.some((selectedSkill) =>
+								fieldValue.includes(String(selectedSkill)),
+							);
+						}
+						return values.some((value) => value === fieldValue);
+					case "is_not_any_of":
+						if (field === "skills" && Array.isArray(fieldValue)) {
+							// For multiselect, check if none of the selected skills are in the person's skills
+							return !values.some((selectedSkill) =>
+								fieldValue.includes(String(selectedSkill)),
+							);
+						}
+						return !values.some((value) => value === fieldValue);
+					case "includes_all":
+						if (field === "skills" && Array.isArray(fieldValue)) {
+							// Check if person has ALL of the selected skills
+							return values.every((selectedSkill) =>
+								fieldValue.includes(String(selectedSkill)),
+							);
+						}
+						return values.every((value) => value === fieldValue);
+					case "excludes_all":
+						if (field === "skills" && Array.isArray(fieldValue)) {
+							// Check if person has NONE of the selected skills
+							return !values.some((selectedSkill) =>
+								fieldValue.includes(String(selectedSkill)),
+							);
+						}
+						return !values.some((value) => value === fieldValue);
 					case "is":
 						return values.includes(fieldValue);
 					case "is_not":
 						return !values.includes(fieldValue);
 					case "contains":
+						if (field === "skills" && Array.isArray(fieldValue)) {
+							return values.some((value) =>
+								fieldValue.some((skill: string) =>
+									skill.toLowerCase().includes(String(value).toLowerCase()),
+								),
+							);
+						}
 						return values.some((value) =>
 							String(fieldValue)
 								.toLowerCase()
 								.includes(String(value).toLowerCase()),
 						);
 					case "not_contains":
+						if (field === "skills" && Array.isArray(fieldValue)) {
+							return !values.some((value) =>
+								fieldValue.some((skill: string) =>
+									skill.toLowerCase().includes(String(value).toLowerCase()),
+								),
+							);
+						}
 						return !values.some((value) =>
 							String(fieldValue)
 								.toLowerCase()
@@ -530,7 +606,6 @@ export default function DataGridWithFiltersDemo() {
 	}, [filters]);
 
 	const handleFiltersChange = useCallback((newFilters: Filter[]) => {
-		console.log("Data grid filters updated:", newFilters);
 		setFilters(newFilters);
 		// Reset pagination when filters change
 		setPagination((prev) => ({ ...prev, pageIndex: 0 }));
@@ -647,8 +722,53 @@ export default function DataGridWithFiltersDemo() {
 				size: 120,
 				enableSorting: true,
 			},
+			{
+				accessorKey: "skills",
+				id: "skills",
+				header: ({ column }) => (
+					<DataGridColumnHeader title="Skills" column={column} />
+				),
+				cell: ({ row }) => {
+					const isExpanded = expandedSkillsRows.has(row.original.id);
+					const skillsToShow = isExpanded
+						? row.original.skills
+						: row.original.skills.slice(0, 2);
+					const hasMoreSkills = row.original.skills.length > 2;
+
+					return (
+						<div className="flex flex-wrap gap-1">
+							{skillsToShow.map((skill, index) => (
+								<Badge key={index} variant="secondary" className="text-xs">
+									{skill}
+								</Badge>
+							))}
+							{hasMoreSkills && (
+								<Badge
+									variant="outline"
+									className="text-xs cursor-pointer hover:bg-secondary transition-colors"
+									onClick={() => {
+										setExpandedSkillsRows((prev) => {
+											const newSet = new Set(prev);
+											if (isExpanded) {
+												newSet.delete(row.original.id);
+											} else {
+												newSet.add(row.original.id);
+											}
+											return newSet;
+										});
+									}}
+								>
+									{isExpanded ? "−" : `+${row.original.skills.length - 2}`}
+								</Badge>
+							)}
+						</div>
+					);
+				},
+				size: 180,
+				enableSorting: false,
+			},
 		],
-		[],
+		[expandedSkillsRows],
 	);
 
 	const [columnOrder, setColumnOrder] = useState<string[]>(
@@ -657,7 +777,7 @@ export default function DataGridWithFiltersDemo() {
 
 	const table = useReactTable({
 		columns,
-		data: demoData,
+		data: filteredData,
 		pageCount: Math.ceil((filteredData?.length || 0) / pagination.pageSize),
 		getRowId: (row: IData) => row.id,
 		state: {

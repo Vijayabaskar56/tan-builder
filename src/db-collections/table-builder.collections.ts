@@ -1,7 +1,7 @@
 import {
 	createCollection,
 	localOnlyCollectionOptions,
-	localStorageCollectionOptions,
+	localStorageCollectionOptions
 } from "@tanstack/react-db";
 import { createIsomorphicFn } from "@tanstack/react-start";
 import * as v from "valibot";
@@ -49,6 +49,7 @@ export const TableBuilderSchema = v.object({
 					v.literal("boolean"),
 					v.literal("date"),
 					v.literal("object"),
+					v.literal("array"),
 					v.literal("enum"),
 				]),
 				order: v.number(),

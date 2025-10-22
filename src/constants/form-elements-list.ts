@@ -1,4 +1,5 @@
 import {
+	Brackets,
 	Calendar,
 	CheckSquare,
 	Grid3X3,
@@ -140,5 +141,15 @@ export const tableColumnTypes = [
 		name: "Object",
 		type: "object",
 		icon: Grid3X3,
+	},
+	{
+		name: "Enum",
+		type: "enum",
+		icon: ListChecks,
+	},
+	{
+		name: "Array",
+		type: "array",
+		icon: Brackets,
 	},
 ];
