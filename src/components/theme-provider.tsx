@@ -84,20 +84,17 @@ const Theme = ({
 	const attrs = !value ? themes : Object.values(value);
 
 	// Calculate system theme for provider value
-	const systemTheme = React.useMemo((): "dark" | "light" | undefined => {
-		if (!enableSystem) return undefined;
-		const system = getSystemTheme();
-		return system === "dark" || system === "light" ? system : undefined;
-	}, [enableSystem]);
+	const [systemTheme, setSystemTheme] = React.useState(() =>
+		enableSystem ? getSystemTheme() : undefined,
+	);
 
 	// Calculate resolved theme (for when theme is "system")
 	const resolvedTheme = React.useMemo(() => {
 		if (theme === "system" && enableSystem) {
-			const system = getSystemTheme();
-			return system === "dark" || system === "light" ? system : theme;
+			return systemTheme || theme;
 		}
 		return theme;
-	}, [theme, enableSystem]);
+	}, [theme, enableSystem, systemTheme]);
 
 	// apply selected theme function (light, dark, system)
 	const applyTheme = React.useCallback(
@@ -171,7 +168,7 @@ const Theme = ({
 				localStorage.setItem(storageKey, newTheme);
 			} catch (_e) {
 				// Unsupported
-				console.error(e);
+				console.error(_e);
 			}
 		},
 		[theme],
@@ -180,11 +177,12 @@ const Theme = ({
 	// biome-ignore lint/correctness/useExhaustiveDependencies: Avoid overriding user selections by excluding forcedTheme from deps
 	const handleMediaQuery = React.useCallback(
 		(_e?: MediaQueryList | MediaQueryListEvent) => {
+			setSystemTheme(getSystemTheme());
 			if (theme === "system" && enableSystem && !forcedTheme) {
 				applyTheme("system");
 			}
 		},
-		[theme, forcedTheme],
+		[theme, forcedTheme, enableSystem],
 	);
 
 	// Always listen to System preference
@@ -297,7 +295,7 @@ const getTheme = (key: string, fallback?: string) => {
 		theme = localStorage.getItem(key) || undefined;
 	} catch (_e) {
 		// Unsupported
-		console.error(e);
+		console.error(_e);
 	}
 	return theme || fallback;
 };
