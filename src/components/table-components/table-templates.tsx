@@ -1,11 +1,11 @@
-import { Database, Heart, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { tableTemplates } from "@/constants/table-templates";
 import type { SavedTableTemplate } from "@/db-collections/table-builder.collections";
 import { TableBuilderService } from "@/services/table-builder.service";
+import { Heart, Table, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export function TableTemplates() {
 	const [savedTemplates, setSavedTemplates] = useState<SavedTableTemplate[]>(
@@ -94,7 +94,7 @@ export function TableTemplates() {
 											className="justify-start text-[12px] flex-1"
 											variant="ghost"
 										>
-											<Database className="size-4 mr-2" />
+											<Table className="size-4 mr-2" />
 											{template.name}
 										</Button>
 										<Button
@@ -124,7 +124,7 @@ export function TableTemplates() {
 									className="justify-start text-[12px] w-full"
 									variant="ghost"
 								>
-									<Database className="size-4 mr-2" />
+									<Table className="size-4 mr-2" />
 									{template.name}
 								</Button>
 							))}

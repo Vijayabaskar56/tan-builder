@@ -2,7 +2,10 @@ import { createClientOnlyFn } from "@tanstack/react-start";
 import { useStore } from "@tanstack/react-store";
 import { batch, Derived, Store } from "@tanstack/store";
 import { v4 as uuid } from "uuid";
-import type { Framework, ValidationSchema } from "@/components/form-components/types";
+import type {
+	Framework,
+	ValidationSchema,
+} from "@/components/form-components/types";
 import { defaultFormElements } from "@/constants/default-form-element";
 import { templates } from "@/constants/templates";
 import type {
@@ -60,13 +63,13 @@ export type FormBuilderActions = {
 	setFormElements: (formElements: FormElements) => void;
 	// Save/Load functions
 	saveForm: (formName: string) => void;
-	loadForm: (formName: string) => void;
+	loadForm: (formName: string) => boolean;
 	getSavedForms: () => Array<{
 		name: string;
 		data: Record<string, unknown>;
 		createdAt: string;
 	}>;
-	deleteSavedForm: (formName: string) => void;
+	deleteSavedForm: (formName: string) => boolean;
 	appendElement: AppendElement;
 	dropElement: DropElement;
 	editElement: EditElement;
@@ -1585,8 +1588,8 @@ const createActions = (
 		}
 	};
 
-	const loadForm = (formName: string) => {
-		if (typeof window === "undefined") return;
+	const loadForm = (formName: string): boolean => {
+		if (typeof window === "undefined") return false;
 
 		try {
 			const savedForms = JSON.parse(localStorage.getItem("savedForms") || "[]");
@@ -1602,9 +1605,12 @@ const createActions = (
 					validationSchema: data.validationSchema,
 					framework: data.framework,
 				});
+				return true;
 			}
+			return false;
 		} catch (error) {
 			console.error("Failed to load form:", error);
+			return false;
 		}
 	};
 
@@ -1623,8 +1629,8 @@ const createActions = (
 		}
 	};
 
-	const deleteSavedForm = (formName: string) => {
-		if (typeof window === "undefined") return;
+	const deleteSavedForm = (formName: string): boolean => {
+		if (typeof window === "undefined") return false;
 
 		try {
 			const savedForms = JSON.parse(localStorage.getItem("savedForms") || "[]");
@@ -1632,8 +1638,10 @@ const createActions = (
 				(form: any) => form.name !== formName,
 			);
 			localStorage.setItem("savedForms", JSON.stringify(filteredForms));
+			return true;
 		} catch (error) {
 			console.error("Failed to delete saved form:", error);
+			return false;
 		}
 	};
 
