@@ -1,12 +1,12 @@
 /** biome-ignore-all lint/correctness/useUniqueElementIds: Need this for Focus State */
-import { FormArrayPreview } from "@/components/builder/form-array-preview";
-import { MultiStepFormPreview } from "@/components/builder/multi-step-preview";
-import { RenderFormElement } from "@/components/builder/render-form-element";
+import { FormArrayPreview } from "@/components/form-components/form-array-preview";
+import { MultiStepFormPreview } from "@/components/form-components/multi-step-preview";
+import { RenderFormElement } from "@/components/form-components/render-form-element";
 import { Button } from "@/components/ui/button";
 import type { AppForm } from "@/hooks/use-form-builder";
 import { useFormStore, useIsMultiStep } from "@/hooks/use-form-store";
 import type { FormArray, FormElement, FormStep } from "@/types/form-types";
-import NoFieldPlaceholder from "./no-field-placeholder";
+import NoFieldPlaceholder from "@/components/no-field-placeholder";
 
 interface FormPreviewProps {
 	form: AppForm;

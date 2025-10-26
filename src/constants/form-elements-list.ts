@@ -2,14 +2,21 @@ import {
 	Brackets,
 	Calendar,
 	CheckSquare,
+	ChevronDown,
+	CircleDot,
 	Grid3X3,
 	Hash,
 	Heading1,
 	Heading2,
 	Heading3,
 	ListChecks,
+	Lock,
+	Minus,
 	Shield,
+	Sliders,
+	ToggleLeft,
 	Type,
+	WrapText,
 } from "lucide-react";
 
 /**
@@ -110,6 +117,83 @@ export const formElementsList = [
 				label: "Option 5",
 			},
 		],
+	},
+		{
+		group: "field",
+		name: "Password",
+		fieldType: "Password",
+		type: "password",
+		icon: Lock,
+	},
+	{
+		group: "field",
+		name: "Radio",
+		icon: CircleDot,
+		fieldType: "RadioGroup",
+		options: [
+			{
+				value: "1",
+				label: "Option 1",
+			},
+			{
+				value: "2",
+				label: "Option 2",
+			},
+			{
+				value: "2",
+				label: "Option 3",
+			},
+		],
+	},
+	{
+		group: "field",
+		name: "Select",
+		icon: ChevronDown,
+		fieldType: "Select",
+		options: [
+			{
+				value: "1",
+				label: "Option 1",
+			},
+			{
+				value: "2",
+				label: "Option 2",
+			},
+		],
+	},
+	{
+		group: "display",
+		name: "Separator",
+		fieldType: "Separator",
+		static: true,
+		icon: Minus,
+	},
+	{
+		group: "field",
+		name: "Slider",
+		fieldType: "Slider",
+		icon: Sliders,
+		min: 1,
+		max: 100,
+		step: 2,
+	},
+	{
+		group: "field",
+		name: "Switch",
+		fieldType: "Switch",
+		icon: ToggleLeft,
+	},
+	{
+		group: "field",
+		name: "Textarea",
+		fieldType: "Textarea",
+		icon: WrapText,
+	},
+	{
+		group: "field",
+		name: "Toggle",
+		fieldType: "ToggleGroup",
+		icon: Grid3X3,
 	},
 ];
 

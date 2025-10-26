@@ -58,10 +58,7 @@ export const AnimatedIconButton = ({
 
 	if (renderAs === "span") {
 		return (
-			<Button
-				variant={variant}
-				size={size}
-				type="button"
+			<span
 				className={cn(focusClasses, className)}
 				onClick={onClick}
 				onMouseEnter={() => iconRef.current?.startAnimation()}
@@ -69,10 +66,12 @@ export const AnimatedIconButton = ({
 				onKeyDown={(e) => {
 					if (e.key === "Enter") onClick?.();
 				}}
+				tabIndex={0}
+				role="button"
 				{...props}
 			>
 				{content}
-			</Button>
+			</span>
 		);
 	}
 

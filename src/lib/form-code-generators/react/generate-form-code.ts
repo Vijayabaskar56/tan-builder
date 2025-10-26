@@ -1,4 +1,4 @@
-import type { Settings } from "@/components/builder/types";
+import type { Settings } from "@/components/form-components/types";
 import {
 	getDefaultFormElement,
 	getDefaultValuesString,

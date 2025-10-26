@@ -1,19 +1,19 @@
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useId, useState } from "react";
 import * as z from "zod";
-import { GeneratedTableCodeViewer } from "@/components/generated-code/table-code-viewer";
+import { GeneratedTableCodeViewer } from "@/components/table-components/table-code-viewer";
 import useTableStore from "@/hooks/use-table-store";
 import { generateTable } from "@/lib/table-code-generators/react/index";
 import { logger } from "@/utils/utils";
 import { TableBuilderService } from "@/services/table-builder.service";
 import type { CreateRegistryResponse } from "@/types/form-types";
-import { AnimatedIconButton } from "./ui/animated-icon-button";
+import { AnimatedIconButton } from "../ui/animated-icon-button";
 import {
 	InputGroup,
 	InputGroupAddon,
 	InputGroupButton,
 	InputGroupInput,
-} from "./ui/input-group";
+} from "../ui/input-group";
 import {
 	ResponsiveDialog,
 	ResponsiveDialogContent,
@@ -21,12 +21,12 @@ import {
 	ResponsiveDialogHeader,
 	ResponsiveDialogTitle,
 	ResponsiveDialogTrigger,
-} from "./ui/revola";
-import { ScrollArea } from "./ui/scroll-area";
-import { Separator } from "./ui/separator";
-import { Spinner } from "./ui/spinner";
-import { revalidateLogic, useAppForm } from "./ui/tanstack-form";
-import { TerminalIcon } from "./ui/terminal";
+} from "../ui/revola";
+import { ScrollArea } from "../ui/scroll-area";
+import { Separator } from "../ui/separator";
+import { Spinner } from "../ui/spinner";
+import { revalidateLogic, useAppForm } from "../ui/tanstack-form";
+import { TerminalIcon } from "../ui/terminal";
 
 const tableSchema = z.object({
 	tableName: z.string().min(1, { message: "Table name is required" }),

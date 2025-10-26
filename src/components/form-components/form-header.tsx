@@ -26,20 +26,20 @@ import { settingsCollection } from "@/db-collections/settings.collections";
 import { useFormBuilder } from "@/hooks/use-form-builder";
 import { useFormStore } from "@/hooks/use-form-store";
 import useSettings from "@/hooks/use-settings";
-import type { Framework, ValidationSchema } from "./builder/types";
-import CodeDialog from "./code-dialog";
+import type { Framework, ValidationSchema } from "./types";
+import CodeDialog from "./form-code-dialog";
 import {
 	AnimatedIconButton,
 	AnimatedIconSpan,
-} from "./ui/animated-icon-button";
-import { BlocksIcon } from "./ui/blocks";
-import { ChevronDownIcon } from "./ui/chevron-down";
-import { HeartIcon } from "./ui/heart";
-import { LayersIcon } from "./ui/layers";
-import { LayoutPanelTopIcon } from "./ui/layout-panel-top";
-import { RotateCWIcon } from "./ui/rotate-cw";
-import { SettingsGearIcon } from "./ui/settings-gear";
-import { ShareIcon } from "./ui/share";
+} from "../ui/animated-icon-button";
+import { BlocksIcon } from "../ui/blocks";
+import { ChevronDownIcon } from "../ui/chevron-down";
+import { HeartIcon } from "../ui/heart";
+import { LayersIcon } from "../ui/layers";
+import { LayoutPanelTopIcon } from "../ui/layout-panel-top";
+import { RotateCWIcon } from "../ui/rotate-cw";
+import { SettingsGearIcon } from "../ui/settings-gear";
+import { ShareIcon } from "../ui/share";
 
 export default function FormHeader() {
 	const location = useLocation();

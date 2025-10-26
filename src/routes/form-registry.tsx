@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import ComponentCard from "@/components/component-card";
 import ComponentDetails from "@/components/component-details";
-import { Wrapper } from "@/components/generated-code/code-viewer";
+import { Wrapper } from "@/components/form-components/form-code-viewer";
 import { Button } from "@/components/ui/button";
 import { CodeBlock, CodeBlockCode } from "@/components/ui/code-block";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

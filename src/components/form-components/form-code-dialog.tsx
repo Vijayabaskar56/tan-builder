@@ -8,10 +8,6 @@ import {
 	extractImportDependencies,
 	generateImports,
 } from "@/lib/form-code-generators/react/generate-imports";
-import {
-	extractImportDependencies,
-	generateImports,
-} from "@/lib/form-code-generators/react/generate-imports";
 import { generateValidationCode } from "@/lib/schema-generators";
 import { logger } from "@/utils/utils";
 import type {
@@ -20,14 +16,14 @@ import type {
 	FormElement,
 	FormElementOrList,
 } from "@/types/form-types";
-import { GeneratedFormCodeViewer } from "./generated-code/code-viewer";
-import { AnimatedIconButton } from "./ui/animated-icon-button";
+import { GeneratedFormCodeViewer } from "./form-code-viewer";
+import { AnimatedIconButton } from "../ui/animated-icon-button";
 import {
 	InputGroup,
 	InputGroupAddon,
 	InputGroupButton,
 	InputGroupInput,
-} from "./ui/input-group";
+} from "../ui/input-group";
 import {
 	ResponsiveDialog,
 	ResponsiveDialogContent,
@@ -35,12 +31,12 @@ import {
 	ResponsiveDialogHeader,
 	ResponsiveDialogTitle,
 	ResponsiveDialogTrigger,
-} from "./ui/revola";
-import { ScrollArea } from "./ui/scroll-area";
-import { Separator } from "./ui/separator";
-import { Spinner } from "./ui/spinner";
-import { revalidateLogic, useAppForm } from "./ui/tanstack-form";
-import { TerminalIcon } from "./ui/terminal";
+} from "../ui/revola";
+import { ScrollArea } from "../ui/scroll-area";
+import { Separator } from "../ui/separator";
+import { Spinner } from "../ui/spinner";
+import { revalidateLogic, useAppForm } from "../ui/tanstack-form";
+import { TerminalIcon } from "../ui/terminal";
 
 const formSchema = z.object({
 	formName: z.string().min(1, { message: "Form name is required" }),

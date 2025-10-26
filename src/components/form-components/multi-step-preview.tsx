@@ -1,7 +1,7 @@
 // multi-step-form-preview.tsx
 import { AnimatePresence, motion } from "motion/react";
-import { FormArrayPreview } from "@/components/builder/form-array-preview";
-import { RenderFormElement } from "@/components/builder/render-form-element";
+import { FormArrayPreview } from "@/components/form-components/form-array-preview";
+import { RenderFormElement } from "@/components/form-components/render-form-element";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import type { AppForm } from "@/hooks/use-form-builder";

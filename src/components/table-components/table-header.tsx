@@ -31,10 +31,10 @@ import { Switch } from "@/components/ui/switch";
 import useTableStore from "@/hooks/use-table-store";
 import { TableBuilderService } from "@/services/table-builder.service";
 import TableCodeDialog from "./table-code-dialog";
-import DataUploadDialog from "./table-components/table-data-upload-dialog";
-import { AnimatedIconButton } from "./ui/animated-icon-button";
-import { RotateCWIcon } from "./ui/rotate-cw";
-import { ShareIcon } from "./ui/share";
+import DataUploadDialog from "./table-data-upload-dialog";
+import { AnimatedIconButton } from "../ui/animated-icon-button";
+import { RotateCWIcon } from "../ui/rotate-cw";
+import { ShareIcon } from "../ui/share";
 
 export default function TableHeader() {
 	const tableData = useTableStore();

@@ -14,7 +14,7 @@ import { type CSSProperties, Fragment, type ReactNode } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useDataGrid } from "@/components/ui/data-grid";
 import { cn } from "@/utils/utils";
-import NoFieldPlaceholder from "../builder/no-field-placeholder";
+import NoFieldPlaceholder from "../no-field-placeholder";
 
 const headerCellSpacingVariants = cva("", {
 	variants: {
@@ -464,7 +464,6 @@ function DataGridTableRowSelect<TData>({
 				checked={row.getIsSelected()}
 				onCheckedChange={(value) => row.toggleSelected(!!value)}
 				aria-label="Select row"
-				size={size ?? "sm"}
 				className="align-[inherit]"
 			/>
 		</>
@@ -483,7 +482,6 @@ function DataGridTableRowSelectAll({ size }: { size?: "sm" | "md" | "lg" }) {
 			disabled={isLoading || recordCount === 0}
 			onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
 			aria-label="Select all"
-			size={size}
 			className="align-[inherit]"
 		/>
 	);

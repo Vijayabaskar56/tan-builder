@@ -13,3 +13,4 @@ dist
 .env
 sample-data.json
 src/routeTree.gen.ts
+.git

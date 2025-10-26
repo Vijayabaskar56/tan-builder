@@ -1,5 +1,5 @@
 import { Plus, Trash2 } from "lucide-react";
-import { RenderFormElement } from "@/components/builder/render-form-element";
+import { RenderFormElement } from "@/components/form-components/render-form-element";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import type { AppForm } from "@/hooks/use-form-builder";

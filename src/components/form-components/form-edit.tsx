@@ -1,9 +1,9 @@
 import { Check, CircleX, LucideGripVertical, PlusCircle } from "lucide-react";
 import { Reorder, useDragControls } from "motion/react";
 import { useEffect, useRef, useState } from "react";
-import { FormElementsDropdown } from "@/components/builder/form-elements-dropdown";
-import { RenderFormElement } from "@/components/builder/render-form-element";
-import { StepContainer } from "@/components/builder/step-container";
+import { FormElementsDropdown } from "@/components/form-components/form-elements-dropdown";
+import { RenderFormElement } from "@/components/form-components/render-form-element";
+import { StepContainer } from "@/components/form-components/step-container";
 import {
 	Accordion,
 	AccordionContent,
@@ -24,9 +24,9 @@ import type {
 	FormStep,
 	Option,
 } from "@/types/form-types";
-import { DeleteIcon } from "../ui/delete";
-import { SquarePenIcon } from "../ui/square-pen";
-import NoFieldPlaceholder from "./no-field-placeholder";
+import { DeleteIcon } from "@/components/ui/delete";
+import { SquarePenIcon } from "@/components/ui/square-pen";
+import NoFieldPlaceholder from "@/components/no-field-placeholder";
 
 const getTransitionProps = (isLayoutTransitioning: boolean) => ({
 	transition: isLayoutTransitioning

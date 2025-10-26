@@ -1,5 +1,5 @@
 import { ErrorBoundary } from "@/components/error-boundary";
-import FormHeader from "@/components/header";
+import FormHeader from "@/components/form-components/form-header";
 import Loader from "@/components/loader";
 import { NotFound } from "@/components/not-found";
 import { settingsCollection } from "@/db-collections/settings.collections";

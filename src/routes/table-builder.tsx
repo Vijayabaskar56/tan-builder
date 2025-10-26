@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/a11y/noLabelWithoutControl: no needed */
 
-import { TableSettingsSidebar } from "@/components/builder/TableSettingsSidebar";
+import { TableSettingsSidebar } from "@/components/table-components/table-settings";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { createFileRoute, Outlet, useSearch } from "@tanstack/react-router";
 import { createClientOnlyFn } from "@tanstack/react-start";
@@ -11,7 +11,7 @@ import Loader from "@/components/loader";
 import { NotFound } from "@/components/not-found";
 import { TableColumnEdit } from "@/components/table-components/table-column-edit";
 import { TableTemplates } from "@/components/table-components/table-templates";
-import TableHeader from "@/components/table-header";
+import TableHeader from "@/components/table-components/table-header";
 import { AnimatedIconButton } from "@/components/ui/animated-icon-button";
 import { BlocksIcon } from "@/components/ui/blocks";
 import { Button } from "@/components/ui/button";

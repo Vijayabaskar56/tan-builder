@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { Reorder } from "motion/react";
 import * as React from "react";
-import { RenderFormElement } from "@/components/builder/render-form-element";
+import { RenderFormElement } from "@/components/form-components/render-form-element";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,

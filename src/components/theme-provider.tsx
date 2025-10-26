@@ -88,6 +88,11 @@ const Theme = ({
 		enableSystem ? getSystemTheme() : undefined,
 	);
 
+	// Update systemTheme when enableSystem changes
+	React.useEffect(() => {
+		setSystemTheme(enableSystem ? getSystemTheme() : undefined);
+	}, [enableSystem]);
+
 	// Calculate resolved theme (for when theme is "system")
 	const resolvedTheme = React.useMemo(() => {
 		if (theme === "system" && enableSystem) {

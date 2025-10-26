@@ -1,5 +1,5 @@
-import { FormEdit } from "@/components/builder/form-edit";
-import { SingleStepFormPreview } from "@/components/builder/form-preview";
+import { FormEdit } from "@/components/form-components/form-edit";
+import { SingleStepFormPreview } from "@/components/form-components/form-preview";
 import { ErrorBoundary } from "@/components/error-boundary";
 import Loader from "@/components/loader";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -7,9 +7,9 @@ import { type AppForm, useFormBuilder } from "@/hooks/use-form-builder";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useSettings from "@/hooks/use-settings";
 import { createFileRoute } from "@tanstack/react-router";
-import { FieldTab } from "../../components/builder/FieldLibrary";
-import { SettingsSidebar } from "../../components/builder/SettingsSidebar";
-import { TemplateSidebar } from "../../components/builder/TemplateSidebar";
+import { FieldTab } from "../../components/form-components/form-field-library";
+import { SettingsSidebar } from "../../components/form-components/form-settings";
+import { TemplateSidebar } from "../../components/form-components/form-templates";
 
 export const Route = createFileRoute("/form-builder/")({
 	component: FormBuilderComponent,
