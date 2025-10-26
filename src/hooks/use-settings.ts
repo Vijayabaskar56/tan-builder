@@ -20,7 +20,20 @@ const useSettings = () => {
 	);
 
 	// Return the first (and only) settings object, or null if no settings exist
-	return data?.[0] || null;
+	return data?.[0] || {
+		activeTab: "builder",
+		defaultRequiredValidation: true,
+		numericInput: false,
+		focusOnError: true,
+		validationMethod: "onDynamic",
+		asyncValidation: 300,
+		id: "user-settings",
+		preferredSchema: "zod",
+		preferredFramework: "react",
+		preferredPackageManager: "pnpm",
+		isCodeSidebarOpen: false,
+		autoSave: true,
+	}
 };
 
 export default useSettings;
