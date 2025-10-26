@@ -320,6 +320,32 @@ function RouteComponent() {
 							tableData.table.data.length > 0 && <DataGridPagination />}
 					</div>
 				</DataGrid>
+				<div className="text-center text-sm text-muted-foreground mt-4">
+					Table builder powered by{" "}
+					<a
+						href="https://www.reui.io/docs/data-grid"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="underline hover:no-underline"
+					>DataGrid</a>
+					{" "}&{" "}
+					<a
+						href="https://www.reui.io/docs/filters"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="underline hover:no-underline"
+					>Filter
+					</a>
+					{" "}Components from {" "}
+					<a
+						href="https://www.reui.io/"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="underline hover:no-underline"
+					>
+						ReUI Components
+					</a>
+				</div>
 			</div>
 		</div>
 	);
