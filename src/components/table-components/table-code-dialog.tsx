@@ -176,6 +176,7 @@ function TableCodeDialog() {
 		<ResponsiveDialog open={open} onOpenChange={setOpen}>
 			<ResponsiveDialogTrigger asChild>
 				<AnimatedIconButton
+					disabled={true}
 					icon={<TerminalIcon className="w-4 h-4 mr-1" />}
 					text={<span className="hidden xl:block ml-1">Code</span>}
 					variant={"ghost"}

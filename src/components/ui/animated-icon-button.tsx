@@ -22,6 +22,7 @@ interface AnimatedIconButtonProps {
 	className?: string;
 	iconPosition?: "start" | "end";
 	renderAs?: "button" | "span";
+	disabled?: boolean;
 	// Allow passing through additional props for better integration with other components
 	[key: string]: unknown;
 }
@@ -61,6 +62,7 @@ export const AnimatedIconButton = ({
 			<span
 				className={cn(focusClasses, className)}
 				onClick={onClick}
+				aria-disabled={props.disabled as boolean}
 				onMouseEnter={() => iconRef.current?.startAnimation()}
 				onMouseLeave={() => iconRef.current?.stopAnimation()}
 				onKeyDown={(e) => {
@@ -74,7 +76,7 @@ export const AnimatedIconButton = ({
 			</span>
 		);
 	}
-
+	console.log(props.disabled ,'props.disabled')
 	return (
 		<Button
 			type="button"
@@ -82,6 +84,7 @@ export const AnimatedIconButton = ({
 			size={size}
 			className={cn(focusClasses, className)}
 			onClick={onClick}
+			disabled={props.disabled}
 			onMouseEnter={() => iconRef.current?.startAnimation()}
 			onMouseLeave={() => iconRef.current?.stopAnimation()}
 			{...props}
@@ -115,6 +118,7 @@ export const AnimatedIconSpan = ({
 				"rounded-md outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
 				className,
 			)}
+
 			onClick={onClick}
 			onMouseEnter={() => iconRef.current?.startAnimation()}
 			onMouseLeave={() => iconRef.current?.stopAnimation()}
