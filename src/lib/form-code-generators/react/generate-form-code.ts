@@ -1,4 +1,4 @@
-import type { Settings } from "@/components/builder/types";
+import type { Settings } from "@/components/form-components/types";
 import {
 	getDefaultFormElement,
 	getDefaultValuesString,
@@ -8,7 +8,7 @@ import {
 import { getFormElementCode } from "@/lib/form-code-generators/react/generate-form-component";
 import { generateImports } from "@/lib/form-code-generators/react/generate-imports";
 import { flattenFormSteps } from "@/lib/form-elements-helpers";
-import { generateFormNames } from "@/lib/utils";
+import { generateFormNames } from "@/utils/utils";
 // generate-form-code.ts
 import type {
 	FormArray,
@@ -149,7 +149,7 @@ ${imports}
 export function ${componentName}() {
 
 const ${variableName} = useAppForm({
-   defaultValues: ${getDefaultValuesString(validationSchema, schemaName, formName, formElements)},
+   defaultValues: ${getDefaultValuesString(validationSchema, schemaName, formElements)},
   validationLogic: ${generateValidationLogic(settings)},
   validators: ${generateValidatorsString(settings, schemaName)},
   onSubmit : ({value}) => {
@@ -272,7 +272,7 @@ return (
     } = useFormStepper(stepSchemas);
 
     const ${variableName} = useAppForm({
-      defaultValues: ${getDefaultValuesString(validationSchema, schemaName, formName, formElements)},
+      defaultValues: ${getDefaultValuesString(validationSchema, schemaName, formElements)},
       validationLogic: ${generateValidationLogic(settings)},
       validators: {
         ${settings.validationMethod || "onDynamic"}: currentValidator as typeof ${schemaName},

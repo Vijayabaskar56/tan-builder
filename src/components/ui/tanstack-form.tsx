@@ -26,7 +26,7 @@ import {
 	InputGroupInput,
 } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 
 const {
 	fieldContext,

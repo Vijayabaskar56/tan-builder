@@ -10,8 +10,13 @@ export default function AppToggle() {
 	const location = useLocation();
 
 	const isFormBuilder = location.pathname.startsWith("/form-builder");
-	// const isTableBuilder = location.pathname.startsWith("/table-builder")
-	const selectedValue = isFormBuilder ? "off" : "on";
+	const isTableBuilder = location.pathname.startsWith("/table-builder");
+
+	if (!isFormBuilder && !isTableBuilder) {
+		return null;
+	}
+
+	const selectedValue = isFormBuilder ? "off" : isTableBuilder ? "on" : "none";
 
 	const handleValueChange = (value: string) => {
 		const newPath = value === "off" ? "/form-builder" : "/table-builder";
@@ -26,7 +31,7 @@ export default function AppToggle() {
 			<RadioGroup
 				value={selectedValue}
 				onValueChange={handleValueChange}
-				className="group after:bg-background has-focus-visible:after:border-ring has-focus-visible:after:ring-ring/50 relative inline-grid grid-cols-[1fr_1fr] items-center gap-0 text-sm font-medium after:absolute after:inset-y-0 after:w-1/2 after:rounded-sm after:shadow-xs after:transition-[translate,box-shadow] after:duration-300 after:ease-[cubic-bezier(0.16,1,0.3,1)] has-focus-visible:after:ring-[3px] data-[state=off]:after:translate-x-0 data-[state=on]:after:translate-x-full"
+				className="group after:bg-background has-focus-visible:after:border-ring has-focus-visible:after:ring-ring/50 relative inline-grid grid-cols-[1fr_1fr] items-center gap-0 text-sm font-medium after:absolute after:inset-y-0 after:w-1/2 after:rounded-sm after:shadow-xs after:transition-[translate,box-shadow] after:duration-300 after:ease-[cubic-bezier(0.16,1,0.3,1)] has-focus-visible:after:ring-[3px] data-[state=off]:after:translate-x-0 data-[state=on]:after:translate-x-full data-[state=none]:after:opacity-0"
 				data-state={selectedValue}
 			>
 				<label
@@ -41,6 +46,7 @@ export default function AppToggle() {
 					className="group-data-[state=off]:text-muted-foreground/70 relative z-10 inline-flex h-full min-w-8 cursor-pointer items-center justify-center px-3 whitespace-nowrap transition-colors select-none"
 				>
 					Table Builder
+					<span className="absolute text-primary -top-2 -right-3">Beta</span>
 					<RadioGroupItem id={`${id}-2`} value="on" className="sr-only" />
 				</label>
 			</RadioGroup>

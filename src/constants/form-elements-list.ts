@@ -1,9 +1,11 @@
 import {
+	Brackets,
 	Calendar,
 	CheckSquare,
 	ChevronDown,
 	CircleDot,
 	Grid3X3,
+	Hash,
 	Heading1,
 	Heading2,
 	Heading3,
@@ -116,7 +118,7 @@ export const formElementsList = [
 			},
 		],
 	},
-	{
+		{
 		group: "field",
 		name: "Password",
 		fieldType: "Password",
@@ -192,5 +194,46 @@ export const formElementsList = [
 		name: "Toggle",
 		fieldType: "ToggleGroup",
 		icon: Grid3X3,
+	},
+];
+
+/**
+ * Table column types for adding columns
+ */
+export const tableColumnTypes = [
+	{
+		name: "String",
+		type: "string",
+		icon: Type,
+	},
+	{
+		name: "Number",
+		type: "number",
+		icon: Hash,
+	},
+	{
+		name: "Boolean",
+		type: "boolean",
+		icon: CheckSquare,
+	},
+	{
+		name: "Date",
+		type: "date",
+		icon: Calendar,
+	},
+	{
+		name: "Object",
+		type: "object",
+		icon: Grid3X3,
+	},
+	{
+		name: "Enum",
+		type: "enum",
+		icon: ListChecks,
+	},
+	{
+		name: "Array",
+		type: "array",
+		icon: Brackets,
 	},
 ];

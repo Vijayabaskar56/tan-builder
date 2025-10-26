@@ -289,11 +289,8 @@ export const getDefaultFormElement = (
 export const getDefaultValuesString = (
 	validationSchema: string | undefined,
 	schemaName: string,
-	formName: string,
-	formElements: any,
+	formElements: unknown[],
 ) => {
-	console.log("🚀 ~ getDefaultValuesString ~ schemaName:", schemaName);
-
 	// Handle multi-step forms by flattening them to a single list of elements
 	let elementsToProcess = formElements;
 	if (isMultiStepForm(formElements)) {
@@ -308,14 +305,15 @@ export const getDefaultValuesString = (
 	// Convert the defaults object to a JavaScript object literal string
 	const defaultsString = objectToLiteralString(defaultValues);
 
-	switch (validationSchema) {
+	const schema = validationSchema || "zod";
+	switch (schema) {
 		case "zod":
-			return `${defaultsString} as z.input<typeof ${formName}FormSchema>`;
+			return `${defaultsString} as z.input<typeof ${schemaName}>`;
 		case "valibot":
-			return `${defaultsString} as v.InferInput<typeof ${formName}FormSchema>`;
+			return `${defaultsString} as v.InferInput<typeof ${schemaName}>`;
 		case "arktype":
-			return `${defaultsString} as typeof ${formName}FormSchema.infer`;
+			return `${defaultsString} as typeof ${schemaName}.infer`;
 		default:
-			return `${defaultsString} as z.input<typeof ${formName}FormSchema>`;
+			return `${defaultsString} as z.input<typeof ${schemaName}>`;
 	}
 };

@@ -95,7 +95,7 @@ export const useFormBuilder = (): {
 				// Simulate async submission
 				await new Promise((resolve) => setTimeout(resolve, 1000));
 				toast.success("Form submitted successfully!");
-			} catch (error) {
+			} catch (_error) {
 				toast.error("Failed to submit form. Please try again.");
 			}
 		},
@@ -118,7 +118,7 @@ export const useFormBuilder = (): {
 					}
 				}
 				firstInput?.focus();
-			} catch (error) {}
+			} catch (_error) {}
 		},
 	});
 	const { reset } = form;

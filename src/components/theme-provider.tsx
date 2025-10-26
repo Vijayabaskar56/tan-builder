@@ -84,20 +84,22 @@ const Theme = ({
 	const attrs = !value ? themes : Object.values(value);
 
 	// Calculate system theme for provider value
-	const systemTheme = React.useMemo((): "dark" | "light" | undefined => {
-		if (!enableSystem) return undefined;
-		const system = getSystemTheme();
-		return system === "dark" || system === "light" ? system : undefined;
+	const [systemTheme, setSystemTheme] = React.useState(() =>
+		enableSystem ? getSystemTheme() : undefined,
+	);
+
+	// Update systemTheme when enableSystem changes
+	React.useEffect(() => {
+		setSystemTheme(enableSystem ? getSystemTheme() : undefined);
 	}, [enableSystem]);
 
 	// Calculate resolved theme (for when theme is "system")
 	const resolvedTheme = React.useMemo(() => {
 		if (theme === "system" && enableSystem) {
-			const system = getSystemTheme();
-			return system === "dark" || system === "light" ? system : theme;
+			return systemTheme || theme;
 		}
 		return theme;
-	}, [theme, enableSystem]);
+	}, [theme, enableSystem, systemTheme]);
 
 	// apply selected theme function (light, dark, system)
 	const applyTheme = React.useCallback(
@@ -141,6 +143,7 @@ const Theme = ({
 					? resolved
 					: fallback;
 				// @ts-expect-error - colorScheme is not typed
+				// @ts-expect-error - colorScheme is not typed
 				d.style.colorScheme = colorScheme;
 			}
 
@@ -169,9 +172,9 @@ const Theme = ({
 			// Save to storage
 			try {
 				localStorage.setItem(storageKey, newTheme);
-			} catch (e) {
+			} catch (_e) {
 				// Unsupported
-				console.error(e);
+				console.error(_e);
 			}
 		},
 		[theme],
@@ -180,11 +183,12 @@ const Theme = ({
 	// biome-ignore lint/correctness/useExhaustiveDependencies: Avoid overriding user selections by excluding forcedTheme from deps
 	const handleMediaQuery = React.useCallback(
 		(_e?: MediaQueryList | MediaQueryListEvent) => {
+			setSystemTheme(getSystemTheme());
 			if (theme === "system" && enableSystem && !forcedTheme) {
 				applyTheme("system");
 			}
 		},
-		[theme, forcedTheme],
+		[theme, forcedTheme, enableSystem],
 	);
 
 	// Always listen to System preference
@@ -295,9 +299,9 @@ const getTheme = (key: string, fallback?: string) => {
 	let theme: string | undefined;
 	try {
 		theme = localStorage.getItem(key) || undefined;
-	} catch (e) {
+	} catch (_e) {
 		// Unsupported
-		console.error(e);
+		console.error(_e);
 	}
 	return theme || fallback;
 };
@@ -398,8 +402,8 @@ export const script: (...args: any[]) => void = (
 			const isSystem = enableSystem && themeName === "system";
 			const theme = isSystem ? getSystemTheme() : themeName;
 			updateDOM(theme);
-		} catch (e) {
-			console.error(e);
+		} catch (_e) {
+			//
 		}
 	}
 };

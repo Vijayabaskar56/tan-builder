@@ -2,7 +2,10 @@ import { createClientOnlyFn } from "@tanstack/react-start";
 import { useStore } from "@tanstack/react-store";
 import { batch, Derived, Store } from "@tanstack/store";
 import { v4 as uuid } from "uuid";
-import type { Framework, ValidationSchema } from "@/components/builder/types";
+import type {
+	Framework,
+	ValidationSchema,
+} from "@/components/form-components/types";
 import { defaultFormElements } from "@/constants/default-form-element";
 import { templates } from "@/constants/templates";
 import type {
@@ -26,13 +29,20 @@ import {
 	transformToStepFormList,
 } from "../lib/form-elements-helpers";
 
-const getShared = createClientOnlyFn(() => {
-	return localStorage.getItem("share");
-});
+// Client-only functions defined inside the initialization function to avoid SSR issues
+const getSharedData = () => {
+	const getShared = createClientOnlyFn(() => {
+		return localStorage.getItem("share");
+	});
+	return getShared();
+};
 
-const removeShared = createClientOnlyFn(() => {
-	return localStorage.removeItem("share");
-});
+const removeSharedData = () => {
+	const removeShared = createClientOnlyFn(() => {
+		return localStorage.removeItem("share");
+	});
+	return removeShared();
+};
 
 // Core state type without actions
 type FormBuilderCoreState = {
@@ -53,13 +63,13 @@ export type FormBuilderActions = {
 	setFormElements: (formElements: FormElements) => void;
 	// Save/Load functions
 	saveForm: (formName: string) => void;
-	loadForm: (formName: string) => void;
+	loadForm: (formName: string) => boolean;
 	getSavedForms: () => Array<{
 		name: string;
 		data: Record<string, unknown>;
 		createdAt: string;
 	}>;
-	deleteSavedForm: (formName: string) => void;
+	deleteSavedForm: (formName: string) => boolean;
 	appendElement: AppendElement;
 	dropElement: DropElement;
 	editElement: EditElement;
@@ -150,22 +160,39 @@ const isFormArrayForm = (
 ): formElements is FormArray[] => {
 	return formElements.length > 0 && isFormArray(formElements[0]);
 };
-const shared = getShared();
-if (shared) {
-	removeShared();
-}
-const initialFormElements = templates.contactUs.template as FormElementOrList[];
-export const initialCoreState: FormBuilderCoreState = {
-	formElements: shared ? JSON.parse(shared) : initialFormElements,
-	isMS: shared
-		? isMultiStepForm(JSON.parse(shared))
-		: isMultiStepForm(initialFormElements),
-	formName: "draft",
-	schemaName: "draftFormSchema",
-	validationSchema: "zod",
-	framework: "react",
-	lastAddedStepIndex: undefined,
+// Function to get initial state with shared data check
+const getInitialCoreState = (): FormBuilderCoreState => {
+	let shared: string | null = null;
+	const initialFormElements = templates.contactUs
+		.template as FormElementOrList[];
+
+	try {
+		// Only check for shared data on client side
+		if (typeof window !== "undefined") {
+			shared = getSharedData();
+			if (shared) {
+				removeSharedData();
+			}
+		}
+	} catch (error) {
+		// If there's an error (e.g., SSR), use default
+		console.warn("Could not access shared data:", error);
+	}
+
+	return {
+		formElements: shared ? JSON.parse(shared) : initialFormElements,
+		isMS: shared
+			? isMultiStepForm(JSON.parse(shared))
+			: isMultiStepForm(initialFormElements),
+		formName: "draft",
+		schemaName: "draftFormSchema",
+		validationSchema: "zod",
+		framework: "react",
+		lastAddedStepIndex: undefined,
+	};
 };
+
+export const initialCoreState: FormBuilderCoreState = getInitialCoreState();
 
 const formBuilderCoreStore = new Store<FormBuilderCoreState>(initialCoreState, {
 	updateFn: (prevState) => (updater) => {
@@ -341,7 +368,7 @@ const syncEntriesForFormArray = (formArray: FormArray): FormArrayEntry[] => {
 								.map(
 									(
 										nestedTemplate: FormElement | FormElement[],
-										nestedIndex: number,
+										_nestedIndex: number,
 									) => {
 										if (Array.isArray(nestedTemplate)) {
 											return nestedTemplate.map(
@@ -364,7 +391,7 @@ const syncEntriesForFormArray = (formArray: FormArray): FormArrayEntry[] => {
 					return templateField.map(
 						(
 							nestedTemplate: FormElement | FormElement[],
-							nestedIndex: number,
+							_nestedIndex: number,
 						) => {
 							if (Array.isArray(nestedTemplate)) {
 								return nestedTemplate.map((deepTemplate: any) => ({
@@ -1561,8 +1588,8 @@ const createActions = (
 		}
 	};
 
-	const loadForm = (formName: string) => {
-		if (typeof window === "undefined") return;
+	const loadForm = (formName: string): boolean => {
+		if (typeof window === "undefined") return false;
 
 		try {
 			const savedForms = JSON.parse(localStorage.getItem("savedForms") || "[]");
@@ -1578,9 +1605,12 @@ const createActions = (
 					validationSchema: data.validationSchema,
 					framework: data.framework,
 				});
+				return true;
 			}
+			return false;
 		} catch (error) {
 			console.error("Failed to load form:", error);
+			return false;
 		}
 	};
 
@@ -1599,8 +1629,8 @@ const createActions = (
 		}
 	};
 
-	const deleteSavedForm = (formName: string) => {
-		if (typeof window === "undefined") return;
+	const deleteSavedForm = (formName: string): boolean => {
+		if (typeof window === "undefined") return false;
 
 		try {
 			const savedForms = JSON.parse(localStorage.getItem("savedForms") || "[]");
@@ -1608,8 +1638,10 @@ const createActions = (
 				(form: any) => form.name !== formName,
 			);
 			localStorage.setItem("savedForms", JSON.stringify(filteredForms));
+			return true;
 		} catch (error) {
 			console.error("Failed to delete saved form:", error);
+			return false;
 		}
 	};
 
@@ -1636,7 +1668,7 @@ const createActions = (
 					}
 				} catch (error) {
 					console.error(
-						`Failed to append element of type ${(element as object)?.["fieldType"]}:`,
+						`Failed to append element of type ${(element as object)?.fieldType}:`,
 						error,
 					);
 					throw error;

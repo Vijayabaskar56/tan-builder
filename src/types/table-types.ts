@@ -1,0 +1,20 @@
+export type JsonData = Record<
+	string,
+	string | number | boolean | null | undefined | object | any[]
+>;
+
+export interface ColumnConfig {
+	id: string;
+	accessor: string;
+	label: string;
+	type: "string" | "number" | "boolean" | "date" | "object" | "array" | "enum";
+	order: number;
+	filterable?: boolean;
+	hasFacetedFilter?: boolean;
+	options?: { label: string; value: string }[];
+	optionsMode?: "auto" | "custom";
+}
+
+export interface DataRow {
+	[key: string]: string | number | boolean | null | undefined | object | any[];
+}

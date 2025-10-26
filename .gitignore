@@ -11,3 +11,6 @@ dist
 .wrangler
 .vscode
 .env
+sample-data.json
+src/routeTree.gen.ts
+.git

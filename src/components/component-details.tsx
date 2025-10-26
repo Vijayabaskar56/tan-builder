@@ -1,3 +1,6 @@
+import { CodeIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import type { RegistryItem } from "shadcn/registry";
 import ComponentCli from "@/components/cli-commands";
 import { CodeBlockCode } from "@/components/code-block";
 import CopyRegistry from "@/components/copy-registry";
@@ -17,9 +20,6 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { CodeIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import type { RegistryItem } from "shadcn/registry";
 import CopyButton from "./ui/copy-button";
 
 export default function ComponentDetails({
@@ -130,7 +130,7 @@ export default function ComponentDetails({
 									<p className="text-muted-foreground text-sm">
 										No code available. If you think this is an error, please{" "}
 										<a
-											href="https://github.com/Vijayabaskar56/tanstack-builder/issues"
+											href="https://github.com/Vijayabaskar56/tancn/issues"
 											target="_blank"
 											rel="noopener noreferrer"
 											className="text-foreground font-medium underline hover:no-underline"

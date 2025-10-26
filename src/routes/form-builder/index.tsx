@@ -1,21 +1,21 @@
-import { FormEdit } from "@/components/builder/form-edit";
-import { SingleStepFormPreview } from "@/components/builder/form-preview";
+import { FormEdit } from "@/components/form-components/form-edit";
+import { SingleStepFormPreview } from "@/components/form-components/form-preview";
 import { ErrorBoundary } from "@/components/error-boundary";
-import { NotFound } from "@/components/not-found";
+import Loader from "@/components/loader";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { type AppForm, useFormBuilder } from "@/hooks/use-form-builder";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useSettings from "@/hooks/use-settings";
 import { createFileRoute } from "@tanstack/react-router";
-import { FieldTab } from "../../components/builder/FieldLibrary";
-import { SettingsSidebar } from "../../components/builder/SettingsSidebar";
-import { TemplateSidebar } from "../../components/builder/TemplateSidebar";
+import { FieldTab } from "../../components/form-components/form-field-library";
+import { SettingsSidebar } from "../../components/form-components/form-settings";
+import { TemplateSidebar } from "../../components/form-components/form-templates";
 
 export const Route = createFileRoute("/form-builder/")({
 	component: FormBuilderComponent,
 	errorComponent: ErrorBoundary,
-	notFoundComponent: NotFound,
-	ssr: false,
+	pendingComponent : Loader,
+	ssr: true,
 });
 
 function FormBuilderComponent() {
@@ -44,7 +44,7 @@ function FormBuilderComponent() {
 				<div className="h-full flex flex-col relative">
 					<ScrollArea className="h-full">
 						<div className="flex flex-col">
-							<div className="bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-4">
+							<div className="bg-background/80 backdrop-blur supports-backdrop-filter:bg-background/60 p-4">
 								{renderSidebarContent()}
 							</div>
 
@@ -77,8 +77,8 @@ function FormBuilderComponent() {
 					{/* Tablet Layout - Sidebar at top, FormEdit and FormPreview side by side */}
 					<div className="hidden md:flex lg:hidden h-full flex-col">
 						{/* Tablet Sidebar - At top */}
-						<div className="bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-							<ScrollArea className="p-4 h-[25rem]">
+						<div className="bg-background/80 backdrop-blur supports-backdrop-filter:bg-background/60 border-b">
+							<ScrollArea className="p-4 h-100">
 								{renderSidebarContent()}
 							</ScrollArea>
 						</div>
@@ -131,7 +131,7 @@ function FormBuilderComponent() {
 						}}
 					>
 						{/* Desktop Left Sidebar */}
-						<div className="border-r bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-hidden h-full">
+						<div className="border-r bg-background/80 backdrop-blur supports-backdrop-filter:bg-background/60 overflow-hidden h-full">
 							<div className="p-4">{renderSidebarContent()}</div>
 						</div>
 
@@ -144,7 +144,7 @@ function FormBuilderComponent() {
 										Design your form elements
 									</p>
 								</div>
-								<ScrollArea className="h-full  md:h-[45rem]">
+								<ScrollArea className="h-full  md:h-180">
 									<FormEdit />
 								</ScrollArea>
 							</div>
@@ -160,7 +160,7 @@ function FormBuilderComponent() {
 										See how your form looks
 									</p>
 								</div>
-								<ScrollArea className="h-full  md:h-[45rem]">
+								<ScrollArea className="h-full  md:h-180">
 									<SingleStepFormPreview form={form as unknown as AppForm} />
 								</ScrollArea>
 							</div>

@@ -23,7 +23,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 
 export interface MultiSelectOptionItem {
 	value: string;
@@ -105,7 +105,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 				onValueChangeProp(state, items);
 			}
 		},
-		[onValueChangeProp, itemCache.get],
+		[onValueChangeProp, itemCache.get, itemCache],
 	);
 
 	const [value, setValue] = useControllableState({
@@ -470,7 +470,7 @@ const MultiSelectItem = React.forwardRef<
 			if (value) {
 				itemCache.set(value, item!);
 			}
-		}, [value, item, itemCache.set]);
+		}, [value, item, itemCache.set, itemCache]);
 
 		const disabled = Boolean(
 			disabledProp ||

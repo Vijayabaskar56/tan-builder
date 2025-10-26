@@ -1,11 +1,10 @@
-// form-builder.tsx
-
 import { ErrorBoundary } from "@/components/error-boundary";
-import FormHeader from "@/components/header";
+import FormHeader from "@/components/form-components/form-header";
+import Loader from "@/components/loader";
 import { NotFound } from "@/components/not-found";
-import { Spinner } from "@/components/ui/spinner";
 import { settingsCollection } from "@/db-collections/settings.collections";
 import type { FormElementsSchema } from "@/lib/search-schema";
+import { logger } from "@/utils/utils";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import type * as v from "valibot";
@@ -29,6 +28,7 @@ export const Route = createFileRoute("/form-builder")({
 		}
 		return undefined;
 	},
+	pendingComponent : Loader,
 });
 
 function FormBuilderLayout() {
@@ -37,9 +37,9 @@ function FormBuilderLayout() {
 	useEffect(() => {
 		const initializeSettings = async () => {
 			if (typeof window !== "undefined") {
-				console.log("settingsCollection", settingsCollection);
+				logger("settingsCollection", settingsCollection);
 				if (!settingsCollection.has("user-settings")) {
-					console.log("inserting settings");
+					logger("inserting settings");
 					await settingsCollection?.insert([
 						{
 							id: "user-settings",
@@ -58,18 +58,13 @@ function FormBuilderLayout() {
 				}
 				setIsSettingsInitialized(true);
 			} else {
-				console.log("settingsCollection is undefined");
+				logger("settingsCollection is undefined");
 				setIsSettingsInitialized(true);
 			}
 		};
 
 		initializeSettings();
 	}, []);
-
-	// Don't render the header until settings are initialized
-	if (!isSettingsInitialized) {
-		return <Spinner />;
-	}
 
 	return (
 		<>

@@ -2,7 +2,7 @@ import type { Variants } from "motion/react";
 import { motion, useAnimation } from "motion/react";
 import type { HTMLAttributes } from "react";
 import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 
 export interface BlocksIconHandle {
 	startAnimation: () => void;
@@ -59,6 +59,8 @@ const BlocksIcon = forwardRef<BlocksIconHandle, BlocksIconProps>(
 				className={cn(className)}
 				onMouseEnter={handleMouseEnter}
 				onMouseLeave={handleMouseLeave}
+				role="button"
+				tabIndex={0}
 				{...props}
 			>
 				<svg

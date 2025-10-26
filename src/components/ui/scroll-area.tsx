@@ -1,7 +1,7 @@
 import { ScrollArea as ScrollAreaPrimitive } from "@base-ui-components/react/scroll-area";
 import * as React from "react";
 import { useTouchPrimary } from "@/components/ui/use-has-primary-touch";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 
 type Mask = {
 	top: boolean;
@@ -15,6 +15,19 @@ export type ScrollAreaContextProps = {
 	type: "auto" | "always" | "scroll" | "hover";
 };
 
+export type ScrollAreaProps = {
+	type?: "auto" | "always" | "scroll" | "hover";
+	viewportClassName?: string;
+	/**
+	 * `maskHeight` is the height of the mask in pixels.
+	 * pass `0` to disable the mask
+	 * @default 30
+	 */
+	maskHeight?: number;
+	maskClassName?: string;
+	viewportRef?: React.Ref<HTMLDivElement>;
+};
+
 const ScrollAreaContext = React.createContext<ScrollAreaContextProps>({
 	isTouch: false,
 	type: "hover",
@@ -22,17 +35,8 @@ const ScrollAreaContext = React.createContext<ScrollAreaContextProps>({
 
 const ScrollArea = React.forwardRef<
 	React.ComponentRef<typeof ScrollAreaPrimitive.Root>,
-	React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> & {
-		type?: "auto" | "always" | "scroll" | "hover";
-		viewportClassName?: string;
-		/**
-		 * `maskHeight` is the height of the mask in pixels.
-		 * pass `0` to disable the mask
-		 * @default 30
-		 */
-		maskHeight?: number;
-		maskClassName?: string;
-	}
+	React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> &
+		ScrollAreaProps
 >(
 	(
 		{
@@ -42,6 +46,7 @@ const ScrollArea = React.forwardRef<
 			maskHeight = 30,
 			maskClassName,
 			viewportClassName,
+			viewportRef,
 			...props
 		},
 		ref,
@@ -53,11 +58,22 @@ const ScrollArea = React.forwardRef<
 			right: false,
 		});
 
-		const viewportRef = React.useRef<HTMLDivElement>(null);
+		const internalViewportRef = React.useRef<HTMLDivElement>(null);
 		const isTouch = useTouchPrimary();
 
+		const setViewportRef = (el: HTMLDivElement | null) => {
+			internalViewportRef.current = el;
+			if (viewportRef) {
+				if (typeof viewportRef === "function") {
+					viewportRef(el);
+				} else {
+					viewportRef.current = el;
+				}
+			}
+		};
+
 		const checkScrollability = React.useCallback(() => {
-			const element = viewportRef.current;
+			const element = internalViewportRef.current;
 			if (!element) return;
 
 			const {
@@ -80,7 +96,7 @@ const ScrollArea = React.forwardRef<
 		React.useEffect(() => {
 			if (typeof window === "undefined") return;
 
-			const element = viewportRef.current;
+			const element = internalViewportRef.current;
 			if (!element) return;
 
 			const controller = new AbortController();
@@ -113,7 +129,7 @@ const ScrollArea = React.forwardRef<
 						className={cn("relative overflow-hidden", className)}
 					>
 						<div
-							ref={viewportRef}
+							ref={setViewportRef}
 							className={cn("size-full overflow-auto", viewportClassName)}
 						>
 							{children}
@@ -138,7 +154,7 @@ const ScrollArea = React.forwardRef<
 						{...props}
 					>
 						<ScrollAreaPrimitive.Viewport
-							ref={viewportRef}
+							ref={setViewportRef}
 							data-slot="scroll-area-viewport"
 							className={cn(
 								"focus-ring size-full rounded-[inherit]",

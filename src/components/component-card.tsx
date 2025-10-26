@@ -1,6 +1,6 @@
 import type { RegistryItem } from "shadcn/registry";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 
 export default function ComponentCard({
 	children,

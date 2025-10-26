@@ -1,7 +1,8 @@
-import { headerRateLimiter } from "@/lib/header-rate-limiter";
-import { createFileRoute } from "@tanstack/react-router";
 import { env } from "cloudflare:workers";
+import { createFileRoute } from "@tanstack/react-router";
 import { v4 as uuid } from "uuid";
+import { headerRateLimiter } from "@/lib/header-rate-limiter";
+import { logger } from "@/utils/utils";
 
 const responseHeaders = {
 	"Access-Control-Allow-Origin": "*",

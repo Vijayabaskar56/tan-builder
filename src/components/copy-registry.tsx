@@ -6,7 +6,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useCopy } from "@/hooks/use-copy";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 
 const CopyButton = ({ url }: { url: string | null }) => {
 	const { copied, copy } = useCopy();
