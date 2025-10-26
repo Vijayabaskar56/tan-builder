@@ -1,4 +1,4 @@
-import { toCamelCase } from "@/utils/utils";
+import { capitalize, toCamelCase } from "@/utils/utils";
 import type { ColumnConfig } from "@/types/table-types";
 
 const getTypeScriptType = (type: ColumnConfig["type"]): string => {
@@ -8,7 +8,7 @@ const getTypeScriptType = (type: ColumnConfig["type"]): string => {
 		case "number":
 			return "number";
 		case "boolean":
-			return "string"; // Booleans represented as strings like "Active", "true", etc.
+			return "boolean";
 		case "date":
 			return "string"; // Dates stored as strings
 		case "object":
@@ -26,7 +26,10 @@ export const generateTableType = (
 	columns: ColumnConfig[],
 	customName?: string,
 ): string => {
-	const interfaceName = customName ? `${customName}Data` : "TableData";
+	console.log(customName, "columns");
+	const interfaceName = customName
+		? `${capitalize(customName)}Data`
+		: "TableData";
 	const properties = columns
 		.map((col) => `\t${col.accessor}: ${getTypeScriptType(col.type)};`)
 		.join("\n");
@@ -45,7 +48,7 @@ const formatValue = (value: any, type: ColumnConfig["type"]): string => {
 		case "number":
 			return String(value);
 		case "boolean":
-			return `"${String(value)}"`; // Booleans as string literals like "Active", "true"
+			return String(value);
 		case "date":
 			return `"${String(value)}"`;
 		case "object":
@@ -67,7 +70,7 @@ export const generateTableData = (
 	const constName = customName ? `${customName}Data` : "tableData";
 
 	if (data.length === 0) {
-		return `export const ${toCamelCase(constName)}: ${customName ? `${customName}Data` : "TableData"}[] = [];`;
+		return `export const ${toCamelCase(constName)}: ${customName ? `${capitalize(customName)}Data` : "TableData"}[] = [];`;
 	}
 
 	const dataLines = data.map((row) => {
@@ -80,5 +83,5 @@ export const generateTableData = (
 		return `\t{\n${properties}\n\t}`;
 	});
 
-	return `export const ${toCamelCase(constName)}: ${customName ? `${customName}Data` : "TableData"}[] = [\n${dataLines.join(",\n")}\n];`;
+	return `export const ${toCamelCase(constName)}: ${customName ? `${capitalize(customName)}Data` : "TableData"}[] = [\n${dataLines.join(",\n")}\n];`;
 };

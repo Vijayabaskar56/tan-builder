@@ -46,6 +46,11 @@ export function toKebabCase(str: string): string {
 		.toLowerCase();
 }
 
+export function capitalize(str: string): string {
+	const cleaned = str.replace(/[\s\-_]+/g, "");
+	return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+}
+
 export function generateFormNames(formName: string) {
 	const pascal = toPascalCase(formName);
 	const camel = toCamelCase(formName);

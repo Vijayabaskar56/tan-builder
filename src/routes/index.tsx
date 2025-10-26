@@ -254,7 +254,8 @@ function HomePage() {
 									<div className="w-full flex justify-center items-center max-w-[748.71px] lg:w-[748.71px] text-center  text-foreground text-[24px] xs:text-[28px] sm:text-[36px] md:text-[52px] lg:text-[70px] font-normal leading-[1.1] sm:leading-[1.15] md:leading-[1.2] lg:leading-24 font-instrument-serif  px-2 sm:px-4 md:px-0">
 										<div className="relative">
 											<div className="absolute inset-0 bg-linear-to-br from-primary/20 via-primary/10 to-transparent dark:from-primary/10 dark:via-primary/5 rounded-full blur-3xl scale-150"></div>
-											<svg
+											<h1 className="font-bold">TANCN</h1>
+											{/* <svg
 												width="500"
 												height="200"
 												viewBox="0 0 1669 400"
@@ -278,7 +279,7 @@ function HomePage() {
 													d="M1641.04 111.455V446H1579.95L1434.4 235.439H1431.95V446H1361.22V111.455H1423.29L1567.7 321.852H1570.64V111.455H1641.04Z"
 													fill="white"
 												/>
-											</svg>
+											</svg> */}
 										</div>
 									</div>
 									<div className="w-full max-w-[506.08px] lg:w-[506.08px] text-center flex justify-center flex-col text-muted-foreground sm:text-lg md:text-xl leading-[1.4] sm:leading-[1.45]  lg:leading-7 font-sans px-2 sm:px-4 md:px-0 lg:text-lg font-medium text-sm">

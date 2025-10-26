@@ -42,7 +42,7 @@ describe('generateTableData', () => {
 
 		const result = generateTableData(data, columns, 'User');
 
-		expect(result).toBe(`export const UserData: UserData[] = [
+		expect(result).toBe(`export const userData: UserData[] = [
 \t{
 \t\tname: "John",
 \t\tage: 30
@@ -62,7 +62,7 @@ describe('generateTableData', () => {
 
 		const result = generateTableData(data, columns, 'User');
 
-		expect(result).toBe(`export const UserData: UserData[] = [];`);
+		expect(result).toBe(`export const userData: UserData[] = [];`);
 	});
 
 	it('should handle different data types', () => {

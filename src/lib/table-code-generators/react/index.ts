@@ -13,7 +13,12 @@ export const generateTable = (
 	files: { file: string; code: string }[];
 	dependencies: { registryDependencies: string[]; dependencies: string[] };
 } => {
-	const imports = generateTableImports(tableBuilder.settings);
+	// Check if there are any array columns
+	const hasArrayColumns = tableBuilder.table.columns.some(
+		(col) => col.type === "array",
+	);
+
+	const imports = generateTableImports(tableBuilder.settings, hasArrayColumns);
 	const typeCode = generateTableType(tableBuilder.table.columns, customName);
 	const dataCode = generateTableData(
 		tableBuilder.table.data,
@@ -36,7 +41,7 @@ ${componentCode}`;
 	return {
 		files: [
 			{ file, code: fullComponentCode },
-			{ file: 'data.ts', code: dataCode },
+			{ file: "data.ts", code: dataCode },
 		],
 		dependencies,
 	};

@@ -2,6 +2,7 @@ import type { TableBuilder } from "@/db-collections/table-builder.collections";
 
 export const generateTableImports = (
 	settings: TableBuilder["settings"],
+	hasArrayColumns: boolean = false,
 ): Set<string> => {
 	const importSet = new Set<string>();
 
@@ -10,6 +11,7 @@ export const generateTableImports = (
 	if (settings.isGlobalSearch) {
 		reactImports.push("useCallback");
 	}
+	importSet.add('import { Button } from "@/components/ui/button"');
 	importSet.add(`import { ${reactImports.join(", ")} } from "react"`);
 	importSet.add(
 		'import {\n\ttype ColumnDef,\n\tgetCoreRowModel,\n\tgetPaginationRowModel,\n\tgetSortedRowModel,\n\ttype PaginationState,\n\ttype SortingState,\n\tuseReactTable,\n} from "@tanstack/react-table"',
@@ -26,10 +28,9 @@ export const generateTableImports = (
 	importSet.add(
 		'import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"',
 	);
-	importSet.add('import { Badge } from "@/components/ui/badge"');
-	importSet.add(
-		'import { generateColumns } from "@/lib/table-generator/generate-columns"',
-	);
+	if (hasArrayColumns) {
+		importSet.add('import { Badge } from "@/components/ui/badge"');
+	}
 
 	// Conditional imports based on settings
 	if (settings.enablePagination) {
@@ -46,7 +47,6 @@ export const generateTableImports = (
 
 	if (settings.enableCRUD) {
 		importSet.add('import { EllipsisIcon } from "lucide-react"');
-		importSet.add('import { Button } from "@/components/ui/button"');
 		importSet.add(
 			'import {\n\tDropdownMenu,\n\tDropdownMenuContent,\n\tDropdownMenuGroup,\n\tDropdownMenuItem,\n\tDropdownMenuSeparator,\n\tDropdownMenuShortcut,\n\tDropdownMenuTrigger,\n} from "@/components/ui/dropdown-menu"',
 		);
@@ -55,9 +55,6 @@ export const generateTableImports = (
 	if (settings.isGlobalSearch) {
 		importSet.add(
 			'import { Filters, type Filter, type FilterFieldConfig } from "@/components/ui/filters"',
-		);
-		importSet.add(
-			'import { generateFilterFields } from "@/lib/table-generator/generate-columns"',
 		);
 	}
 

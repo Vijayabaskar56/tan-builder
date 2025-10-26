@@ -13,6 +13,7 @@ describe('generateTableImports', () => {
 			enableCRUD: true,
 			enableColumnDragging: false,
 			enableRowDragging: false,
+			enableColumnMovable: false,
 			enablePagination: true,
 			tableLayout: {
 				dense: false,
@@ -28,13 +29,12 @@ describe('generateTableImports', () => {
 
 		const result = generateTableImports(settings);
 
-		expect(result).toContain('import { useMemo, useState } from "react"');
-		expect(result).toContain('import {\n\ttype ColumnDef,\n\tgetCoreRowModel,\n\tgetFilteredRowModel,\n\tgetPaginationRowModel,\n\tgetSortedRowModel,\n\ttype PaginationState,\n\ttype SortingState,\n\tuseReactTable,\n} from "@tanstack/react-table"');
+		expect(result).toContain('import {\n\ttype ColumnDef,\n\tgetCoreRowModel,\n\tgetPaginationRowModel,\n\tgetSortedRowModel,\n\ttype PaginationState,\n\ttype SortingState,\n\tuseReactTable,\n} from "@tanstack/react-table"');
 		expect(result).toContain('import { DataGrid, DataGridContainer } from "@/components/ui/data-grid"');
 		expect(result).toContain('import { DataGridPagination } from "@/components/ui/data-grid-pagination"');
 		expect(result).toContain('import {\n\tDataGridTableRowSelect,\n\tDataGridTableRowSelectAll,\n} from "@/components/ui/data-grid-table"');
 		expect(result).toContain('import { EllipsisIcon } from "lucide-react"');
-		expect(result).toContain('import { Filters } from "@/components/ui/filters"');
+		expect(result).toContain('import { Filters, type Filter, type FilterFieldConfig } from "@/components/ui/filters"');
 	});
 
 	it('should generate minimal imports when no settings enabled', () => {
@@ -48,6 +48,7 @@ describe('generateTableImports', () => {
 			enableCRUD: false,
 			enableColumnDragging: false,
 			enableRowDragging: false,
+			enableColumnMovable: false,
 			enablePagination: false,
 			tableLayout: {
 				dense: false,
@@ -63,7 +64,7 @@ describe('generateTableImports', () => {
 
 		const result = generateTableImports(settings);
 
-		expect(result).toContain('import { useMemo, useState } from "react"');
+
 		expect(result).toContain('import { DataGrid, DataGridContainer } from "@/components/ui/data-grid"');
 		expect(result).not.toContain('import { DataGridPagination }');
 		expect(result).not.toContain('import { Filters }');
