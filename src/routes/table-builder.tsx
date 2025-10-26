@@ -186,7 +186,7 @@ function RouteComponent() {
 				>
 					{/* Left Sidebar */}
 					<div
-						className="flex-shrink-0 border-b md:border-b-0 md:border-r"
+						className="shrink-0 border-b md:border-b-0 md:border-r"
 						style={isMdUp ? { width: `${sidebarWidth}px` } : { width: "100%" }}
 					>
 						{isMdUp ? (
@@ -342,7 +342,7 @@ function RouteComponent() {
 					{isMdUp && (
 						<div
 							className={cn(
-								"w-1 bg-border/70 hover:bg-primary/30 active:bg-primary/40 cursor-col-resize flex-shrink-0 transition-colors relative group touch-pan-y select-none",
+								"w-1 bg-border/70 hover:bg-primary/30 active:bg-primary/40 cursor-col-resize shrink-0 transition-colors relative group touch-pan-y select-none",
 								isResizing && "bg-primary/30",
 							)}
 							aria-label="Resize sidebar"
@@ -398,7 +398,7 @@ function RouteComponent() {
 						>
 							{/* Left Sidebar */}
 							<div
-								className="flex-shrink-0 border-b md:border-b-0 md:border-r"
+								className="shrink-0 border-b md:border-b-0 md:border-r"
 								style={
 									isMdUp ? { width: `${sidebarWidth}px` } : { width: "100%" }
 								}

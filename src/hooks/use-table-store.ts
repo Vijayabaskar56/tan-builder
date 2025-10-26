@@ -26,6 +26,7 @@ const useTableStore = () => {
 				enableColumnDragging: false,
 				enableRowDragging: false,
 				enablePagination: false,
+				enableColumnMovable : false,
 				tableLayout: {
 					dense: false,
 					cellBorder: false,

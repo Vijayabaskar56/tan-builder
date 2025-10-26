@@ -10,6 +10,7 @@ import {
 	DataGridTableDndRows,
 } from "@/components/ui/data-grid-table-dnd-rows";
 import { type Filter, Filters } from "@/components/ui/filters";
+import { Input } from "@/components/ui/input";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import useTableStore from "@/hooks/use-table-store";
 import {
@@ -19,6 +20,7 @@ import {
 } from "@/lib/table-generator/generate-columns";
 import { TableBuilderService } from "@/services/table-builder.service";
 import type { JsonData } from "@/types/table-types";
+import { cn } from "@/utils/utils";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { createFileRoute } from "@tanstack/react-router";
@@ -37,7 +39,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 export const Route = createFileRoute("/table-builder/")({
 	component: RouteComponent,
 	ssr: true,
-	pendingComponent : Loader,
+	pendingComponent: Loader,
 });
 
 function RouteComponent() {
@@ -50,6 +52,7 @@ function RouteComponent() {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 	const [columnOrder, setColumnOrder] = useState<string[]>([]);
+	const [globalFilter, setGlobalFilter] = useState("");
 	const [filters, setFilters] = useState<Filter[]>([]);
 	const [dataVersion, setDataVersion] = useState(0);
 	const [expandedArrayRows, setExpandedArrayRows] = useState<Set<string>>(
@@ -179,6 +182,7 @@ function RouteComponent() {
 		getPaginationRowModel: getPaginationRowModel(),
 		onPaginationChange: setPagination,
 		onColumnVisibilityChange: setColumnVisibility,
+		onGlobalFilterChange: setGlobalFilter,
 		getFilteredRowModel: getFilteredRowModel(),
 		enableColumnPinning: true,
 		enableColumnResizing: true,
@@ -188,6 +192,7 @@ function RouteComponent() {
 			pagination,
 			columnVisibility,
 			columnOrder,
+			globalFilter,
 		},
 		onColumnOrderChange: setColumnOrder,
 		pageCount: Math.ceil((filteredData.length || 0) / pagination.pageSize),
@@ -231,17 +236,29 @@ function RouteComponent() {
 		<div className="m-6">
 			<div className="w-full space-y-4 h-full overflow-auto">
 				{/* Filters */}
+
 				<div className="flex flex-wrap items-start gap-2.5 mb-3.5">
+					<div>
+						<Input
+							// id={`${id}-input`}
+							// ref={inputRef}
+							className={cn(
+								"peer min-w-60",
+								Boolean(table.getState().globalFilter) && "pe-9",
+							)}
+							value={(table.getState().globalFilter ?? "") as string}
+							onChange={(e) => table.setGlobalFilter(e.target.value)}
+							placeholder="Search all columns..."
+							type="text"
+							aria-label="Search all columns"
+						/>
+					</div>
 					<div className="flex items-center gap-3">
 						{tableData.settings.enableHiding &&
 							tableData.table.columns.length > 0 && (
 								<DataGridColumnVisibility
 									table={table}
-									trigger={
-										<Button variant="outline" size="sm">
-											Columns
-										</Button>
-									}
+									trigger={<Button variant="outline">Columns</Button>}
 								/>
 							)}
 					</div>
@@ -251,7 +268,6 @@ function RouteComponent() {
 							fields={filterFields}
 							onChange={handleFiltersChange}
 							variant="outline"
-							size="sm"
 						/>
 					</div>
 					{filters.length > 0 && (
@@ -275,8 +291,8 @@ function RouteComponent() {
 						stripped: tableData.settings.tableLayout?.stripped ?? false,
 						headerBorder: tableData.settings.tableLayout?.headerBorder ?? true,
 						headerSticky: tableData.settings.tableLayout?.headerSticky ?? false,
-						width: tableData.settings.tableLayout?.width ?? "fixed",
-						columnsMovable: true,
+						width: "auto",
+						columnsMovable: tableData.settings.enableColumnMovable ?? false,
 						columnsResizable: tableData.settings.enableResizing ?? false,
 						columnsVisibility: tableData.settings.enableHiding ?? false,
 						columnsPinnable: tableData.settings.enablePinning ?? false,
@@ -284,7 +300,7 @@ function RouteComponent() {
 						rowsDraggable: tableData.settings.enableRowDragging ?? false,
 					}}
 				>
-					<div className="w-full space-y-2.5">
+					<div className="space-y-2.5">
 						<DataGridContainer>
 							<ScrollArea>
 								{tableData.settings.enableRowDragging ? (

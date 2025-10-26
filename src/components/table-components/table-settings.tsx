@@ -1,3 +1,8 @@
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Switch } from "@/components/ui/switch";
+import { useAppForm } from "@/components/ui/tanstack-form";
+import useTableStore from "@/hooks/use-table-store";
+import { TableBuilderService } from "@/services/table-builder.service";
 import {
 	CheckSquare,
 	Eye,
@@ -11,11 +16,6 @@ import {
 } from "lucide-react";
 import { useId } from "react";
 import * as v from "valibot";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Switch } from "@/components/ui/switch";
-import { useAppForm } from "@/components/ui/tanstack-form";
-import useTableStore from "@/hooks/use-table-store";
-import { TableBuilderService } from "@/services/table-builder.service";
 import { Separator } from "../ui/separator";
 
 const TableSettingsSchema = v.object({
@@ -28,6 +28,7 @@ const TableSettingsSchema = v.object({
 	enableCRUD: v.optional(v.boolean(), false),
 	enableColumnDragging: v.optional(v.boolean(), false),
 	enableRowDragging: v.optional(v.boolean(), false),
+	enableColumnMovable : v.optional(v.boolean(), false),
 });
 
 export function TableSettingsSidebar() {
@@ -53,6 +54,7 @@ export function TableSettingsSidebar() {
 			enableCRUD: data?.settings?.enableCRUD ?? false,
 			enableColumnDragging: data?.settings?.enableColumnDragging ?? false,
 			enableRowDragging: data?.settings?.enableRowDragging ?? false,
+			enableColumnMovable : data?.settings?.enableColumnMovable ?? false,
 		} as v.InferInput<typeof TableSettingsSchema>,
 		validators: {
 			onChange: TableSettingsSchema,
@@ -60,10 +62,7 @@ export function TableSettingsSidebar() {
 		listeners: {
 			onChangeDebounceMs: 1000,
 			onChange: ({ formApi }) => {
-				console.log(
-					"🚀 ~ TableSettingsSidebar ~ formApi:",
-					formApi.baseStore.state.values,
-				);
+				console.log(formApi.baseStore.state.values , 'test');
 				TableBuilderService.updateSettings(formApi.baseStore.state.values);
 			},
 		},
@@ -126,6 +125,42 @@ export function TableSettingsSidebar() {
 														Global Filtering
 													</a>
 												</field.FieldDescription>
+											</div>
+										)}
+									</form.AppField>
+									<form.AppField name="enableColumnMovable" mode="value">
+										{(field) => (
+											<div className=" border-b mx-2">
+												<div className="flex items-center justify-between p-3">
+													<div className="flex items-center gap-2">
+														<Search className="w-4 h-4 text-muted-foreground" />
+														<field.FieldLabel
+															htmlFor={focusOnErrorId}
+															className="text-sm"
+														>
+															Column Movable
+														</field.FieldLabel>
+													</div>
+													<Switch
+														id={focusOnErrorId}
+														checked={field.state.value}
+														onCheckedChange={field.handleChange}
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+													/>
+												</div>
+												{/* <Separator className="my-2" />
+												<field.FieldDescription className="pb-2">
+													Enable global search across all table columns. For
+													more info check the TanStack Table docs:{" "}
+													<a
+														className="text-primary"
+														href="https://tanstack.com/table/latest/docs/guide/global-filtering"
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														Global Filtering
+													</a>
+												</field.FieldDescription> */}
 											</div>
 										)}
 									</form.AppField>
