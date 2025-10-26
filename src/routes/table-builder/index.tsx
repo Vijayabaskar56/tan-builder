@@ -1,3 +1,24 @@
+import Loader from "@/components/loader";
+import { Button } from "@/components/ui/button";
+import { DataGrid, DataGridContainer } from "@/components/ui/data-grid";
+import { DataGridColumnVisibility } from "@/components/ui/data-grid-column-visibility";
+import { DataGridPagination } from "@/components/ui/data-grid-pagination";
+import { DataGridTable } from "@/components/ui/data-grid-table";
+import { DataGridTableDnd } from "@/components/ui/data-grid-table-dnd";
+import {
+	DataGridTableDndRowHandle,
+	DataGridTableDndRows,
+} from "@/components/ui/data-grid-table-dnd-rows";
+import { type Filter, Filters } from "@/components/ui/filters";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import useTableStore from "@/hooks/use-table-store";
+import {
+	applyFilters,
+	generateColumns,
+	generateFilterFields,
+} from "@/lib/table-generator/generate-columns";
+import { TableBuilderService } from "@/services/table-builder.service";
+import type { JsonData } from "@/types/table-types";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { createFileRoute } from "@tanstack/react-router";
@@ -13,29 +34,10 @@ import {
 } from "@tanstack/react-table";
 import { CircleX } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { DataGrid, DataGridContainer } from "@/components/ui/data-grid";
-import { DataGridColumnVisibility } from "@/components/ui/data-grid-column-visibility";
-import { DataGridPagination } from "@/components/ui/data-grid-pagination";
-import { DataGridTable } from "@/components/ui/data-grid-table";
-import { DataGridTableDnd } from "@/components/ui/data-grid-table-dnd";
-import {
-	DataGridTableDndRowHandle,
-	DataGridTableDndRows,
-} from "@/components/ui/data-grid-table-dnd-rows";
-import { type Filter, Filters } from "@/components/ui/filters";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import useTableStore from "@/hooks/use-table-store";
-import {
-	generateColumns,
-	generateFilterFields,
-	applyFilters,
-} from "@/lib/table-generator/generate-columns";
-import { TableBuilderService } from "@/services/table-builder.service";
-import type { JsonData } from "@/types/table-types";
 export const Route = createFileRoute("/table-builder/")({
 	component: RouteComponent,
 	ssr: true,
+	pendingComponent : Loader,
 });
 
 function RouteComponent() {

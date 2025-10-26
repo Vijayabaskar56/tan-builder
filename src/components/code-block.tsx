@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { codeToHtml } from "shiki";
 import { useTheme } from "@/components/theme-provider";
 import CopyButton from "@/components/ui/copy-button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 
 export type CodeBlockProps = {
 	children?: React.ReactNode;

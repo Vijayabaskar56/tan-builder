@@ -1,4 +1,4 @@
-import { toCamelCase } from "@/lib/utils";
+import { toCamelCase } from "@/utils/utils";
 import type { ColumnConfig } from "@/types/table-types";
 
 const getTypeScriptType = (type: ColumnConfig["type"]): string => {

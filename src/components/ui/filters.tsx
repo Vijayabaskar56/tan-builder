@@ -34,7 +34,7 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 
 // i18n Configuration Interface
 export interface FilterI18nConfig {

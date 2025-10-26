@@ -1,6 +1,6 @@
 import * as v from "valibot";
 import { flattenFormSteps, getStepFields } from "@/lib/form-elements-helpers";
-import { isStatic, logger } from "@/lib/utils";
+import { isStatic, logger } from "@/utils/utils";
 import type { FormArray, FormElement, FormStep } from "@/types/form-types";
 
 // Type definitions for Valibot schemas

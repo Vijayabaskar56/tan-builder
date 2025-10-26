@@ -1,20 +1,24 @@
-# TanStack Form Builder
+# TANCN
 
-A powerful form builder application built with TanStack technologies. Create dynamic, type-safe forms with drag-and-drop interface, real-time preview, and automatic code generation.
+A powerful form and table builder application built with TanStack technologies. Create dynamic, type-safe forms and performant, customizable tables with a drag-and-drop interface, real-time preview, and automatic code generation.
 
 ## Features
 
 ### 🖱️ Drag & Drop Builder
-Intuitive drag-and-drop interface for building forms quickly. Add, rearrange, and configure form fields with ease.
+Intuitive drag-and-drop interface for building forms and tables quickly. Add, rearrange, and configure them with ease.
 
 ### 🔒 Type-Safe Code Generation
 Generate fully typed React components with TypeScript support. Automatic schema generation for form validation.
 
 ### 🎨 ShadCN UI Integration
-Seamlessly integrated with ShadCN UI components. Generate customizable, accessible form components out of the box.
+Seamlessly integrated with ShadCN UI components. Generate customizable, accessible form and table components out of the box.
 
 ### 📑 Multi-Step & Field Arrays
 Create complex multi-step forms and dynamic field arrays. Perfect for advanced form requirements and data structures.
+
+### 📑 Data-Grid & Advanced Filters
+Create complex data-grid tables and powerful filters. Perfect for building complex tables with large datasets.
+
 
 ### 💾 Save, Share & Export
 Save your form configurations, share them with team members, and export generated code for immediate use in your projects.
@@ -27,7 +31,7 @@ See your form changes instantly with live preview. Test form behavior and stylin
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd tanstack-form-builder
+cd tancn
 ```
 
 2. Install dependencies:
@@ -70,11 +74,11 @@ This project was started as a fork of [formcn.dev](https://formcn.dev) and is in
 
 ## Star History
 
-<a href="https://www.star-history.com/#Vijayabaskar56/tan-builder&Date">
+<a href="https://www.star-history.com/#Vijayabaskar56/tancn&type=date&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Vijayabaskar56/tan-builder&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Vijayabaskar56/tan-builder&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Vijayabaskar56/tan-builder&type=Date" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Vijayabaskar56/tancn&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Vijayabaskar56/tancn&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Vijayabaskar56/tancn&type=date&legend=top-left" />
  </picture>
 </a>
 

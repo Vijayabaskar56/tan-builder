@@ -10,7 +10,7 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { useAppForm } from "@/components/ui/tanstack-form";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 
 const datePickerFormSchema = z.object({
 	date: z.string(),

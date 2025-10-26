@@ -4,7 +4,7 @@ import {
 	generateFilterFields,
 	applyFilters,
 } from "@/lib/table-generator/generate-columns";
-import { toCamelCase, toJSLiteral } from "@/lib/utils";
+import { toCamelCase, toJSLiteral } from "@/utils/utils";
 import type { JsonData } from "@/types/table-types";
 
 const getComponentName = (

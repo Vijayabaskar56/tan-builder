@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { SettingsCollection } from "@/db-collections/settings.collections";
 import useSettings from "@/hooks/use-settings";
-import { formatCode, updatePreferredPackageManager } from "@/lib/utils";
+import { formatCode, updatePreferredPackageManager } from "@/utils/utils";
 
 export const Wrapper = ({
 	children,

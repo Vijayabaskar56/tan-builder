@@ -1,5 +1,5 @@
 import React, { type ReactElement, useRef } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { Button } from "./button";
 
 interface IconHandle {

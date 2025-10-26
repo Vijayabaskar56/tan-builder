@@ -19,10 +19,12 @@ import { NotFound } from "@/components/not-found";
 
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
+import Loader from "@/components/loader";
 export const Route = createFileRoute("/")({
 	component: HomePage,
 	errorComponent: ErrorBoundary,
 	notFoundComponent: NotFound,
+	pendingComponent : Loader,
 });
 
 // features array removed as it is unused

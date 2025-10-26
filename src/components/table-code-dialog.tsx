@@ -4,7 +4,7 @@ import * as z from "zod";
 import { GeneratedTableCodeViewer } from "@/components/generated-code/table-code-viewer";
 import useTableStore from "@/hooks/use-table-store";
 import { generateTable } from "@/lib/table-code-generators/react/index";
-import { logger } from "@/lib/utils";
+import { logger } from "@/utils/utils";
 import { TableBuilderService } from "@/services/table-builder.service";
 import type { CreateRegistryResponse } from "@/types/form-types";
 import { AnimatedIconButton } from "./ui/animated-icon-button";

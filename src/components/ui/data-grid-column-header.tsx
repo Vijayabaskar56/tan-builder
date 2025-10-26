@@ -27,7 +27,7 @@ import {
 	DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 
 interface DataGridColumnHeaderProps<TData, TValue>
 	extends HTMLAttributes<HTMLDivElement> {

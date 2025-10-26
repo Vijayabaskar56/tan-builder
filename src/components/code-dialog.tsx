@@ -9,7 +9,7 @@ import {
 	generateImports,
 } from "@/lib/form-code-generators/react/generate-imports";
 import { generateValidationCode } from "@/lib/schema-generators";
-import { logger } from "@/lib/utils";
+import { logger } from "@/utils/utils";
 import type {
 	CreateRegistryResponse,
 	FormArray,

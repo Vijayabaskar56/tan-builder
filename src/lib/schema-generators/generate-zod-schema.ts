@@ -1,6 +1,6 @@
 import { type ZodType, z } from "zod";
 import { flattenFormSteps, getStepFields } from "@/lib/form-elements-helpers";
-import { isStatic } from "@/lib/utils";
+import { isStatic } from "@/utils/utils";
 import type { FormArray, FormElement, FormStep } from "@/types/form-types";
 
 // Type guard to check if an element is a FormArray

@@ -8,7 +8,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { fieldItems, items } from "@/constants/registry";
 import type { SettingsCollection } from "@/db-collections/settings.collections";
 import useSettings from "@/hooks/use-settings";
-import { updatePreferredPackageManager } from "@/lib/utils";
+import { updatePreferredPackageManager } from "@/utils/utils";
+import Loader from "@/components/loader";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 const registryItems = items.map((item) => ({
 	name: item.name,
@@ -63,19 +65,19 @@ export function DraftForm() {
                           name={"email"}
                           placeholder="Enter your Email"
                           type="email"
-                          
+
                           value={(field.state.value as string | undefined) ?? ""}
                           onBlur={field.handleBlur}
                           onChange={(e) => field.handleChange(e.target.value)}
                           aria-invalid={!!field.state.meta.errors.length}
                         />
                       </field.Field>
-                      
+
                       <field.FieldError />
                     </field.FieldSet>
                   )}
               </draftForm.AppField>
-              
+
           <div className="flex justify-end items-center w-full pt-3">
           <draftForm.SubmitButton label="Submit" />
         </div>
@@ -324,6 +326,9 @@ export {
 
 export const Route = createFileRoute("/form-registry")({
 	component: RouteComponent,
+	ssr: true,
+	pendingComponent : Loader,
+	errorComponent : ErrorBoundary,
 });
 
 function RouteComponent() {

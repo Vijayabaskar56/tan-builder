@@ -7,7 +7,7 @@ import type {
 	Table,
 } from "@tanstack/react-table";
 import { createContext, type ReactNode, useContext } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 
 declare module "@tanstack/react-table" {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars

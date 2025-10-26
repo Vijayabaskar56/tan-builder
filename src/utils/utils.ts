@@ -179,6 +179,6 @@ export const toJSLiteral = (value: any): string => {
 	return "undefined";
 };
 
-import { detectColumnsConfig } from "./column-detection";
+import { detectColumnsConfig } from "../lib/column-detection";
 
 export const detectColumns = (data: JsonData[]) => detectColumnsConfig(data);

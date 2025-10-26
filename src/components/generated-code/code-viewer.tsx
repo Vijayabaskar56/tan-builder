@@ -14,7 +14,7 @@ import useSettings from "@/hooks/use-settings";
 import { generateFormCode } from "@/lib/form-code-generators/react/generate-form-code";
 import { flattenFormSteps } from "@/lib/form-elements-helpers";
 import { generateValidationCode } from "@/lib/schema-generators";
-import { formatCode, logger, updatePreferredPackageManager } from "@/lib/utils";
+import { formatCode, logger, updatePreferredPackageManager } from "@/utils/utils";
 import type {
 	FormElement,
 	FormElementOrList,

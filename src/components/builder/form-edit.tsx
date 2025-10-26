@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { useAppForm } from "@/components/ui/tanstack-form";
 import type { FormBuilderActions } from "@/hooks/use-form-store";
 import { useFormStore, useIsMultiStep } from "@/hooks/use-form-store";
-import { isStatic } from "@/lib/utils";
+import { isStatic } from "@/utils/utils";
 import type {
 	FormArray,
 	FormElement,

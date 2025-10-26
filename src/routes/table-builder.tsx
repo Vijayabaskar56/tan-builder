@@ -7,6 +7,7 @@ import { createClientOnlyFn } from "@tanstack/react-start";
 import { Database, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import Loader from "@/components/loader";
 import { NotFound } from "@/components/not-found";
 import { TableColumnEdit } from "@/components/table-components/table-column-edit";
 import { TableTemplates } from "@/components/table-components/table-templates";
@@ -30,7 +31,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { tableBuilderCollection } from "@/db-collections/table-builder.collections";
 import { useScreenSize } from "@/hooks/use-screen-size";
 import useTableStore from "@/hooks/use-table-store";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { TableBuilderService } from "@/services/table-builder.service";
 
 const initializeTableStore = createClientOnlyFn(async () => {
@@ -41,6 +42,7 @@ export const Route = createFileRoute("/table-builder")({
 	component: RouteComponent,
 	errorComponent: ErrorBoundary,
 	notFoundComponent: NotFound,
+	pendingComponent : Loader,
 	ssr: true,
 	validateSearch: (search) => ({
 		share: search.share as string | undefined,

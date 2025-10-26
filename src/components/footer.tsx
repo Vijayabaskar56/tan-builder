@@ -72,7 +72,7 @@ export default function FooterSection() {
 						<div className="w-6 h-6 relative overflow-hidden">
 							<div className="w-6 h-6 left-0 top-0 absolute flex items-center justify-center">
 								<a
-									href="https://github.com/Vijayabaskar56/tanstack-builder"
+									href="https://github.com/Vijayabaskar56/tancn"
 									target="_blank"
 									rel="noopener noreferrer"
 								>

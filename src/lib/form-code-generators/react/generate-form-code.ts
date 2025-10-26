@@ -8,7 +8,7 @@ import {
 import { getFormElementCode } from "@/lib/form-code-generators/react/generate-form-component";
 import { generateImports } from "@/lib/form-code-generators/react/generate-imports";
 import { flattenFormSteps } from "@/lib/form-elements-helpers";
-import { generateFormNames } from "@/lib/utils";
+import { generateFormNames } from "@/utils/utils";
 // generate-form-code.ts
 import type {
 	FormArray,

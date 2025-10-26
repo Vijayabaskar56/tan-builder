@@ -27,7 +27,7 @@ import {
 	type FilterFieldConfig,
 	Filters,
 } from "@/components/ui/filters";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 
 // Priority icon component
 const PriorityIcon = ({ priority }: { priority: string }) => {

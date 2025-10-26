@@ -13,7 +13,7 @@ import type * as React from "react";
 import { type CSSProperties, Fragment, type ReactNode } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useDataGrid } from "@/components/ui/data-grid";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import NoFieldPlaceholder from "../builder/no-field-placeholder";
 
 const headerCellSpacingVariants = cva("", {

@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import * as React from "react";
 import { Drawer as DrawerPrimitive, Content as VaulDrawerContent } from "vaul";
 import useMediaQuery from "@/hooks/use-media-query";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 
 export type ResponsiveDialogProps = React.ComponentProps<
 	typeof DrawerPrimitive.Root

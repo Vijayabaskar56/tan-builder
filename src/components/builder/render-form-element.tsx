@@ -37,7 +37,7 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import type { FormElement } from "@/types/form-types";
 import type { AppForm } from "../../hooks/use-form-builder";
 import { FieldDescription, FieldLegend, FieldSeparator } from "../ui/field";

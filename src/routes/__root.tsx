@@ -13,6 +13,7 @@ import { NotFound } from "@/components/not-found";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import DevTools from "@/integrations/tanstack-query/devtools";
+import { seo } from "@/utils/seo";
 import appCss from "../styles.css?url";
 
 interface MyRouterContext {
@@ -21,67 +22,7 @@ interface MyRouterContext {
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
 	head: () => ({
-		title: "TanStack Form Builder",
-		meta: [
-			{
-				charSet: "utf-8",
-			},
-			{
-				name: "viewport",
-				content: "width=device-width, initial-scale=1",
-			},
-			{
-				name: "description",
-				content:
-					"Help you Quickly Scaffold a Form for your TanStack Using TanStack Forms",
-			},
-			// Open Graph meta tags
-			{ property: "og:title", content: "TanStack Form Builder" },
-			{
-				property: "og:description",
-				content:
-					"Help you Quickly Scaffold a Form for your TanStack Using TanStack Forms",
-			},
-			{ property: "og:type", content: "website" },
-			{
-				property: "og:image",
-				content: "https://tan-form-builder.baskar.dev/assets/og-image.avif",
-			},
-			{
-				property: "og:image:secure_url",
-				content: "https://tan-form-builder.baskar.dev/assets/og-image.avif",
-			},
-			{ property: "og:image", content: "https://tan-form-builder.baskar.dev/assets/og-image.avif" },
-			{ property: "og:image:secure_url", content: "https://tan-form-builder.baskar.dev/assets/og-image.avif" },
-			{ property: "og:image:width", content: "1200" },
-			{ property: "og:image:height", content: "630" },
-			{
-				property: "og:image:alt",
-				content: "TanStack Form Builder - Visual Form Builder for React",
-			},
-			{ property: "og:url", content: "https://tan-form-builder.baskar.dev/" },
-			{ property: "og:site_name", content: "TanStack Form Builder" },
-			// Twitter Card meta tags
-			{ name: "twitter:card", content: "summary_large_image" },
-			{ name: "twitter:title", content: "TanStack Form Builder" },
-			{
-				name: "twitter:description",
-				content:
-					"Help you Quickly Scaffold a Form for your TanStack Using TanStack Forms",
-			},
-			{
-				name: "twitter:image",
-				content: "https://tan-form-builder.baskar.dev/assets/og-image.avif",
-			},
-			{ name: "twitter:image", content: "https://tan-form-builder.baskar.dev/assets/og-image.avif" },
-			{
-				name: "twitter:image:alt",
-				content: "TanStack Form Builder - Visual Form Builder for React",
-			},
-			{ name: "twitter:url", content: "https://tan-form-builder.baskar.dev/" },
-			{ name: "twitter:site", content: "@vijayabaskar56" },
-			{ name: "twitter:creator", content: "@vijayabaskar56" },
-		],
+		...seo(),
 		links: [
 			{
 				rel: "stylesheet",
@@ -117,7 +58,7 @@ function RootDocument() {
 				>
 					<div className="h-screen overflow-hidden flex flex-col">
 						<NavBar />
-						<div className="h-screen pt-16 overflow-auto">
+						<div className="h-screen pt-12 overflow-auto">
 							{isFetching ? <Loader /> : <Outlet />}
 						</div>
 					</div>

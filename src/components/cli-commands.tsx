@@ -2,7 +2,7 @@ import CopyButton from "@/components/ui/copy-button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { SettingsCollection } from "@/db-collections/settings.collections";
 import useSettings from "@/hooks/use-settings";
-import { updatePreferredPackageManager } from "@/lib/utils";
+import { updatePreferredPackageManager } from "@/utils/utils";
 
 export default function CliCommands({ name }: { name: string }) {
 	const { preferredPackageManager } = useSettings();
