@@ -1,11 +1,3 @@
-import {
-	ChevronDownIcon,
-	HeartIcon,
-	ListIcon,
-	SettingsIcon,
-} from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -30,11 +22,18 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import useTableStore from "@/hooks/use-table-store";
 import { TableBuilderService } from "@/services/table-builder.service";
-import TableCodeDialog from "./table-code-dialog";
-import DataUploadDialog from "./table-data-upload-dialog";
+import {
+	ChevronDownIcon,
+	HeartIcon,
+	SettingsIcon
+} from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { AnimatedIconButton } from "../ui/animated-icon-button";
 import { RotateCWIcon } from "../ui/rotate-cw";
 import { ShareIcon } from "../ui/share";
+import TableCodeDialog from "./table-code-dialog";
+import DataUploadDialog from "./table-data-upload-dialog";
 
 export default function TableHeader() {
 	const tableData = useTableStore();
@@ -139,6 +138,7 @@ export default function TableHeader() {
 							icon={<ShareIcon className="w-4 h-4 mr-1" />}
 							text={<span className="hidden xl:block ml-1">Share</span>}
 							variant="ghost"
+							disabled={true}
 							onClick={handleShare}
 						/>
 						<div className="h-4 w-px bg-border" />

@@ -1,13 +1,16 @@
 import { capitalize, toCamelCase } from "@/utils/utils";
 import type { ColumnConfig } from "@/types/table-types";
 
-const getTypeScriptType = (type: ColumnConfig["type"]): string => {
-	switch (type) {
+const getTypeScriptType = (col: ColumnConfig): string => {
+	switch (col.type) {
 		case "string":
 			return "string";
 		case "number":
 			return "number";
 		case "boolean":
+			if (col.possibleValues && col.possibleValues.length > 0) {
+				return col.possibleValues.map(v => `"${v}"`).join(" | ");
+			}
 			return "boolean";
 		case "date":
 			return "string"; // Dates stored as strings
@@ -16,6 +19,9 @@ const getTypeScriptType = (type: ColumnConfig["type"]): string => {
 		case "array":
 			return "any[]";
 		case "enum":
+			if (col.possibleValues && col.possibleValues.length > 0) {
+				return col.possibleValues.map(v => `"${v}"`).join(" | ");
+			}
 			return "string";
 		default:
 			return "string";
@@ -31,18 +37,23 @@ export const generateTableType = (
 		? `${capitalize(customName)}Data`
 		: "TableData";
 	const properties = columns
-		.map((col) => `\t${col.accessor}: ${getTypeScriptType(col.type)};`)
+		.map((col) => `\t${col.accessor}: ${getTypeScriptType(col)};`)
 		.join("\n");
 
 	return `export interface ${interfaceName} {\n${properties}\n}`;
 };
 
-const formatValue = (value: any, type: ColumnConfig["type"]): string => {
+const formatValue = (value: any, col: ColumnConfig): string => {
 	if (value === null || value === undefined) {
 		return "null";
 	}
 
-	switch (type) {
+	// For boolean/enum fields with possibleValues, treat as strings
+	if ((col.type === "boolean" || col.type === "enum") && col.possibleValues && col.possibleValues.length > 0) {
+		return `"${String(value).replace(/"/g, '\\"')}"`;
+	}
+
+	switch (col.type) {
 		case "string":
 			return `"${String(value).replace(/"/g, '\\"')}"`;
 		case "number":
@@ -77,7 +88,7 @@ export const generateTableData = (
 		const properties = columns
 			.map((col) => {
 				const value = row[col.accessor];
-				return `\t\t${col.accessor}: ${formatValue(value, col.type)}`;
+				return `\t\t${col.accessor}: ${formatValue(value, col)}`;
 			})
 			.join(",\n");
 		return `\t{\n${properties}\n\t}`;

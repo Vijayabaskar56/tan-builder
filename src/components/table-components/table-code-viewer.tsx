@@ -43,22 +43,22 @@ const TableCodeBlockPackagesInstallation = () => {
 		{
 			value: "pnpm",
 			base: `pnpm add @tanstack/react-table`,
-			shadcn: `pnpm dlx shadcn@latest add data-grid data-grid-pagination data-grid-table scroll-area`,
+			shadcn: `pnpm dlx shadcn@latest add @reui/data-grid-default @reui/filters`,
 		},
 		{
 			value: "npm",
 			base: `npm i @tanstack/react-table`,
-			shadcn: `npx shadcn@latest add data-grid data-grid-pagination data-grid-table scroll-area`,
+			shadcn: `npx shadcn@latest add @reui/data-grid  @reui/filters`,
 		},
 		{
 			value: "yarn",
 			base: `yarn add @tanstack/react-table`,
-			shadcn: `npx shadcn@latest add data-grid data-grid-pagination data-grid-table scroll-area`,
+			shadcn: `npx shadcn@latest add @reui/data-grid  @reui/filters`,
 		},
 		{
 			value: "bun",
 			base: `bun add @tanstack/react-table`,
-			shadcn: `bunx --bun shadcn@latest add data-grid data-grid-pagination data-grid-table scroll-area`,
+			shadcn: `bunx --bun shadcn@latest add @reui/data-grid  @reui/filters`,
 		},
 	];
 

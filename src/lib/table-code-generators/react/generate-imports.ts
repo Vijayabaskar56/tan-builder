@@ -8,10 +8,11 @@ export const generateTableImports = (
 
 	// Base imports always needed
 	const reactImports = ["useMemo", "useState"];
-	if (settings.isGlobalSearch) {
+	if (settings.isGlobalSearch || settings.enableRowDragging || settings.enableColumnDragging) {
 		reactImports.push("useCallback");
 	}
 	importSet.add('import { Button } from "@/components/ui/button"');
+	importSet.add('import { Badge } from "@/components/ui/badge"');
 	importSet.add(`import { ${reactImports.join(", ")} } from "react"`);
 	importSet.add(
 		'import {\n\ttype ColumnDef,\n\tgetCoreRowModel,\n\tgetPaginationRowModel,\n\tgetSortedRowModel,\n\ttype PaginationState,\n\ttype SortingState,\n\tuseReactTable,\n} from "@tanstack/react-table"',
@@ -55,6 +56,18 @@ export const generateTableImports = (
 	if (settings.isGlobalSearch) {
 		importSet.add(
 			'import { Filters, type Filter, type FilterFieldConfig } from "@/components/ui/filters"',
+		);
+	}
+
+	if (settings.enableRowDragging) {
+		importSet.add(
+			'import { DataGridTableDndRows } from "@/components/ui/data-grid-table"',
+		);
+	}
+
+	if (settings.enableColumnDragging) {
+		importSet.add(
+			'import { DataGridTableDnd } from "@/components/ui/data-grid-table-dnd";',
 		);
 	}
 

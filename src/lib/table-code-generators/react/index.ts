@@ -5,6 +5,7 @@ import {
 } from "./generate-imports";
 import { generateTableCode } from "./generate-table-code";
 import { generateTableData, generateTableType } from "./generate-table-data";
+import { generateRowActionCode } from "./generate-coloum-code";
 
 export const generateTable = (
 	tableBuilder: TableBuilder,
@@ -14,11 +15,15 @@ export const generateTable = (
 	dependencies: { registryDependencies: string[]; dependencies: string[] };
 } => {
 	// Check if there are any array columns
+	let crudImports = "";
 	const hasArrayColumns = tableBuilder.table.columns.some(
 		(col) => col.type === "array",
 	);
 
 	const imports = generateTableImports(tableBuilder.settings, hasArrayColumns);
+	if(tableBuilder.settings.enableCRUD) {
+		crudImports = generateRowActionCode();
+	}
 	const typeCode = generateTableType(tableBuilder.table.columns, customName);
 	const dataCode = generateTableData(
 		tableBuilder.table.data,
@@ -26,11 +31,11 @@ export const generateTable = (
 		customName,
 	);
 	const { file, code: componentCode } = generateTableCode(
-		tableBuilder,
 		customName,
 	);
 
 	const fullComponentCode = `${Array.from(imports).join("\n")}
+${crudImports && crudImports.length > 0 ? `\n${crudImports}` : ""}
 
 ${typeCode}
 

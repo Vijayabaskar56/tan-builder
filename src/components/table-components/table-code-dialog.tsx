@@ -176,7 +176,7 @@ function TableCodeDialog() {
 		<ResponsiveDialog open={open} onOpenChange={setOpen}>
 			<ResponsiveDialogTrigger asChild>
 				<AnimatedIconButton
-					disabled={true}
+					// disabled={true}
 					icon={<TerminalIcon className="w-4 h-4 mr-1" />}
 					text={<span className="hidden xl:block ml-1">Code</span>}
 					variant={"ghost"}
@@ -213,7 +213,7 @@ function TableCodeDialog() {
 													onBlur={field.handleBlur}
 													disabled={isGenerateSuccess}
 												/>
-												<InputGroupAddon align="inline-end">
+												{/* <InputGroupAddon align="inline-end">
 													{mutation.isPending ? (
 														<InputGroupButton
 															variant="secondary"
@@ -234,7 +234,7 @@ function TableCodeDialog() {
 															Generate Command
 														</InputGroupButton>
 													)}
-												</InputGroupAddon>
+												</InputGroupAddon> */}
 											</InputGroup>
 										</field.Field>
 										<field.FieldError />

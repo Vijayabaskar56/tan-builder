@@ -417,11 +417,13 @@ export class TableBuilderService {
 					hasFacetedFilter: col.type === "enum",
 					options: undefined,
 					optionsMode: "auto" as const,
+					possibleValues: col.possibleValues,
 				}));
 			} else {
 				finalColumns = detectColumns(data);
 			}
 
+			console.log("🚀 ~ file: table-builder.service.ts:429 ~ finalColumns:", finalColumns)
 			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
 				draft.table = {
 					columns: finalColumns,

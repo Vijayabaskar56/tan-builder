@@ -11,6 +11,7 @@ export interface Column {
 	label: string;
 	type: "string" | "number" | "boolean" | "date" | "object" | "array" | "enum";
 	order: number;
+	possibleValues?: string[];
 }
 
 export interface WorkerRequest {
@@ -96,11 +97,14 @@ const detectColumns = (data: DataRow[]): Column[] => {
 				: b,
 		);
 
+		let possibleValues: string[] | undefined;
+
 		// If type is string, check if it has exactly 2 unique values (boolean-like)
 		if (mostCommonType === "string") {
 			const uniqueValues = [...new Set(sampleValues.map((v) => String(v)))];
 			if (uniqueValues.length === 2) {
 				mostCommonType = "boolean";
+				possibleValues = uniqueValues;
 			} else if (
 				uniqueValues.length > 2 &&
 				uniqueValues.length <= 10 &&
@@ -108,6 +112,7 @@ const detectColumns = (data: DataRow[]): Column[] => {
 			) {
 				// If we have 3-10 unique values and the field repeats (at least 2x more rows than unique values), classify as enum
 				mostCommonType = "enum";
+				possibleValues = uniqueValues;
 			}
 		}
 
@@ -122,6 +127,7 @@ const detectColumns = (data: DataRow[]): Column[] => {
 					.trim(),
 			type: mostCommonType,
 			order: index,
+			possibleValues,
 		});
 	});
 

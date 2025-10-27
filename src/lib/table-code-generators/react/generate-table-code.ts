@@ -7,14 +7,7 @@ import {
 } from "@/lib/table-generator/generate-columns";
 import { capitalize, toCamelCase, toJSLiteral } from "@/utils/utils";
 import type { JsonData } from "@/types/table-types";
-import { generateTableImports } from "./generate-imports";
-
-const getComponentName = (
-	tableBuilder: TableBuilder,
-	customName?: string,
-): string => {
-	return customName || `TableComponent${tableBuilder.id}`;
-};
+import useTableStore from "@/hooks/use-table-store";
 
 const getDataName = (customName?: string): string => {
 	return customName ? `${customName}Data` : "tableData";
@@ -24,43 +17,73 @@ const getTypeName = (customName?: string): string => {
 	return customName ? `${capitalize(customName)}Data` : "TableData";
 };
 
-const generateTableLayoutProps = (
-	tableLayout: TableBuilder["settings"]["tableLayout"],
+const getComponentName = (
 ): string => {
+	const tableData = useTableStore();
+	return `${capitalize(tableData.tableName)}Table`;
+};
+
+const generateTableLayoutProps = (
+): string => {
+	const tableData = useTableStore();
 	const props: Record<string, any> = {};
 
-	if (tableLayout?.dense) {
+	if (tableData.settings.tableLayout?.dense) {
 		props.dense = true;
 	}
-	if (tableLayout?.cellBorder) {
+	if (tableData.settings.tableLayout?.cellBorder) {
 		props.cellBorder = true;
 	}
-	if (tableLayout?.rowBorder) {
+	if (tableData.settings.tableLayout?.rowBorder) {
 		props.rowBorder = true;
 	}
-	if (tableLayout?.rowRounded) {
+	if (tableData.settings.tableLayout?.rowRounded) {
 		props.rowRounded = true;
 	}
-	if (tableLayout?.stripped) {
+	if (tableData.settings.tableLayout?.stripped) {
 		props.stripped = true;
 	}
-	if (tableLayout?.headerBorder) {
+	if (tableData.settings.tableLayout?.headerBorder) {
 		props.headerBorder = true;
 	}
-	if (tableLayout?.headerSticky) {
+	if (tableData.settings.tableLayout?.headerSticky) {
 		props.headerSticky = true;
 	}
-	if (tableLayout?.width) {
-		props.width = tableLayout.width;
+	if (tableData.settings.tableLayout?.width) {
+		props.width = tableData.settings.tableLayout.width;
 	}
 
+	if(tableData.settings.enableColumnDragging) {
+		props.columnsDraggable = true;
+	}
+	if(tableData.settings.enableRowDragging) {
+		props.rowsDraggable = true;
+	}
+	if(tableData.settings.enablePagination) {
+		props.pagination = true;
+	}
+	if(tableData.settings.enableColumnMovable) {
+		props.columnsMovable = true;
+	}
+	if(tableData.settings.enableResizing) {
+		props.columnsResizable = true;
+	}
+	if(tableData.settings.enablePinning) {
+		props.columnsPinnable = true;
+	}
+	if(tableData.settings.enableHiding) {
+		props.columnsVisibility = true;
+	}
+	if(tableData.settings.enableSorting) {
+		props.columnsSortable = true;
+	}
 	return Object.keys(props).length > 0
 		? ` tableLayout={${toJSLiteral(props)}}`
 		: "";
 };
 
 const generateFilterFieldsCode = (
-	table: TableBuilder["table"],
+	table: TableBuilder["table`"],
 	settings: TableBuilder["settings"],
 	dataName: string,
 ): string => {
@@ -92,19 +115,17 @@ const generateFilterFieldsCode = (
 };
 
 export const generateTableCode = (
-	tableBuilder: TableBuilder,
 	customName?: string,
 ): { file: string; code: string } => {
-	const componentName = getComponentName(tableBuilder, customName);
+	const tableData = useTableStore();
+	const componentName = getComponentName(tableData, customName);
 	const dataName = getDataName(customName);
 	const typeName = getTypeName(customName);
-	const settings = tableBuilder.settings;
-	const table = tableBuilder.table;
 
 	// Check if there are any array columns
-	const hasArrayColumns = table.columns.some((col) => col.type === "array");
+	const hasArrayColumns = tableData.table.columns.some((col) => col.type === "array");
 
-	const dataVar = settings.isGlobalSearch
+	const dataVar = tableData.settings.isGlobalSearch
 		? "filteredData"
 		: toCamelCase(dataName);
 
@@ -115,9 +136,9 @@ export const generateTableCode = (
 		pageSize: 10,
 	});
 	const [sorting, setSorting] = useState<SortingState>([]);
-	${settings.isGlobalSearch ? "const [filters, setFilters] = useState<Filter[]>([]);" : ""}
+	${tableData.settings.isGlobalSearch ? "const [filters, setFilters] = useState<Filter[]>([]);" : ""}
 	${
-		hasArrayColumns
+		tableData.table.columns.some((col) => col.type === "array")
 			? `const [expandedArrayRows, setExpandedArrayRows] = useState<Set<string>>(new Set());
 	const handleToggleArrayExpand = useCallback((columnId: string, rowId: string) => {
 		setExpandedArrayRows((prev) => {
@@ -132,24 +153,40 @@ export const generateTableCode = (
 	}, []);`
 			: ""
 	}
+	${
+		tableData.settings.enableRowDragging
+			? `const dataIds = useMemo(() => ${dataVar}.map((item) => item.id), [${dataVar}]);
+	const handleRowDragEnd = useCallback((event: any) => {
+		// Handle row drag end
+		console.log('Row drag end', event);
+	}, []);`
+			: ""
+	}
+	${
+		tableData.settings.enableColumnDragging
+			? `const handleDragEnd = useCallback((event: any) => {
+		// Handle column drag end
+		console.log('Column drag end', event);
+	}, []);`
+			: ""
+	}
 	const columns = useMemo<ColumnDef<${typeName}>[]>(
 		() => ${getColumnsString(
-			table.columns,
+			tableData.table.columns,
 			{
-				enableSorting: settings.enableSorting,
-				enableHiding: settings.enableHiding,
-				enableResizing: settings.enableResizing,
-				enablePinning: settings.enablePinning,
-				enableRowSelection: settings.enableRowSelection,
-				enableCRUD: settings.enableCRUD,
+				enableSorting: tableData.settings.enableSorting,
+				enableHiding: tableData.settings.enableHiding,
+				enableResizing: tableData.settings.enableResizing,
+				enablePinning: tableData.settings.enablePinning,
+				enableRowSelection: tableData.settings.enableRowSelection,
+				enableCRUD: tableData.settings.enableCRUD,
 			},
-			hasArrayColumns,
 		)},
-		${hasArrayColumns ? "[expandedArrayRows]" : "[]"},
+		[],
 	);
 	${
-		settings.isGlobalSearch
-			? `${generateFilterFieldsCode(table, settings, dataName)}
+		tableData.settings.isGlobalSearch
+			? `${generateFilterFieldsCode(tableData.table, tableData.settings, dataName)}
 	const handleFiltersChange = useCallback((filters: Filter[]) => {
 		console.log("Filters updated:", filters);
 		setFilters(filters);
@@ -175,11 +212,11 @@ export const generateTableCode = (
 		<DataGrid table={table} recordCount={` +
 		dataVar +
 		`?.length || 0}` +
-		generateTableLayoutProps(settings.tableLayout) +
+		generateTableLayoutProps(tableData.settings.tableLayout) +
 		`>
 			<div className="w-full space-y-2.5">
 				` +
-		(settings.isGlobalSearch
+		(tableData.settings.isGlobalSearch
 			? `<Filters
 					filters={filters}
 					fields={filterFields}
@@ -195,12 +232,15 @@ export const generateTableCode = (
 		`
 				<DataGridContainer>
 					<ScrollArea>
-						<DataGridTable />
+						${tableData.settings.enableRowDragging ? `<DataGridTableDndRows
+							handleDragEnd={handleRowDragEnd}
+							dataIds={dataIds}
+						/>` : tableData.settings.enableColumnDragging ? `<DataGridTableDnd handleDragEnd={handleDragEnd} />` : `<DataGridTable />`}
 						<ScrollBar orientation="horizontal" />
 					</ScrollArea>
 				</DataGridContainer>
 				` +
-		(settings.enablePagination ? "<DataGridPagination />" : "") +
+		(tableData.settings.enablePagination ? "<DataGridPagination />" : "") +
 		`
 			</div>
 		</DataGrid>

@@ -20,6 +20,8 @@ import { NotFound } from "@/components/not-found";
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/loader";
+import { logger } from "@/utils/utils";
+import { settingsCollection } from "@/db-collections/settings.collections";
 export const Route = createFileRoute("/")({
 	component: HomePage,
 	errorComponent: ErrorBoundary,
@@ -208,6 +210,40 @@ const roadmapItems = [
 ];
 
 function HomePage() {
+	const [isSettingsInitialized, setIsSettingsInitialized] = useState(false);
+
+		useEffect(() => {
+			const initializeSettings = async () => {
+				if (typeof window !== "undefined") {
+					logger("settingsCollection", settingsCollection);
+					if (!settingsCollection.has("user-settings")) {
+						logger("inserting settings");
+						await settingsCollection?.insert([
+							{
+								id: "user-settings",
+								activeTab: "builder",
+								defaultRequiredValidation: true,
+								numericInput: false,
+								focusOnError: true,
+								validationMethod: "onDynamic",
+								asyncValidation: 300,
+								preferredSchema: "zod",
+								preferredFramework: "react",
+								preferredPackageManager: "pnpm",
+								isCodeSidebarOpen: false,
+							},
+						]);
+					}
+					setIsSettingsInitialized(true);
+				} else {
+					logger("settingsCollection is undefined");
+					setIsSettingsInitialized(true);
+				}
+			};
+
+			initializeSettings();
+		}, []);
+
 	const [activeCard, setActiveCard] = useState(0);
 	const [progress, setProgress] = useState(0);
 	const { theme, systemTheme } = useTheme();

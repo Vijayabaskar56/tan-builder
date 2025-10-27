@@ -18,6 +18,30 @@ describe('generateTableType', () => {
 }`);
 	});
 
+	it('should generate union types for boolean with possibleValues', () => {
+		const columns = [
+			{ id: 'status', accessor: 'status', label: 'Status', type: 'boolean' as const, order: 1, filterable: true, possibleValues: ['active', 'inactive'] },
+		];
+
+		const result = generateTableType(columns, 'User');
+
+		expect(result).toBe(`export interface UserData {
+\tstatus: "active" | "inactive";
+}`);
+	});
+
+	it('should generate union types for enum with possibleValues', () => {
+		const columns = [
+			{ id: 'role', accessor: 'role', label: 'Role', type: 'enum' as const, order: 1, filterable: true, possibleValues: ['admin', 'user', 'moderator'] },
+		];
+
+		const result = generateTableType(columns, 'User');
+
+		expect(result).toBe(`export interface UserData {
+\trole: "admin" | "user" | "moderator";
+}`);
+	});
+
 	it('should use default name when no custom name provided', () => {
 		const columns = [
 			{ id: 'name', accessor: 'name', label: 'Name', type: 'string' as const, order: 1, filterable: true },
@@ -84,5 +108,35 @@ describe('generateTableData', () => {
 		expect(result).toContain('isActive: true');
 		expect(result).toContain('date: "2023-01-01"');
 		expect(result).toContain('obj: {"key":"value"}');
+	});
+
+	it('should quote boolean values with possibleValues as strings', () => {
+		const columns = [
+			{ id: 'status', accessor: 'status', label: 'Status', type: 'boolean' as const, order: 1, filterable: true, possibleValues: ['Active', 'Inactive'] },
+		];
+		const data = [
+			{ status: 'Active' },
+			{ status: 'Inactive' },
+		];
+
+		const result = generateTableData(data, columns, 'User');
+
+		expect(result).toContain('status: "Active"');
+		expect(result).toContain('status: "Inactive"');
+	});
+
+	it('should quote enum values as strings', () => {
+		const columns = [
+			{ id: 'role', accessor: 'role', label: 'Role', type: 'enum' as const, order: 1, filterable: true, possibleValues: ['admin', 'user', 'moderator'] },
+		];
+		const data = [
+			{ role: 'admin' },
+			{ role: 'user' },
+		];
+
+		const result = generateTableData(data, columns, 'User');
+
+		expect(result).toContain('role: "admin"');
+		expect(result).toContain('role: "user"');
 	});
 });

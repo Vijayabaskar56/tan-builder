@@ -13,6 +13,7 @@ export interface ColumnConfig {
 	hasFacetedFilter?: boolean;
 	options?: { label: string; value: string }[];
 	optionsMode?: "auto" | "custom";
+	possibleValues?: string[];
 }
 
 export interface DataRow {

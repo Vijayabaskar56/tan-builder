@@ -43,6 +43,7 @@ export const Route = createFileRoute("/table-builder/")({
 });
 
 function RouteComponent() {
+	"use no memo";
 	const tableData = useTableStore();
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: 0,
@@ -291,7 +292,6 @@ function RouteComponent() {
 						stripped: tableData.settings.tableLayout?.stripped ?? false,
 						headerBorder: tableData.settings.tableLayout?.headerBorder ?? true,
 						headerSticky: tableData.settings.tableLayout?.headerSticky ?? false,
-						width: "auto",
 						columnsMovable: tableData.settings.enableColumnMovable ?? false,
 						columnsResizable: tableData.settings.enableResizing ?? false,
 						columnsVisibility: tableData.settings.enableHiding ?? false,
