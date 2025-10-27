@@ -503,10 +503,7 @@ export const detectColumns = (data: JsonData[]) => detectColumnsConfig(data);
 export const getColumnsString = (
 	columns: ColumnConfig[],
 	settings?: ColumnSettings,
-	expandableOptions?: {
-		expandedRows?: Set<string>;
-		onToggleExpand?: (columnId: string, rowId: string) => void;
-	},
+	hasExpandableArrays?: boolean,
 ): string => {
 	const generatedColumns: string[] = columns.map((col) => {
 		const base = `{
@@ -520,8 +517,8 @@ export const getColumnsString = (
 					row.getValue("${col.accessor}"),
 					"${col.type}",
 					"${col.id}",
-					${expandableOptions?.onToggleExpand ? "handleToggleArrayExpand" : "undefined"},
-					${expandableOptions?.expandedRows ? "expandedArrayRows" : "undefined"},
+					${hasExpandableArrays ? "handleToggleArrayExpand" : "undefined"},
+					${hasExpandableArrays ? "expandedArrayRows" : "undefined"},
 				),
 			size: 180,
 			enableSorting: ${settings?.enableSorting ?? true},

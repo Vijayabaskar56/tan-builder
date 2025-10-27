@@ -16,6 +16,7 @@ describe('generateTableCode', () => {
 				enableCRUD: true,
 				enableColumnDragging: false,
 				enableRowDragging: false,
+				enableColumnMovable: false,
 				enablePagination: true,
 				tableLayout: {
 					dense: true,
@@ -64,6 +65,7 @@ describe('generateTableCode', () => {
 				enableCRUD: false,
 				enableColumnDragging: false,
 				enableRowDragging: false,
+				enableColumnMovable: false,
 				enablePagination: false,
 				tableLayout: {
 					dense: false,
@@ -90,5 +92,50 @@ describe('generateTableCode', () => {
 		expect(result.code).not.toContain('generateFilterFields');
 		expect(result.code).not.toContain('columnFilters');
 		expect(result.code).toContain('TableComponent2'); // default name
+	});
+
+	it('should generate code with array column expansion when array columns exist', () => {
+		const tableBuilder = {
+			id: 3,
+			tableName: 'ArrayTable',
+			settings: {
+				isGlobalSearch: false,
+				enableHiding: true,
+				enableSorting: true,
+				enableResizing: false,
+				enablePinning: false,
+				enableRowSelection: false,
+				enableCRUD: false,
+				enableColumnDragging: false,
+				enableRowDragging: false,
+				enableColumnMovable: false,
+				enablePagination: true,
+				tableLayout: {
+					dense: false,
+					cellBorder: false,
+					rowBorder: false,
+					rowRounded: false,
+					stripped: false,
+					headerBorder: false,
+					headerSticky: false,
+					width: "fixed" as const,
+				},
+			},
+			table: {
+				columns: [
+					{ id: 'name', accessor: 'name', label: 'Name', type: 'string' as const, order: 1, filterable: true },
+					{ id: 'tags', accessor: 'tags', label: 'Tags', type: 'array' as const, order: 2, filterable: true },
+				],
+				data: [{ name: 'John', tags: ['developer', 'react'] }],
+			},
+		};
+
+		const result = generateTableCode(tableBuilder, 'ArrayTable');
+
+		expect(result.code).toContain('const [expandedArrayRows, setExpandedArrayRows] = useState<Set<string>>(new Set());');
+		expect(result.code).toContain('const handleToggleArrayExpand = useCallback((columnId: string, rowId: string) => {');
+		expect(result.code).toContain('expandedArrayRows');
+		expect(result.code).toContain('handleToggleArrayExpand');
+		expect(result.code).toContain('[expandedArrayRows]');
 	});
 });

@@ -143,12 +143,7 @@ export const generateTableCode = (
 				enableRowSelection: settings.enableRowSelection,
 				enableCRUD: settings.enableCRUD,
 			},
-			hasArrayColumns
-				? {
-						expandedRows: expandedArrayRows,
-						onToggleExpand: handleToggleArrayExpand,
-					}
-				: undefined,
+			hasArrayColumns,
 		)},
 		${hasArrayColumns ? "[expandedArrayRows]" : "[]"},
 	);

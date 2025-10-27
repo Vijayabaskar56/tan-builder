@@ -32,6 +32,9 @@ import {
 	Filters,
 } from "@/components/ui/filters";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { DragEndEvent } from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
+import { DataGridTableDnd } from "../ui/data-grid-table-dnd";
 
 interface IData {
 	id: string;
@@ -793,6 +796,17 @@ export default function DataGridWithFiltersDemo() {
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 	});
+	  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (active && over && active.id !== over.id) {
+      setColumnOrder((columnOrder) => {
+        const oldIndex = columnOrder.indexOf(active.id as string);
+        const newIndex = columnOrder.indexOf(over.id as string);
+        return arrayMove(columnOrder, oldIndex, newIndex);
+      });
+    }
+  };
+
 
 	return (
 		<div className="w-full self-start">
@@ -821,12 +835,17 @@ export default function DataGridWithFiltersDemo() {
 				tableLayout={{
 					dense: true,
 					columnsMovable: true,
+					columnsResizable: true,
+					columnsVisibility: true,
+					columnsPinnable: true,
+					columnsDraggable : true,
 				}}
 			>
 				<div className="w-full space-y-2.5">
 					<DataGridContainer>
 						<ScrollArea>
-							<DataGridTable />
+							{/* <DataGridTable /> */}
+							<DataGridTableDnd handleDragEnd={handleDragEnd} />
 							<ScrollBar orientation="horizontal" />
 						</ScrollArea>
 					</DataGridContainer>
