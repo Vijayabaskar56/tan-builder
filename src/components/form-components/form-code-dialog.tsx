@@ -114,7 +114,7 @@ function CodeDialog() {
 	const url =
 		import.meta.env.MODE === "development"
 			? "http://localhost:3000"
-			: "https://tan-form-builder.baskar.dev";
+			: "https://tancn.dev/";
 
 	const mutation = useMutation<CreateRegistryResponse, Error, void>({
 		mutationKey: ["/create-command", formName],

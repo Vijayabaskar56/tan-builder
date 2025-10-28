@@ -81,7 +81,7 @@ export default function TableHeader() {
 		};
 		const baseUri = import.meta.env.DEV
 			? "http://localhost:3000"
-			: "https://tan-form-builder.baskar.dev";
+			: "https://tancn.dev/";
 		navigator.clipboard.writeText(
 			`${baseUri}/table-builder?share=${encodeURIComponent(JSON.stringify(shareData))}`,
 		);
