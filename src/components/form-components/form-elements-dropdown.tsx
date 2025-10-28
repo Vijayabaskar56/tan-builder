@@ -13,6 +13,7 @@ import { formElementsList } from "@/constants/form-elements-list";
 import { useFormStore } from "@/hooks/use-form-store";
 import type { FormArray, FormElement } from "@/types/form-types";
 import { PlusIcon } from "../ui/plus";
+import { logger } from "@/utils/utils";
 
 type DropdownContext = "nested" | "multistep" | "formarray";
 
@@ -244,7 +245,7 @@ export function UnifiedFormElementsDropdown({
 							...formArrayElement.arrayField,
 							newElement,
 						];
-						console.log(updatedArrayField);
+						logger('updatedArrayField',updatedArrayField);
 						actions.updateFormArray(formArrayId, updatedArrayField);
 					}
 				}

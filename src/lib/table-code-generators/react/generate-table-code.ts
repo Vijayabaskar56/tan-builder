@@ -92,7 +92,6 @@ const generateFilterFieldsCode = (
 		table.columns,
 		table.data as JsonData[],
 	);
-	console.log("temp", generatedFields);
 	const fieldsCode = generatedFields
 		.map(
 			(field) =>
@@ -158,7 +157,6 @@ export const generateTableCode = (
 			? `const dataIds = useMemo(() => ${dataVar}.map((item) => item.id), [${dataVar}]);
 	const handleRowDragEnd = useCallback((event: any) => {
 		// Handle row drag end
-		console.log('Row drag end', event);
 	}, []);`
 			: ""
 	}
@@ -166,7 +164,6 @@ export const generateTableCode = (
 		tableData.settings.enableColumnDragging
 			? `const handleDragEnd = useCallback((event: any) => {
 		// Handle column drag end
-		console.log('Column drag end', event);
 	}, []);`
 			: ""
 	}
@@ -188,7 +185,6 @@ export const generateTableCode = (
 		tableData.settings.isGlobalSearch
 			? `${generateFilterFieldsCode(tableData.table, tableData.settings, dataName)}
 	const handleFiltersChange = useCallback((filters: Filter[]) => {
-		console.log("Filters updated:", filters);
 		setFilters(filters);
 		setPagination((prev) => ({ ...prev, pageIndex: 0 }));
 	}, []);`
@@ -215,14 +211,36 @@ export const generateTableCode = (
 		generateTableLayoutProps(tableData.settings.tableLayout) +
 		`>
 			<div className="w-full space-y-2.5">
-				` +
+			` + (tableData.settings.isGlobalSearch ? `
+					<div>
+						<Input
+							className={cn(
+								"peer min-w-60 h-8",
+								Boolean(table.getState().globalFilter) && "pe-9",
+							)}
+							value={(table.getState().globalFilter ?? "") as string}
+							onChange={(e) => table.setGlobalFilter(e.target.value)}
+							placeholder="Search all columns..."
+							type="text"
+							aria-label="Search all columns"
+						/>
+					</div>
+					` : "") + (tableData.settings.enableHiding && tableData.table.columns.length > 0 ? `
+					<div className="flex items-center gap-3">
+						<DataGridColumnVisibility
+							table={table}
+							trigger={<Button variant="outline" size='sm'><Settings2 />View</Button>}
+						/>
+					</div>
+					` : "") + `
+			` +
 		(tableData.settings.isGlobalSearch
-			? `<Filters
+			? `<div className="flex-1"><Filters
 					filters={filters}
 					fields={filterFields}
 					variant="outline"
 					onChange={handleFiltersChange}
-				/>
+				/></div>
 				{filters.length > 0 && (
 					<Button variant="outline" onClick={() => setFilters([])}>
 						<FunnelX /> Clear

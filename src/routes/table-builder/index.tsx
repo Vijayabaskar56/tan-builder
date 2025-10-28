@@ -34,7 +34,7 @@ import {
 	useReactTable,
 	type VisibilityState,
 } from "@tanstack/react-table";
-import { CircleX } from "lucide-react";
+import { CircleX, ListFilter, Settings2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 export const Route = createFileRoute("/table-builder/")({
 	component: RouteComponent,
@@ -120,7 +120,6 @@ function RouteComponent() {
 			tableData.table.data as JsonData[],
 		);
 	}, [tableData.table.columns, tableData.table.data]);
-
 	// Apply filters to data
 	const filteredData = useMemo(() => {
 		return applyFilters(
@@ -129,7 +128,6 @@ function RouteComponent() {
 			tableData.table.columns,
 		);
 	}, [tableData.table.data, filters, tableData.table.columns]);
-
 	// Row dragging state
 	const dataIds = useMemo(() => {
 		return filteredData.map((item) =>
@@ -165,7 +163,6 @@ function RouteComponent() {
 	}, [filteredData.length, pagination.pageSize, pagination.pageIndex]);
 
 	const handleFiltersChange = useCallback((newFilters: Filter[]) => {
-		console.log("Table filters updated:", newFilters);
 		setFilters(newFilters);
 		// Reset pagination when filters change
 		setPagination((prev) => ({ ...prev, pageIndex: 0 }));
@@ -240,26 +237,31 @@ function RouteComponent() {
 
 				<div className="flex flex-wrap items-start gap-2.5 mb-3.5">
 					<div>
+						{tableData.settings.isGlobalSearch &&
 						<Input
-							// id={`${id}-input`}
-							// ref={inputRef}
-							className={cn(
-								"peer min-w-60",
-								Boolean(table.getState().globalFilter) && "pe-9",
-							)}
-							value={(table.getState().globalFilter ?? "") as string}
-							onChange={(e) => table.setGlobalFilter(e.target.value)}
-							placeholder="Search all columns..."
-							type="text"
-							aria-label="Search all columns"
+						// id={`${id}-input`}
+						// ref={inputRef}
+						className={cn(
+							"peer min-w-60 h-8",
+							Boolean(table.getState().globalFilter) && "pe-9",
+						)}
+						value={(table.getState().globalFilter ?? "") as string}
+						onChange={(e) => table.setGlobalFilter(e.target.value)}
+						placeholder="Search all columns..."
+						type="text"
+						aria-label="Search all columns"
 						/>
+					}
 					</div>
 					<div className="flex items-center gap-3">
 						{tableData.settings.enableHiding &&
 							tableData.table.columns.length > 0 && (
 								<DataGridColumnVisibility
 									table={table}
-									trigger={<Button variant="outline">Columns</Button>}
+									trigger={<Button variant="outline" size='sm'>
+										<Settings2 />
+										View
+										</Button>}
 								/>
 							)}
 					</div>
@@ -269,6 +271,12 @@ function RouteComponent() {
 							fields={filterFields}
 							onChange={handleFiltersChange}
 							variant="outline"
+							addButton={<Button variant="outline" size='sm'>
+										<ListFilter />
+										Filter
+										</Button>
+
+							}
 						/>
 					</div>
 					{filters.length > 0 && (

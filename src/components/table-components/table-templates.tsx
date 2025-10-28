@@ -4,7 +4,7 @@ import { tableTemplates } from "@/constants/table-templates";
 import type { SavedTableTemplate } from "@/db-collections/table-builder.collections";
 import { TableBuilderService } from "@/services/table-builder.service";
 import { Heart, Table, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export function TableTemplates() {
@@ -12,9 +12,9 @@ export function TableTemplates() {
 		[],
 	);
 
-	const refreshSavedTemplates = () => {
+	const refreshSavedTemplates = useCallback(() => {
 		setSavedTemplates(TableBuilderService.getSavedTableTemplates());
-	};
+	}, []);
 
 	useEffect(() => {
 		refreshSavedTemplates();

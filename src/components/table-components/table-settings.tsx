@@ -4,12 +4,12 @@ import { useAppForm } from "@/components/ui/tanstack-form";
 import useTableStore from "@/hooks/use-table-store";
 import { TableBuilderService } from "@/services/table-builder.service";
 import {
+	ArrowRightLeftIcon,
 	CheckSquare,
 	Eye,
 	GripVertical,
 	MoreHorizontal,
 	MoveHorizontal,
-	MoveVertical,
 	Pin,
 	Search,
 	SortAsc,
@@ -17,6 +17,7 @@ import {
 import { useId } from "react";
 import * as v from "valibot";
 import { Separator } from "../ui/separator";
+import { logger } from "@/utils/utils";
 
 const TableSettingsSchema = v.object({
 	isGlobalSearch: v.optional(v.boolean(), false),
@@ -40,7 +41,6 @@ export function TableSettingsSidebar() {
 	const rowSelectionId = useId();
 	const rowActionsId = useId();
 	const draggableId = useId();
-	const rowDraggableId = useId();
 	const data = useTableStore();
 
 	const form = useAppForm({
@@ -62,7 +62,7 @@ export function TableSettingsSidebar() {
 		listeners: {
 			onChangeDebounceMs: 1000,
 			onChange: ({ formApi }) => {
-				console.log(formApi.baseStore.state.values , 'test');
+				logger('test',formApi.baseStore.state.values ,);
 				TableBuilderService.updateSettings(formApi.baseStore.state.values);
 			},
 		},
@@ -133,7 +133,7 @@ export function TableSettingsSidebar() {
 											<div className=" border-b mx-2">
 												<div className="flex items-center justify-between p-3">
 													<div className="flex items-center gap-2">
-														<Search className="w-4 h-4 text-muted-foreground" />
+														<ArrowRightLeftIcon className="w-4 h-4 text-muted-foreground" />
 														<field.FieldLabel
 															htmlFor={focusOnErrorId}
 															className="text-sm"
@@ -148,19 +148,18 @@ export function TableSettingsSidebar() {
 														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
 													/>
 												</div>
-												{/* <Separator className="my-2" />
+												<Separator className="my-2" />
 												<field.FieldDescription className="pb-2">
-													Enable global search across all table columns. For
-													more info check the TanStack Table docs:{" "}
+													Allow moving columns to adjacent positions via the header menu. For more info check the TanStack Table docs:{" "}
 													<a
 														className="text-primary"
-														href="https://tanstack.com/table/latest/docs/guide/global-filtering"
+														href="https://tanstack.com/table/latest/docs/guide/column-ordering"
 														target="_blank"
 														rel="noopener noreferrer"
 													>
-														Global Filtering
+														Column Ordering
 													</a>
-												</field.FieldDescription> */}
+												</field.FieldDescription>
 											</div>
 										)}
 									</form.AppField>
@@ -207,7 +206,7 @@ export function TableSettingsSidebar() {
 											<div className="p-3 border-b mx-2">
 												<div className="flex items-center justify-between">
 													<div className="flex items-center gap-2">
-														<GripVertical className="w-4 h-4 text-muted-foreground" />
+															<MoveHorizontal className="w-4 h-4 text-muted-foreground" />
 														<field.FieldLabel
 															htmlFor={asyncValidationId}
 															className="text-sm"
@@ -314,7 +313,43 @@ export function TableSettingsSidebar() {
 											</div>
 										)}
 									</form.AppField>
-
+									<form.AppField name="enableColumnDragging" mode="value">
+										{(field) => (
+											<div className="p-3 border-b mx-2">
+												<div className="flex items-center justify-between">
+													<div className="flex items-center gap-2">
+														<GripVertical className="w-4 h-4 text-muted-foreground" />
+														<field.FieldLabel
+															htmlFor={draggableId}
+															className="text-sm"
+														>
+															Column Dragging
+														</field.FieldLabel>
+													</div>
+													<Switch
+														id={draggableId}
+														checked={field.state.value}
+														onCheckedChange={field.handleChange}
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+													/>
+												</div>
+												<Separator className="my-2" />
+												<field.FieldDescription>
+													Allow dragging to reorder table columns. For more info
+													check the TanStack Table docs:{" "}
+													<a
+														className="text-primary"
+														href="https://tanstack.com/table/latest/docs/guide/column-ordering"
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														Column Ordering
+													</a>
+												</field.FieldDescription>
+												<field.FieldError />
+											</div>
+										)}
+									</form.AppField>
 									<form.AppField name="enableRowSelection" mode="value">
 										{(field) => (
 											<div className="p-3 border-b mx-2">
@@ -391,44 +426,8 @@ export function TableSettingsSidebar() {
 										)}
 									</form.AppField>
 
-									<form.AppField name="enableColumnDragging" mode="value">
-										{(field) => (
-											<div className="p-3 border-b mx-2">
-												<div className="flex items-center justify-between">
-													<div className="flex items-center gap-2">
-														<MoveHorizontal className="w-4 h-4 text-muted-foreground" />
-														<field.FieldLabel
-															htmlFor={draggableId}
-															className="text-sm"
-														>
-															Column Dragging
-														</field.FieldLabel>
-													</div>
-													<Switch
-														id={draggableId}
-														checked={field.state.value}
-														onCheckedChange={field.handleChange}
-														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
-													/>
-												</div>
-												<Separator className="my-2" />
-												<field.FieldDescription>
-													Allow dragging to reorder table columns. For more info
-													check the TanStack Table docs:{" "}
-													<a
-														className="text-primary"
-														href="https://tanstack.com/table/latest/docs/guide/column-ordering"
-														target="_blank"
-														rel="noopener noreferrer"
-													>
-														Column Ordering
-													</a>
-												</field.FieldDescription>
-												<field.FieldError />
-											</div>
-										)}
-									</form.AppField>
 
+{/*
 									<form.AppField name="enableRowDragging" mode="value">
 										{(field) => (
 											<div className="p-3 border-b mx-2">
@@ -465,7 +464,7 @@ export function TableSettingsSidebar() {
 												<field.FieldError />
 											</div>
 										)}
-									</form.AppField>
+									</form.AppField> */}
 								</div>
 							</div>
 						</div>

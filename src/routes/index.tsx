@@ -213,12 +213,12 @@ function HomePage() {
 	const [isSettingsInitialized, setIsSettingsInitialized] = useState(false);
 
 		useEffect(() => {
-			const initializeSettings = async () => {
+			const initializeSettings = () => {
 				if (typeof window !== "undefined") {
 					logger("settingsCollection", settingsCollection);
 					if (!settingsCollection.has("user-settings")) {
 						logger("inserting settings");
-						await settingsCollection?.insert([
+						settingsCollection?.insert([
 							{
 								id: "user-settings",
 								activeTab: "builder",
@@ -277,8 +277,6 @@ function HomePage() {
 		setProgress(0);
 	};
 
-	// getDashboardContent removed as it is unused
-	// console.log(systemTheme);
 	return (
 		<div className="w-full min-h-screen relative bg-background overflow-x-hidden flex flex-col justify-start items-center">
 			<div className="relative flex flex-col justify-start items-center w-full">

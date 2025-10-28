@@ -32,7 +32,6 @@ export const generateTableType = (
 	columns: ColumnConfig[],
 	customName?: string,
 ): string => {
-	console.log(customName, "columns");
 	const interfaceName = customName
 		? `${capitalize(customName)}Data`
 		: "TableData";

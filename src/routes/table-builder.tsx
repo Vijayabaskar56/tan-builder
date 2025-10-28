@@ -176,7 +176,6 @@ function RouteComponent() {
 	if (!isTableBuilderInitialized) {
 		return <Spinner />;
 	}
-	console.log(tableBuilder);
 	return (
 		<main className="w-full h-full flex flex-col">
 			{isMdUp ? (

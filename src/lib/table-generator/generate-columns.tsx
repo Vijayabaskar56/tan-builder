@@ -193,7 +193,7 @@ export function generateColumns(
 			meta: {
 				type: col.type,
 				filterable: col.filterable,
-			} as any,
+			}
 		};
 
 		if (col.type === "number") {
@@ -219,11 +219,15 @@ export function generateColumns(
 			id: "select",
 			header: () => <DataGridTableRowSelectAll />,
 			cell: ({ row }) => <DataGridTableRowSelect row={row} />,
-			size: 28,
+			size: 35,
 			enableSorting: false,
 			enableHiding: false,
 			enableResizing: false,
 			enablePinning: false,
+			meta : {
+				headerClassName: 'my-3',
+          		cellClassName: 'my-3',
+			}
 		};
 		resultColumns.push(selectColumn);
 	}

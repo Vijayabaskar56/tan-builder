@@ -920,7 +920,6 @@ const createActions = (
 		batch(() => {
 			store.setState((state) => {
 				// Helper function to find and update FormArray
-				console.log(state, "state");
 				const findAndUpdateFormArray = (elements: any[]): any[] => {
 					return elements.map((el) => {
 						if (

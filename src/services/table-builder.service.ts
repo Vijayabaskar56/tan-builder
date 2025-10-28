@@ -423,7 +423,6 @@ export class TableBuilderService {
 				finalColumns = detectColumns(data);
 			}
 
-			console.log("🚀 ~ file: table-builder.service.ts:429 ~ finalColumns:", finalColumns)
 			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
 				draft.table = {
 					columns: finalColumns,

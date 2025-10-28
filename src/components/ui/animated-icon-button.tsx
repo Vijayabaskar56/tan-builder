@@ -76,7 +76,6 @@ export const AnimatedIconButton = ({
 			</span>
 		);
 	}
-	console.log(props.disabled ,'props.disabled')
 	return (
 		<Button
 			type="button"

@@ -303,7 +303,6 @@ export default function FiltersDemo() {
 	]);
 
 	const handleFiltersChange = useCallback((filters: Filter[]) => {
-		console.log("Filters updated:", filters);
 		setFilters(filters);
 	}, []);
 
