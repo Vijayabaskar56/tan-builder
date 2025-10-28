@@ -37,12 +37,14 @@ import {
 import { CircleX, ListFilter, Settings2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 export const Route = createFileRoute("/table-builder/")({
+	head: () => ({
+		meta : [],
+	}),
 	component: RouteComponent,
 	pendingComponent: Loader,
 });
 
 function RouteComponent() {
-	"use no memo";
 	const tableData = useTableStore();
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: 0,

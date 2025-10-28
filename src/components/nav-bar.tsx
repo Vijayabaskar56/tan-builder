@@ -15,7 +15,7 @@ export default function NavBar() {
 			const data = await res.json();
 			return data.stargazers_count;
 		},
-		enabled: import.meta.env.PROD,
+		enabled: import.meta.env.MODE === "production",
 	});
 
 	return (

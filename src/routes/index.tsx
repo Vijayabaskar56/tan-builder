@@ -21,6 +21,9 @@ import Loader from "@/components/loader";
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/")({
+		head: () => ({
+		meta : [],
+	}),
 	component: HomePage,
 	errorComponent: ErrorBoundary,
 	notFoundComponent: NotFound,

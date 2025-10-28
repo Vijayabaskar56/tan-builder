@@ -12,6 +12,9 @@ import { SettingsSidebar } from "../../components/form-components/form-settings"
 import { TemplateSidebar } from "../../components/form-components/form-templates";
 
 export const Route = createFileRoute("/form-builder/")({
+	head: () => ({
+		meta : [],
+	}),
 	component: FormBuilderComponent,
 	errorComponent: ErrorBoundary,
 	pendingComponent : Loader,

@@ -4,12 +4,19 @@ import Loader from "@/components/loader";
 import { NotFound } from "@/components/not-found";
 import { settingsCollection } from "@/db-collections/settings.collections";
 import type { FormElementsSchema } from "@/lib/search-schema";
+import { seo } from "@/utils/seo";
 import { logger } from "@/utils/utils";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { useEffect } from "react";
 import type * as v from "valibot";
 
 export const Route = createFileRoute("/form-builder")({
+	head: () => ({
+		meta : [
+									...seo({title: "Form Builder | TanCN - Form and Table Builder"}),
+
+		],
+	}),
 	component: FormBuilderLayout,
 	errorComponent: ErrorBoundary,
 	notFoundComponent: NotFound,

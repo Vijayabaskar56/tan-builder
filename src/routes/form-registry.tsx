@@ -11,6 +11,7 @@ import useSettings from "@/hooks/use-settings";
 import { updatePreferredPackageManager } from "@/utils/utils";
 import Loader from "@/components/loader";
 import { ErrorBoundary } from "@/components/error-boundary";
+import { seo } from "@/utils/seo";
 
 const registryItems = items.map((item) => ({
 	name: item.name,
@@ -325,6 +326,11 @@ export {
 };`;
 
 export const Route = createFileRoute("/form-registry")({
+	head: () => ({
+		meta : [
+			...seo({title: "TanStack Form Registry | TanCN - Form and Table Builder"}),
+		],
+	}),
 	component: RouteComponent,
 	pendingComponent : Loader,
 	errorComponent : ErrorBoundary,

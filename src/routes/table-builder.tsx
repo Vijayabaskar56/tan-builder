@@ -33,12 +33,18 @@ import { useScreenSize } from "@/hooks/use-screen-size";
 import useTableStore from "@/hooks/use-table-store";
 import { cn } from "@/utils/utils";
 import { TableBuilderService } from "@/services/table-builder.service";
+import { seo } from "@/utils/seo";
 
 const initializeTableStore = createClientOnlyFn(async () => {
 	TableBuilderService.initializeTable();
 });
 
 export const Route = createFileRoute("/table-builder")({
+	head: () => ({
+		meta : [
+						...seo({title: "Table Builder | TanCN - Form and Table Builder"}),
+		],
+	}),
 	component: RouteComponent,
 	errorComponent: ErrorBoundary,
 	notFoundComponent: NotFound,
