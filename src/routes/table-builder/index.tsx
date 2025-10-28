@@ -38,7 +38,6 @@ import { CircleX, ListFilter, Settings2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 export const Route = createFileRoute("/table-builder/")({
 	component: RouteComponent,
-	ssr: true,
 	pendingComponent: Loader,
 });
 
@@ -91,7 +90,6 @@ function RouteComponent() {
 			expandedRows: expandedArrayRows,
 			onToggleExpand: handleToggleArrayExpand,
 		});
-
 		// Add drag handle column if row dragging is enabled
 		if (tableData.settings.enableRowDragging) {
 			finalColumns = [
@@ -325,7 +323,7 @@ function RouteComponent() {
 							</ScrollArea>
 						</DataGridContainer>
 						{tableData.settings.enablePagination &&
-							tableData.table.data.length > 0 && <DataGridPagination />}
+							tableData.table.data.length > 0 && <DataGridPagination  />}
 					</div>
 				</DataGrid>
 				<div className="text-center text-sm text-muted-foreground mt-4">

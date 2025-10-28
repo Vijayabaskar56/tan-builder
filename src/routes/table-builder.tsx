@@ -43,7 +43,6 @@ export const Route = createFileRoute("/table-builder")({
 	errorComponent: ErrorBoundary,
 	notFoundComponent: NotFound,
 	pendingComponent : Loader,
-	ssr: true,
 	validateSearch: (search) => ({
 		share: search.share as string | undefined,
 	}),

@@ -92,7 +92,11 @@ function renderCell(
 				</div>
 			);
 		case "boolean":
-			return <Badge>{String(value || "")}</Badge>;
+			return (
+				<Badge>
+					{typeof value === "boolean" ? (value ? "YES" : "NO") : String(value || "")}
+				</Badge>
+			);
 		case "date":
 			if (value) {
 				const date = new Date(value);

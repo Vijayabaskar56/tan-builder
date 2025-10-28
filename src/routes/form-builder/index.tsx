@@ -15,7 +15,6 @@ export const Route = createFileRoute("/form-builder/")({
 	component: FormBuilderComponent,
 	errorComponent: ErrorBoundary,
 	pendingComponent : Loader,
-	ssr: true,
 });
 
 function FormBuilderComponent() {

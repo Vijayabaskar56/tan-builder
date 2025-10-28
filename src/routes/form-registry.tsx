@@ -326,7 +326,6 @@ export {
 
 export const Route = createFileRoute("/form-registry")({
 	component: RouteComponent,
-	ssr: true,
 	pendingComponent : Loader,
 	errorComponent : ErrorBoundary,
 });

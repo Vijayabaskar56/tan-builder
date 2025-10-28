@@ -1,3 +1,8 @@
+import CTASection from "@/components/cta";
+import { ErrorBoundary } from "@/components/error-boundary";
+import FAQSection from "@/components/faq";
+import FooterSection from "@/components/footer";
+import { NotFound } from "@/components/not-found";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
 	CheckCircle,
@@ -11,17 +16,10 @@ import {
 	Share2,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import CTASection from "@/components/cta";
-import { ErrorBoundary } from "@/components/error-boundary";
-import FAQSection from "@/components/faq";
-import FooterSection from "@/components/footer";
-import { NotFound } from "@/components/not-found";
 
+import Loader from "@/components/loader";
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
-import Loader from "@/components/loader";
-import { logger } from "@/utils/utils";
-import { settingsCollection } from "@/db-collections/settings.collections";
 export const Route = createFileRoute("/")({
 	component: HomePage,
 	errorComponent: ErrorBoundary,
@@ -210,40 +208,6 @@ const roadmapItems = [
 ];
 
 function HomePage() {
-	const [isSettingsInitialized, setIsSettingsInitialized] = useState(false);
-
-		useEffect(() => {
-			const initializeSettings = () => {
-				if (typeof window !== "undefined") {
-					logger("settingsCollection", settingsCollection);
-					if (!settingsCollection.has("user-settings")) {
-						logger("inserting settings");
-						settingsCollection?.insert([
-							{
-								id: "user-settings",
-								activeTab: "builder",
-								defaultRequiredValidation: true,
-								numericInput: false,
-								focusOnError: true,
-								validationMethod: "onDynamic",
-								asyncValidation: 300,
-								preferredSchema: "zod",
-								preferredFramework: "react",
-								preferredPackageManager: "pnpm",
-								isCodeSidebarOpen: false,
-							},
-						]);
-					}
-					setIsSettingsInitialized(true);
-				} else {
-					logger("settingsCollection is undefined");
-					setIsSettingsInitialized(true);
-				}
-			};
-
-			initializeSettings();
-		}, []);
-
 	const [activeCard, setActiveCard] = useState(0);
 	const [progress, setProgress] = useState(0);
 	const { theme, systemTheme } = useTheme();
@@ -343,7 +307,7 @@ function HomePage() {
 								</Button>
 							</div>
 
-							<div className="absolute top-[232px] sm:top-[248px] md:top-[264px] lg:top-[320px] left-1/2 transform -translate-x-1/2 z-0 pointer-events-none">
+							<div className="absolute top-[232px] sm:top-[248px] md:top-[264px] lg:top-80 left-1/2 transform -translate-x-1/2 z-0 pointer-events-none">
 								<img
 									src="/mask-group-pattern.svg"
 									alt=""
@@ -355,7 +319,7 @@ function HomePage() {
 							</div>
 
 							<div className="w-full max-w-[960px] lg:w-[960px] pt-2 sm:pt-4 pb-6 sm:pb-8 md:pb-10 px-2 sm:px-4 md:px-6 lg:px-11 flex flex-col justify-center items-center gap-2 relative z-5 my-8 sm:my-12 md:my-16 lg:my-16 mb-0 lg:pb-0">
-								<div className="w-full max-w-[960px] lg:w-[960px] h-[200px] sm:h-[280px] md:h-[450px] lg:h-[550px] bg-white shadow-[0px_0px_0px_0.9056603908538818px_rgba(0,0,0,0.08)] overflow-hidden rounded-[6px] sm:rounded-[8px] lg:rounded-[9.06px] flex flex-col justify-start items-start">
+								<div className="w-full max-w-[960px] lg:w-[960px] h-[200px] sm:h-[280px] md:h-[450px] lg:h-[550px] bg-white shadow-[0px_0px_0px_0.9056603908538818px_rgba(0,0,0,0.08)] overflow-hidden rounded-[6px] sm:rounded-xl lg:rounded-[9.06px] flex flex-col justify-start items-start">
 									<div className="self-stretch flex-1 flex justify-start items-start">
 										<div className="w-full h-full flex items-center justify-center">
 											<div className="relative w-full h-full overflow-hidden">
@@ -404,11 +368,11 @@ function HomePage() {
 							</div>
 							<div className="self-stretch border-t border-b border-border flex justify-center items-start">
 								<div className="w-4 sm:w-6 md:w-8 lg:w-12 self-stretch relative overflow-hidden">
-									<div className="w-[120px] sm:w-[140px] md:w-[162px] left-[-40px] sm:left-[-50px] md:left-[-58px] top-[-120px] absolute flex flex-col justify-start items-start">
+									<div className="w-[120px] sm:w-[140px] md:w-[162px] -left-10 sm:left-[-50px] md:left-[-58px] top-[-120px] absolute flex flex-col justify-start items-start">
 										{Array.from({ length: 50 }).map((_, i) => (
 											<div
 												key={i}
-												className="self-stretch h-3 sm:h-4 rotate-[-45deg] origin-top-left outline outline-border outline-offset-[-0.25px]"
+												className="self-stretch h-3 sm:h-4 -rotate-45 origin-top-left outline outline-border outline-offset-[-0.25px]"
 											/>
 										))}
 									</div>
@@ -439,11 +403,11 @@ function HomePage() {
 								</div>
 
 								<div className="w-4 sm:w-6 md:w-8 lg:w-12 self-stretch relative overflow-hidden">
-									<div className="w-[120px] sm:w-[140px] md:w-[162px] left-[-40px] sm:left-[-50px] md:left-[-58px] top-[-120px] absolute flex flex-col justify-start items-start">
+									<div className="w-[120px] sm:w-[140px] md:w-[162px] -left-10 sm:left-[-50px] md:left-[-58px] top-[-120px] absolute flex flex-col justify-start items-start">
 										{Array.from({ length: 50 }).map((_, i) => (
 											<div
 												key={i}
-												className="self-stretch h-3 sm:h-4 rotate-[-45deg] origin-top-left outline outline-border outline-offset-[-0.25px]"
+												className="self-stretch h-3 sm:h-4 -rotate-45 origin-top-left outline outline-border outline-offset-[-0.25px]"
 											/>
 										))}
 									</div>
@@ -501,7 +465,7 @@ function HomePage() {
 												className="p-4 rounded-lg border bg-card border-border"
 											>
 												<div className="flex items-start gap-3">
-													<CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+													<CheckCircle className="w-5 h-5 text-green-500 mt-0.5 shrink-0" />
 													<div className="flex-1">
 														<h4 className="font-medium text-foreground mb-1">
 															{item.title}
@@ -532,7 +496,7 @@ function HomePage() {
 												className="p-4 rounded-lg border bg-card border-border"
 											>
 												<div className="flex items-start gap-3">
-													<Clock className="w-5 h-5 text-yellow-500 mt-0.5 flex-shrink-0" />
+													<Clock className="w-5 h-5 text-yellow-500 mt-0.5 shrink-0" />
 													<div className="flex-1">
 														<h4 className="font-medium text-foreground mb-1">
 															{item.title}
@@ -563,7 +527,7 @@ function HomePage() {
 												className="p-4 rounded-lg border bg-card border-border"
 											>
 												<div className="flex items-start gap-3">
-													<Circle className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+													<Circle className="w-5 h-5 text-blue-500 mt-0.5 shrink-0" />
 													<div className="flex-1">
 														<h4 className="font-medium text-foreground mb-1">
 															{item.title}
@@ -615,7 +579,7 @@ function FeatureCard({
 			onKeyUp={onClick}
 		>
 			{isActive && (
-				<div className="absolute top-0 left-0 w-full h-0.5 bg-[var(--color-border)]">
+				<div className="absolute top-0 left-0 w-full h-0.5 bg-(--color-border)">
 					<div
 						className="h-full bg-foreground transition-all duration-100 ease-linear"
 						style={{ width: `${progress}%` }}
