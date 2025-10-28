@@ -101,7 +101,7 @@ export function CodeBlockPackagesInstallation({
 	const otherPackages = "@tanstack/react-form zod motion";
 
 	const defaultRegistryUrl =
-		"https://tan-form-builder.baskar.dev/r/tanstack-form.json";
+		"https://tancn.dev/r/tanstack-form.json";
 	const registryUrl = customRegistryUrl || defaultRegistryUrl;
 
 	const tabsData = [

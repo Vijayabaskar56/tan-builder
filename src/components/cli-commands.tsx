@@ -8,10 +8,10 @@ export default function CliCommands({ name }: { name: string }) {
 	const { preferredPackageManager } = useSettings();
 
 	const commands = {
-		pnpm: `pnpm dlx shadcn@latest add https://tan-form-builder.baskar.dev/r/${name}.json`,
-		npm: `npx shadcn@latest add https://tan-form-builder.baskar.dev/r/${name}.json`,
-		yarn: `yarn shadcn@latest add https://tan-form-builder.baskar.dev/r/${name}.json`,
-		bun: `bunx --bun shadcn@latest add https://tan-form-builder.baskar.dev/r/${name}.json`,
+		pnpm: `pnpm dlx shadcn@latest add https://tancn.dev/r/${name}.json`,
+		npm: `npx shadcn@latest add https://tancn.dev/r/${name}.json`,
+		yarn: `yarn shadcn@latest add https://tancn.dev/r/${name}.json`,
+		bun: `bunx --bun shadcn@latest add https://tancn.dev/r/${name}.json`,
 	};
 
 	return (

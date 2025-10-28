@@ -127,7 +127,7 @@ export const extractImportDependencies = (
 			const component = modulePath.split("/").pop();
 			if (component && component === "tanstack-form") {
 				registry.add(
-					"https://tan-form-builder.baskar.dev/r/tanstack-form.json",
+					"https://tancn.dev/r/tanstack-form.json",
 				);
 			} else {
 				if (component) registry.add(component);

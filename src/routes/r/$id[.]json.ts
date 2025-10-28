@@ -86,7 +86,7 @@ export const Route = createFileRoute("/r/$id.json")({
 					return new Response(
 						JSON.stringify({
 							data: {
-								id: `https://tan-form-builder.baskar.dev/r/${id}.json`,
+								id: `https://tancn.dev/r/${id}.json`,
 							},
 							error: null,
 						}),

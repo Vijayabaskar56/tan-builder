@@ -343,22 +343,22 @@ function RouteComponent() {
 		{
 			value: "pnpm",
 			registery:
-				"pnpm dlx shadcn@canary add https://tan-form-builder.baskar.dev/r/tanstack-form.json",
+				"pnpm dlx shadcn@canary add https://tancn.dev/r/tanstack-form.json",
 		},
 		{
 			value: "npm",
 			registery:
-				"npx shadcn@canary add https://tan-form-builder.baskar.dev/r/tanstack-form.json",
+				"npx shadcn@canary add https://tancn.dev/r/tanstack-form.json",
 		},
 		{
 			value: "yarn",
 			registery:
-				"yarn shadcn@canary add https://tan-form-builder.baskar.dev/r/tanstack-form.json",
+				"yarn shadcn@canary add https://tancn.dev/r/tanstack-form.json",
 		},
 		{
 			value: "bun",
 			registery:
-				"bunx --bun shadcn@canary add https://tan-form-builder.baskar.dev/r/tanstack-form.json",
+				"bunx --bun shadcn@canary add https://tancn.dev/r/tanstack-form.json",
 		},
 	];
 

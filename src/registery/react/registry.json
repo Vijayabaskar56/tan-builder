@@ -1,7 +1,7 @@
 {
 	"$schema": "https://ui.shadcn.com/schema/registry.json",
 	"name": "tan-form-builder",
-	"homepage": "https://tan-form-builder.baskar.dev/",
+	"homepage": "https://tancn.dev/",
 	"items": [
 		{
 			"name": "tanstack-form",

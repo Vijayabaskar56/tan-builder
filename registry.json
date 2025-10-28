@@ -1,7 +1,7 @@
 {
 	"$schema": "https://ui.shadcn.com/schema/registry.json",
 	"name": "tan-form-builder",
-	"homepage": "https://tan-form-builder.baskar.dev/",
+	"homepage": "https://tancn.dev/",
 	"items": [
 		{
 			"name": "tanstack-form",
@@ -15,7 +15,7 @@
 				"input-group",
 				"spinner",
 				"button-group",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -47,7 +47,7 @@
 				"radio-group",
 				"select",
 				"textarea",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -68,7 +68,7 @@
 				"field",
 				"input",
 				"textarea",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -91,7 +91,7 @@
 				"radio-group",
 				"select",
 				"textarea",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -113,7 +113,7 @@
 				"label",
 				"radio-group",
 				"textarea",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -132,7 +132,7 @@
 			"registryDependencies": [
 				"field",
 				"textarea",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -155,7 +155,7 @@
 				"radio-group",
 				"select",
 				"textarea",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -174,7 +174,7 @@
 			"registryDependencies": [
 				"field",
 				"input",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -194,7 +194,7 @@
 				"checkbox",
 				"field",
 				"input",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -216,7 +216,7 @@
 				"progress",
 				"textarea",
 				"toggle-group",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -235,7 +235,7 @@
 			"registryDependencies": [
 				"field",
 				"input",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -254,7 +254,7 @@
 			"registryDependencies": [
 				"checkbox",
 				"field",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -273,7 +273,7 @@
 			"registryDependencies": [
 				"field",
 				"input",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -292,7 +292,7 @@
 			"registryDependencies": [
 				"field",
 				"input-group",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -311,7 +311,7 @@
 			"registryDependencies": [
 				"field",
 				"input-otp",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -330,7 +330,7 @@
 			"registryDependencies": [
 				"field",
 				"textarea",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -350,7 +350,7 @@
 				"field",
 				"label",
 				"radio-group",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -369,7 +369,7 @@
 			"registryDependencies": [
 				"field",
 				"toggle-group",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -388,7 +388,7 @@
 			"registryDependencies": [
 				"field",
 				"switch",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -407,7 +407,7 @@
 			"registryDependencies": [
 				"field",
 				"slider",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -426,7 +426,7 @@
 			"registryDependencies": [
 				"field",
 				"select",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -445,7 +445,7 @@
 			"registryDependencies": [
 				"field",
 				"multi-select",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json",
+				"https://tancn.dev/r/tanstack-form.json",
 				"@formcn/multi-select"
 			],
 			"files": [
@@ -473,7 +473,7 @@
 				"button",
 				"calendar",
 				"popover",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{
@@ -495,7 +495,7 @@
 				"input",
 				"button",
 				"slider",
-				"https://tan-form-builder.baskar.dev/r/tanstack-form.json"
+				"https://tancn.dev/r/tanstack-form.json"
 			],
 			"files": [
 				{

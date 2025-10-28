@@ -89,7 +89,7 @@ export default function FormHeader() {
 
 	function handleShare() {
 		navigator.clipboard.writeText(
-			`https://tan-form-builder.baskar.dev/form-builder?share=${encodeURIComponent(JSON.stringify(formElements))}`,
+			`https://tancn.dev/form-builder?share=${encodeURIComponent(JSON.stringify(formElements))}`,
 		);
 		toast("Link Copied to clipboard");
 	}

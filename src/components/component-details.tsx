@@ -82,12 +82,12 @@ export default function ComponentDetails({
 		<div className="absolute top-2 right-2 flex gap-1 peer-data-comp-loading:hidden">
 			{showRegistry && (
 				<CopyRegistry
-					url={`https://tan-form-builder.baskar.dev/r/${component.name}.json`}
+					url={`https://tancn.dev/r/${component.name}.json`}
 				/>
 			)}
 			{showV0 && (
 				<OpenInV0
-					componentSource={`https://tan-form-builder.baskar.dev/r/${component.name}.json`}
+					componentSource={`https://tancn.dev/r/${component.name}.json`}
 				/>
 			)}
 			<Dialog>
