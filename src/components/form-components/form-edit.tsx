@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { useAppForm } from "@/components/ui/tanstack-form";
 import type { FormBuilderActions } from "@/hooks/use-form-store";
 import { useFormStore, useIsMultiStep } from "@/hooks/use-form-store";
-import { isStatic } from "@/utils/utils";
+import { isStatic, logger } from "@/utils/utils";
 import type {
 	FormArray,
 	FormElement,
@@ -310,6 +310,50 @@ const FormElementEditor = ({
 					stepIndex,
 				});
 			}
+		},
+		listeners : {
+			onChangeDebounceMs: 500,
+			onChange: ({ formApi }) => {
+				logger("Form element changed:", formApi.baseStore.state.values);
+				if (isFormArrayField && arrayId) {
+					logger("Updating FormArray field:", {
+						arrayId,
+						fieldIndex,
+						value: formApi.baseStore.state.values,
+						j,
+						stepIndex,
+					});
+					// Use updateTemplate: false for property-only updates
+					actions.updateFormArrayField(
+						arrayId,
+						fieldIndex,
+						formApi.baseStore.state.values,
+						j,
+						false,
+					);
+				} else {
+					logger("Updating form element:", {
+						fieldIndex,
+						value: formApi.baseStore.state.values,
+						j,
+						stepIndex,
+					});
+					if (formApi.baseStore.state.values.name) {
+						formApi.baseStore.state.values.name =
+							formApi.baseStore.state.values.name
+								.toLowerCase()
+								.replace(/[^a-z0-9]/g, "_")
+								.replace(/_+/g, "_")
+								.replace(/^_|_$/g, "");
+					}
+					actions.editElement({
+						fieldIndex: fieldIndex,
+						modifiedFormElement: formApi.baseStore.state.values,
+						j,
+						stepIndex,
+					});
+				}
+			},
 		},
 	});
 
