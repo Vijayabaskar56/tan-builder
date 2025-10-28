@@ -1,23 +1,35 @@
-import { useQuery } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
+import { Suspense } from "react";
 import AppToggle from "./app-toggle";
 import { GithubButton } from "./ui/github-button";
+import { Skeleton } from "./ui/skeleton";
 
 export default function NavBar() {
-	const { data: stars } = useQuery({
+	const { data: stars } = useSuspenseQuery({
 		queryKey: ["github-stars"],
 		queryFn: async () => {
-			const res = await fetch(
-				"https://api.github.com/repos/Vijayabaskar56/tancn",
-			);
-			const data = await res.json();
-			return data.stargazers_count;
+			if(import.meta.env.PROD) {
+				const res = await fetch(
+					"https://api.github.com/repos/Vijayabaskar56/tancn",
+					{
+						headers: {
+							"User-Agent": "TanCN-App",
+						},
+					}
+				);
+				if (!res.ok) {
+					throw new Error(`Failed to fetch GitHub stars: ${res.status} ${res.statusText}`);
+				}
+				const data = await res.json() as { stargazers_count: number };
+				return data.stargazers_count;
+			} else {
+				return 100
+			}
 		},
-		enabled: import.meta.env.MODE === "production",
 	});
-
 	return (
 		<header className="fixed top-0 left-0 right-0 z-100 bg-background border-b px-4 md:px-6">
 			<div className="flex h-12 items-center justify-between gap-4">
@@ -39,6 +51,7 @@ export default function NavBar() {
 				<AppToggle />
 				{/* Right side */}
 				<div className="flex flex-1 items-center justify-end gap-2">
+					<Suspense fallback={<Skeleton />}>
 					<GithubButton
 						initialStars={0}
 						targetStars={stars ?? 100}
@@ -47,7 +60,8 @@ export default function NavBar() {
 						roundStars={true}
 						repoUrl="https://github.com/Vijayabaskar56/tancn"
 						variant="outline"
-					/>
+						/>
+						</Suspense>
 					<Button
 						size="sm"
 						variant="ghost"
