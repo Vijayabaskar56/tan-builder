@@ -36,7 +36,7 @@ export const generateTableType = (
 		? `${capitalize(customName)}Data`
 		: "TableData";
 	const properties = columns
-		.map((col) => `\t${col.accessor}: ${getTypeScriptType(col)};`)
+		.map((col) => `\t${toCamelCase(col.label)}: ${getTypeScriptType(col)};`)
 		.join("\n");
 
 	return `export interface ${interfaceName} {\n${properties}\n}`;
@@ -87,7 +87,7 @@ export const generateTableData = (
 		const properties = columns
 			.map((col) => {
 				const value = row[col.accessor];
-				return `\t\t${col.accessor}: ${formatValue(value, col)}`;
+				return `\t\t${toCamelCase(col.label)}: ${formatValue(value, col)}`;
 			})
 			.join(",\n");
 		return `\t{\n${properties}\n\t}`;

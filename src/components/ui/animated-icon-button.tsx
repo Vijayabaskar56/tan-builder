@@ -63,8 +63,8 @@ export const AnimatedIconButton = ({
 				className={cn(focusClasses, className)}
 				onClick={onClick}
 				aria-disabled={props.disabled as boolean}
-				onMouseEnter={() => iconRef.current?.startAnimation()}
-				onMouseLeave={() => iconRef.current?.stopAnimation()}
+				onMouseEnter={() => iconRef.current?.startAnimation?.()}
+				onMouseLeave={() => iconRef.current?.stopAnimation?.()}
 				onKeyDown={(e) => {
 					if (e.key === "Enter") onClick?.();
 				}}
@@ -84,8 +84,8 @@ export const AnimatedIconButton = ({
 			className={cn(focusClasses, className)}
 			onClick={onClick}
 			disabled={props.disabled}
-			onMouseEnter={() => iconRef.current?.startAnimation()}
-			onMouseLeave={() => iconRef.current?.stopAnimation()}
+			onMouseEnter={() => iconRef.current?.startAnimation?.()}
+			onMouseLeave={() => iconRef.current?.stopAnimation?.()}
 			{...props}
 		>
 			{content}
@@ -117,10 +117,9 @@ export const AnimatedIconSpan = ({
 				"rounded-md outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
 				className,
 			)}
-
 			onClick={onClick}
-			onMouseEnter={() => iconRef.current?.startAnimation()}
-			onMouseLeave={() => iconRef.current?.stopAnimation()}
+			onMouseEnter={() => iconRef.current?.startAnimation?.()}
+			onMouseLeave={() => iconRef.current?.stopAnimation?.()}
 			onKeyDown={(e) => {
 				if (e.key === "Enter") onClick?.();
 			}}

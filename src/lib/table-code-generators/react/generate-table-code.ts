@@ -17,14 +17,12 @@ const getTypeName = (customName?: string): string => {
 	return customName ? `${capitalize(customName)}Data` : "TableData";
 };
 
-const getComponentName = (
-): string => {
+const getComponentName = (): string => {
 	const tableData = useTableStore();
 	return `${capitalize(tableData.tableName)}Table`;
 };
 
-const generateTableLayoutProps = (
-): string => {
+const generateTableLayoutProps = (): string => {
 	const tableData = useTableStore();
 	const props: Record<string, any> = {};
 
@@ -53,28 +51,25 @@ const generateTableLayoutProps = (
 		props.width = tableData.settings.tableLayout.width;
 	}
 
-	if(tableData.settings.enableColumnDragging) {
+	if (tableData.settings.enableColumnDragging) {
 		props.columnsDraggable = true;
 	}
-	if(tableData.settings.enableRowDragging) {
+	if (tableData.settings.enableRowDragging) {
 		props.rowsDraggable = true;
 	}
-	if(tableData.settings.enablePagination) {
-		props.pagination = true;
-	}
-	if(tableData.settings.enableColumnMovable) {
+	if (tableData.settings.enableColumnMovable) {
 		props.columnsMovable = true;
 	}
-	if(tableData.settings.enableResizing) {
+	if (tableData.settings.enableResizing) {
 		props.columnsResizable = true;
 	}
-	if(tableData.settings.enablePinning) {
+	if (tableData.settings.enablePinning) {
 		props.columnsPinnable = true;
 	}
-	if(tableData.settings.enableHiding) {
+	if (tableData.settings.enableHiding) {
 		props.columnsVisibility = true;
 	}
-	if(tableData.settings.enableSorting) {
+	if (tableData.settings.enableSorting) {
 		props.columnsSortable = true;
 	}
 	return Object.keys(props).length > 0
@@ -88,8 +83,13 @@ const generateFilterFieldsCode = (
 	dataName: string,
 ): string => {
 	if (!settings.isGlobalSearch) return "";
+	const modifyiedDataFormat = table.columns.map((col) => ({
+		...col,
+		accessor: toCamelCase(col.label),
+		label: toCamelCase(col.label),
+	}));
 	const generatedFields = generateFilterFields(
-		table.columns,
+		modifyiedDataFormat,
 		table.data as JsonData[],
 	);
 	const fieldsCode = generatedFields
@@ -122,7 +122,9 @@ export const generateTableCode = (
 	const typeName = getTypeName(customName);
 
 	// Check if there are any array columns
-	const hasArrayColumns = tableData.table.columns.some((col) => col.type === "array");
+	const hasArrayColumns = tableData.table.columns.some(
+		(col) => col.type === "array",
+	);
 
 	const dataVar = tableData.settings.isGlobalSearch
 		? "filteredData"
@@ -178,6 +180,7 @@ export const generateTableCode = (
 				enableRowSelection: tableData.settings.enableRowSelection,
 				enableCRUD: tableData.settings.enableCRUD,
 			},
+			`${typeName}`,
 		)},
 		[],
 	);
@@ -211,7 +214,9 @@ export const generateTableCode = (
 		generateTableLayoutProps(tableData.settings.tableLayout) +
 		`>
 			<div className="w-full space-y-2.5">
-			` + (tableData.settings.isGlobalSearch ? `
+			` +
+		(tableData.settings.isGlobalSearch
+			? `
 					<div>
 						<Input
 							className={cn(
@@ -225,14 +230,19 @@ export const generateTableCode = (
 							aria-label="Search all columns"
 						/>
 					</div>
-					` : "") + (tableData.settings.enableHiding && tableData.table.columns.length > 0 ? `
+					`
+			: "") +
+		(tableData.settings.enableHiding && tableData.table.columns.length > 0
+			? `
 					<div className="flex items-center gap-3">
 						<DataGridColumnVisibility
 							table={table}
 							trigger={<Button variant="outline" size='sm'><Settings2 />View</Button>}
 						/>
 					</div>
-					` : "") + `
+					`
+			: "") +
+		`
 			` +
 		(tableData.settings.isGlobalSearch
 			? `<div className="flex-1"><Filters
@@ -250,10 +260,16 @@ export const generateTableCode = (
 		`
 				<DataGridContainer>
 					<ScrollArea>
-						${tableData.settings.enableRowDragging ? `<DataGridTableDndRows
+						${
+							tableData.settings.enableRowDragging
+								? `<DataGridTableDndRows
 							handleDragEnd={handleRowDragEnd}
 							dataIds={dataIds}
-						/>` : tableData.settings.enableColumnDragging ? `<DataGridTableDnd handleDragEnd={handleDragEnd} />` : `<DataGridTable />`}
+						/>`
+								: tableData.settings.enableColumnDragging
+									? `<DataGridTableDnd handleDragEnd={handleDragEnd} />`
+									: `<DataGridTable />`
+						}
 						<ScrollBar orientation="horizontal" />
 					</ScrollArea>
 				</DataGridContainer>

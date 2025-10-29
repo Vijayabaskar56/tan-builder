@@ -261,12 +261,64 @@ export class TableBuilderService {
 	// ============================================================================
 
 	/**
+	 * Add data for any columns that are missing data in the table rows
+	 */
+	static addColumnData(): boolean {
+		try {
+			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
+				const columns = draft.table.columns;
+				const data = draft.table.data;
+
+				// Ensure exactly 20 rows exist
+				if (data.length === 0) {
+					// No existing data, create 20 rows
+					const newData = [];
+					for (let i = 0; i < 20; i++) {
+						const row: DataRow = {};
+						for (const col of columns) {
+							row[col.id] = getStaticData(col.type, i);
+						}
+						newData.push(row);
+					}
+					draft.table.data = newData;
+				} else if (data.length < 20) {
+					// Add rows to reach exactly 20
+					const rowsToAdd = 20 - data.length;
+					for (let i = 0; i < rowsToAdd; i++) {
+						const row: DataRow = {};
+						for (const col of columns) {
+							row[col.id] = getStaticData(col.type, data.length + i);
+						}
+						data.push(row);
+					}
+				}
+
+				// Ensure all columns have data in all rows
+				for (const col of columns) {
+					for (let i = 0; i < data.length; i++) {
+						if (!(col.id in data[i])) {
+							data[i][col.id] = getStaticData(col.type, i);
+						}
+					}
+				}
+			});
+			return true;
+		} catch (error) {
+			console.error("Failed to add column data:", error);
+			return false;
+		}
+	}
+
+	/**
 	 * Add a new column to the table
 	 */
 	static addColumn(type: ColumnConfig["type"]): boolean {
 		try {
+			// Ensure table is initialized
+			// TableBuilderService.initializeTable();
 			const columnKey = `column_${Date.now()}`;
 			const columns = TableBuilderService.getColumns();
+			console.log(columns, "columns", columns.length);
 			const newColumn: ColumnConfig = {
 				id: columnKey,
 				accessor: columnKey,
@@ -275,45 +327,9 @@ export class TableBuilderService {
 				order: columns.length,
 				filterable: type === "string",
 			};
-
+			console.log(newColumn);
 			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
 				draft.table.columns.push(newColumn);
-
-				// Ensure exactly 20 rows exist
-				const currentDataLength = draft.table.data.length;
-				const allColumns = draft.table.columns;
-
-				if (currentDataLength === 0) {
-					// No existing data, create 20 rows
-					const newData = [];
-					for (let i = 0; i < 20; i++) {
-						const row: DataRow = {};
-						for (const col of allColumns) {
-							row[col.id] = getStaticData(col.type, i);
-						}
-						newData.push(row);
-					}
-					draft.table.data = newData;
-				} else if (currentDataLength < 20) {
-					// Add rows to reach exactly 20
-					const rowsToAdd = 20 - currentDataLength;
-					for (let i = 0; i < rowsToAdd; i++) {
-						const row: DataRow = {};
-						for (const col of allColumns) {
-							row[col.id] = getStaticData(col.type, currentDataLength + i);
-						}
-						draft.table.data.push(row);
-					}
-					// Add data to existing rows for the new column
-					for (let i = 0; i < currentDataLength; i++) {
-						draft.table.data[i][columnKey] = getStaticData(newColumn.type, i);
-					}
-				} else {
-					// Add data to existing rows for the new column
-					for (let i = 0; i < 20; i++) {
-						draft.table.data[i][columnKey] = getStaticData(newColumn.type, i);
-					}
-				}
 			});
 			return true;
 		} catch (error) {
@@ -363,6 +379,10 @@ export class TableBuilderService {
 				for (const row of draft.table.data) {
 					delete row[columnId];
 				}
+				// Remove rows that are now empty
+				draft.table.data = draft.table.data.filter(
+					(row) => Object.keys(row).length > 0,
+				);
 			});
 			return true;
 		} catch (error) {
@@ -370,7 +390,6 @@ export class TableBuilderService {
 			return false;
 		}
 	}
-
 	/**
 	 * Reorder columns
 	 */

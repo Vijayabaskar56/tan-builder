@@ -88,6 +88,12 @@ export const tableBuilderCollection = createIsomorphicFn()
 			}),
 		),
 	)();
+// export const tableBuilderCollection = createCollection(
+// 	localOnlyCollectionOptions({
+// 		getKey: (tableBuilder) => tableBuilder.id,
+// 		schema: TableBuilderSchema,
+// 	}),
+// );
 
 // Schema for saved table templates
 export const SavedTableTemplateSchema = v.object({

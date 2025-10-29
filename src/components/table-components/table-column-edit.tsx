@@ -41,6 +41,8 @@ import { TableBuilderService } from "@/services/table-builder.service";
 import type { Column } from "@/workers/data-processor.worker";
 import { ScrollArea } from "../ui/scroll-area";
 import { TableColumnDropdown } from "./table-column-dropdown";
+import { Badge } from "../ui/badge";
+import { Checkbox } from "../ui/checkbox";
 
 export function TableColumnEdit() {
 	const [localColumns, setLocalColumns] = useState<
@@ -94,6 +96,7 @@ export function TableColumnEdit() {
 		TableBuilderService.addColumn(
 			type as TableBuilder["table"]["columns"][0]["type"],
 		);
+		TableBuilderService.addColumnData();
 	};
 
 	function handleDragStart() {
@@ -226,9 +229,12 @@ function SortableItem({
 							size={20}
 							className="dark:text-muted-foreground text-muted-foreground"
 						/>
-						<span className="truncate max-w-xs md:max-w-sm">
-							{form.baseStore.state.values.label}
-						</span>
+						<div className="flex justify-between w-full items-center  truncate max-w-xs md:max-w-sm">
+							<span>{form.baseStore.state.values.label}</span>
+							<Badge variant="outline" className="">
+								{form.baseStore.state.values.type}
+							</Badge>
+						</div>
 					</div>
 					<div className="flex items-center justify-end lg:opacity-0 opacity-100 group-hover:opacity-100 duration-100">
 						<Button
@@ -254,7 +260,7 @@ function SortableItem({
 					className="w-full"
 				>
 					<AccordionItem value={`item-${column.id}`} className="border-none">
-						<AccordionTrigger className="px-2 py-1 text-sm text-muted-foreground hover:no-underline">
+						<AccordionTrigger className="px-2 py-2  text-sm text-muted-foreground hover:no-underline">
 							Customize Column
 						</AccordionTrigger>
 						<AccordionContent className="px-2 pb-4 space-y-4">
@@ -279,7 +285,7 @@ function SortableItem({
 											</form.Field>
 										</div>
 									</div>
-									<div className="flex gap-2">
+									{/* <div className="flex gap-2">
 										<div className="flex-1">
 											<Label className="text-xs text-muted-foreground">
 												Accessor
@@ -332,16 +338,15 @@ function SortableItem({
 												)}
 											</form.Field>
 										</div>
-									</div>
-									<div className="flex items-center gap-2">
+									</div> */}
+									<div className="flex items-center mt-2 gap-2">
 										<form.Field name="filterable">
 											{(field) => (
-												<input
-													type="checkbox"
+												<Checkbox
 													id={`filterable-${column.id}`}
 													checked={field.state.value || false}
-													onChange={(e) =>
-														form.setFieldValue("filterable", e.target.checked)
+													onCheckedChange={(e) =>
+														form.setFieldValue("filterable", e as boolean)
 													}
 													className="h-4 w-4"
 												/>

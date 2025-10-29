@@ -94,7 +94,11 @@ function renderCell(
 		case "boolean":
 			return (
 				<Badge>
-					{typeof value === "boolean" ? (value ? "YES" : "NO") : String(value || "")}
+					{typeof value === "boolean"
+						? value
+							? "YES"
+							: "NO"
+						: String(value || "")}
 				</Badge>
 			);
 		case "date":
@@ -166,6 +170,36 @@ function renderCell(
 	}
 }
 
+// Generate cell content as string for code generation
+function renderCellString(
+	valueExpr: string,
+	type: ColumnConfig["type"],
+): string {
+	switch (type) {
+		case "string":
+			return `<div className="font-medium">{String(${valueExpr} || "")}</div>`;
+		case "number":
+			return `<div>{${valueExpr}.toLocaleString()}</div>`;
+		case "boolean":
+			return `<Badge>{${valueExpr} ? "YES" : "NO"}</Badge>`;
+		case "date":
+			return `${valueExpr} ? <div>{new Date(${valueExpr}).toLocaleDateString()}</div> : <div></div>`;
+		case "object":
+			return `<div className="text-xs text-muted-foreground">{${valueExpr} ? JSON.stringify(${valueExpr}) : ""}</div>`;
+		case "array":
+			return `<div className="flex flex-wrap gap-1">
+				{${valueExpr}.slice(0, 2).map((item, index) => {
+					const colors = ["border-blue-500", "border-green-500", "border-yellow-500", "border-purple-500", "border-pink-500", "border-indigo-500", "border-red-500", "border-orange-500", "border-teal-500", "border-cyan-500"];
+					const colorIndex = index % colors.length;
+					return <Badge key={index} variant="outline" className={\`text-xs \${colors[colorIndex]}\`}>{String(item)}</Badge>;
+				})}
+				{${valueExpr}.length > 2 && <Badge variant="outline" className="text-xs">+{${valueExpr}.length - 2}</Badge>}
+			</div>`;
+		default:
+			return `<div>{String(${valueExpr} || "")}</div>`;
+	}
+}
+
 export function generateColumns(
 	columns: ColumnConfig[],
 	settings?: ColumnSettings,
@@ -197,7 +231,7 @@ export function generateColumns(
 			meta: {
 				type: col.type,
 				filterable: col.filterable,
-			}
+			},
 		};
 
 		if (col.type === "number") {
@@ -228,10 +262,10 @@ export function generateColumns(
 			enableHiding: false,
 			enableResizing: false,
 			enablePinning: false,
-			meta : {
-				headerClassName: 'my-3',
-          		cellClassName: 'my-3',
-			}
+			meta: {
+				headerClassName: "my-3",
+				cellClassName: "my-3",
+			},
 		};
 		resultColumns.push(selectColumn);
 	}
@@ -502,6 +536,7 @@ export function applyFilters(
 }
 
 import { detectColumnsConfig } from "@/lib/column-detection";
+import { toCamelCase } from "@/utils/utils";
 
 export const detectColumns = (data: JsonData[]) => detectColumnsConfig(data);
 
@@ -511,44 +546,36 @@ export const detectColumns = (data: JsonData[]) => detectColumnsConfig(data);
 export const getColumnsString = (
 	columns: ColumnConfig[],
 	settings?: ColumnSettings,
-	hasExpandableArrays?: boolean,
+	typeName?: string,
 ): string => {
 	const generatedColumns: string[] = columns.map((col) => {
-		const base = `{
-			id: "${col.id}",
-			accessorKey: "${col.accessor}",
-			header: ({ column }) => (
-				<DataGridColumnHeader title="${col.label}" column={column} />
-			),
-			cell: ({ row }) =>
-				renderCell(
-					row.getValue("${col.accessor}"),
-					"${col.type}",
-					"${col.id}",
-					${hasExpandableArrays ? "handleToggleArrayExpand" : "undefined"},
-					${hasExpandableArrays ? "expandedArrayRows" : "undefined"},
-				),
+		const accessor = toCamelCase(col.label);
+		const base = `columnHelper.accessor('${accessor}', {
+			header: ({ column }) => <DataGridColumnHeader title="${col.label}" column={column} />,
+			cell: ({ getValue }) => ${renderCellString("getValue()", col.type)},
 			size: 180,
 			enableSorting: ${settings?.enableSorting ?? true},
 			enableHiding: ${settings?.enableHiding ?? true},
 			enableResizing: ${settings?.enableResizing ?? true},
 			enablePinning: ${settings?.enablePinning ?? true},
-			meta: {
-				type: "${col.type}",
-				filterable: ${col.filterable},
-			},
-		}`;
+		})`;
 
 		if (col.type === "number") {
-			return `{
-				...${base.replace("{", "").replace("}", "")},
+			return `columnHelper.accessor('${accessor}', {
+				header: ({ column }) => <DataGridColumnHeader title="${col.label}" column={column} />,
+				cell: ({ getValue }) => ${renderCellString("getValue()", col.type)},
+				size: 180,
+				enableSorting: ${settings?.enableSorting ?? true},
+				enableHiding: ${settings?.enableHiding ?? true},
+				enableResizing: ${settings?.enableResizing ?? true},
+				enablePinning: ${settings?.enablePinning ?? true},
 				filterFn: (row, columnId, filterValue) => {
 					if (!filterValue) return true;
 					const [min, max] = filterValue;
 					const value = row.getValue(columnId);
 					return value >= min && value <= max;
 				},
-			}`;
+			})`;
 		}
 
 		return base;
@@ -558,16 +585,15 @@ export const getColumnsString = (
 
 	// Conditionally add select column
 	if (settings?.enableRowSelection) {
-		const selectColumn = `{
-			id: "select",
+		const selectColumn = `columnHelper.display('select', {
 			header: () => <DataGridTableRowSelectAll />,
 			cell: ({ row }) => <DataGridTableRowSelect row={row} />,
-			size: 28,
+			size: 35,
 			enableSorting: false,
 			enableHiding: false,
 			enableResizing: false,
 			enablePinning: false,
-		}`;
+		})`;
 		resultColumns.push(selectColumn);
 	}
 
@@ -576,8 +602,7 @@ export const getColumnsString = (
 
 	// Conditionally add actions column
 	if (settings?.enableCRUD) {
-		const actionsColumn = `{
-			id: "actions",
+		const actionsColumn = `columnHelper.display('actions', {
 			header: () => <span className="sr-only">Actions</span>,
 			cell: ({ row }) => <RowActions row={row} />,
 			size: 60,
@@ -585,23 +610,23 @@ export const getColumnsString = (
 			enableSorting: false,
 			enableResizing: false,
 			enablePinning: false,
-		}`;
+		})`;
 		resultColumns.push(actionsColumn);
 	}
 
-	return `[\n\t${resultColumns.join(",\n\t")}\n]`;
+	const type = typeName || "TableData";
+	return `const columnHelper = createColumnHelper<${type}>()
+const columns = [
+	${resultColumns.join(",\n\t")}
+]`;
 };
 
 /**
  * Generates the filtering logic as a string, similar to getDefaultValuesString for forms
  */
 export const getFilteredDataString = (columns: ColumnConfig[]): string => {
-	// Generate type map for fields
-	const typeMapEntries = columns
-		.map((col) => `${col.accessor}: "${col.type}"`)
-		.join(",\n\t\t");
-	const typeMap = `const typeMap = {\n\t\t${typeMapEntries}\n\t};`;
-
+	// Ensure columns is used for type checking
+	void columns;
 	const filteringLogic = `let filtered = [...data];
 // Filter out empty filters before applying
 const activeFilters = filters.filter((filter) => {
@@ -621,7 +646,8 @@ const activeFilters = filters.filter((filter) => {
 activeFilters.forEach((filter) => {
 	const { field, operator, values } = filter;
 	// Find the column type
-	const columnType = typeMap[field] || "string";
+	const column = columns.find((col) => col.accessor === field);
+	const columnType = column?.type || "string";
 	filtered = filtered.filter((item) => {
 		const fieldValue = item[field];
 		switch (operator) {
@@ -698,5 +724,5 @@ activeFilters.forEach((filter) => {
 });
 return filtered;`;
 
-	return `${typeMap}\n${filteringLogic}`;
+	return filteringLogic;
 };
