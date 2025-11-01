@@ -57,7 +57,7 @@ The application will be available at `http://localhost:3001`
 ## Project Origins
 
 This project was started as a fork of [formcn.dev](https://formcn.dev) and is inspired by:
-- [tweekcn](https://tweakcn.com/) - Component library and design system
+- [tweakcn](https://tweakcn.com/) - Component library and design system
 - [formcn](https://formcn.dev) - Form building tools and utilities
 - [originui](https://originui.com) - UI component library and design patterns
 - [better-t-stack](https://better-t-stack.dev/) - modern CLI tool for scaffolding end-to-end type-safe TypeScript projects
