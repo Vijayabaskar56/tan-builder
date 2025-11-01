@@ -6,78 +6,76 @@ export default function FooterSection() {
 				<div className="h-auto p-4 md:p-8 flex flex-col justify-center items-center gap-8 w-full ">
 					{/* Brand Section */}
 					<div className="self-stretch flex justify-center items-center gap-3">
-										<div className="flex justify-center items-center">
-												<svg
-													viewBox="0 0 473 473"
-													fill="none"
-													xmlns="http://www.w3.org/2000/svg"
-													className="text-accent-foreground"
-													style={{
-														width: "1em",
-														height: "1em",
-														display: "inline-block",
-													}}
-												>
-													<title>Logo</title>
-													<g clip-path="url(#clip0_38_23)">
-														<path
-															d="M226.646 413.875H98.5417C88.0877 413.875 78.0619 409.722 70.6699 402.33C63.2778 394.938 59.125 384.912 59.125 374.458V98.5417C59.125 88.0877 63.2778 78.0619 70.6699 70.6699C78.0619 63.2778 88.0877 59.125 98.5417 59.125H374.458C384.912 59.125 394.938 63.2778 402.33 70.6699C409.722 78.0619 413.875 88.0877 413.875 98.5417V216.792"
-															stroke="currentColor"
-															stroke-width="10"
-															stroke-linecap="round"
-															stroke-linejoin="round"
-														/>
-														<path
-															d="M59.125 197.083H413.875"
-															stroke="currentColor"
-															stroke-width="10"
-															stroke-linecap="round"
-															stroke-linejoin="round"
-														/>
-														<path
-															d="M197.083 59.125V413.875"
-															stroke="currentColor"
-															stroke-width="10"
-															stroke-linecap="round"
-															stroke-linejoin="round"
-														/>
-														<g clip-path="url(#clip1_38_23)">
-															<path
-																d="M397.438 318.5L321.5 394.438"
-																stroke="currentColor"
-																stroke-width="20"
-																stroke-linecap="round"
-																stroke-linejoin="round"
-															/>
-															<path
-																d="M382.25 234.969L237.969 379.25"
-																stroke="currentColor"
-																stroke-width="20"
-																stroke-linecap="round"
-																stroke-linejoin="round"
-															/>
-														</g>
-													</g>
-													<defs>
-														<clipPath id="clip0_38_23">
-															<rect width="473" height="473" fill="white" />
-														</clipPath>
-														<clipPath id="clip1_38_23">
-															<rect
-																width="243"
-																height="243"
-																fill="white"
-																transform="translate(200 197)"
-															/>
-														</clipPath>
-													</defs>
-												</svg>
-												<h1 className="flex font-bold">TANCN</h1>
-											</div>
+						<div className="flex justify-center items-center">
+							<svg
+								viewBox="0 0 473 473"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+								className="text-accent-foreground"
+								style={{
+									width: "1em",
+									height: "1em",
+									display: "inline-block",
+								}}
+							>
+								<title>Logo</title>
+								<g clipPath="url(#clip0_38_23)">
+									<path
+										d="M226.646 413.875H98.5417C88.0877 413.875 78.0619 409.722 70.6699 402.33C63.2778 394.938 59.125 384.912 59.125 374.458V98.5417C59.125 88.0877 63.2778 78.0619 70.6699 70.6699C78.0619 63.2778 88.0877 59.125 98.5417 59.125H374.458C384.912 59.125 394.938 63.2778 402.33 70.6699C409.722 78.0619 413.875 88.0877 413.875 98.5417V216.792"
+										stroke="currentColor"
+										strokeWidth="10"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									/>
+									<path
+										d="M59.125 197.083H413.875"
+										stroke="currentColor"
+										strokeWidth="10"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									/>
+									<path
+										d="M197.083 59.125V413.875"
+										stroke="currentColor"
+										strokeWidth="10"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									/>
+									<g clipPath="url(#clip1_38_23)">
+										<path
+											d="M397.438 318.5L321.5 394.438"
+											stroke="currentColor"
+											strokeWidth="20"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+										/>
+										<path
+											d="M382.25 234.969L237.969 379.25"
+											stroke="currentColor"
+											strokeWidth="20"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+										/>
+									</g>
+								</g>
+								<defs>
+									<clipPath id="clip0_38_23">
+										<rect width="473" height="473" fill="white" />
+									</clipPath>
+									<clipPath id="clip1_38_23">
+										<rect
+											width="243"
+											height="243"
+											fill="white"
+											transform="translate(200 197)"
+										/>
+									</clipPath>
+								</defs>
+							</svg>
+							<h1 className="flex font-bold">TANCN</h1>
+						</div>
 					</div>
-					<div>
-						Build production-ready forms and tables with a easy
-					</div>
+					<div>Build production-ready forms and tables with a easy</div>
 
 					{/* Social Media Icons */}
 					<div className="flex justify-start items-start gap-4">
@@ -168,7 +166,7 @@ export default function FooterSection() {
 					<div className="w-full h-full text-center mt-2 relative">
 						{Array.from({ length: 400 }).map((_, i) => (
 							<div
-							key={i}
+								key={i}
 								className="absolute w-[300px] h-16 border border-border"
 								style={{
 									left: `${i * 300 - 600}px`,
@@ -176,9 +174,9 @@ export default function FooterSection() {
 									transform: "rotate(-45deg)",
 									transformOrigin: "top left",
 								}}
-								/>
+							/>
 						))}
-								© 2025 tancn. All rights reserved.
+						© 2025 tancn. All rights reserved.
 					</div>
 				</div>
 			</div>
