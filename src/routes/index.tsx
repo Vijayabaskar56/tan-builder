@@ -9,17 +9,27 @@ import {
 	Circle,
 	Clock,
 	Code,
+	Database,
 	Eye,
+	FileText,
 	Layers,
 	Move,
 	Palette,
 	Share2,
+	Shield,
+	ShieldCheck,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import Loader from "@/components/loader";
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 export const Route = createFileRoute("/")({
 	head: () => ({
 		meta: [],
@@ -346,8 +356,9 @@ function HomePage() {
 											</div>
 										</div>
 									</div>
-									<div className="w-full max-w-[600px] text-center flex justify-center flex-col text-muted-foreground sm:text-lg md:text-xl leading-[1.4] sm:leading-[1.45]  lg:leading-7 font-sans px-2 sm:px-4 md:px-0 lg:text-lg font-medium text-sm">
-										Build powerful forms with ease using TanStack technologies
+									<div className="w-full max-w-[650px] text-center flex justify-center flex-col text-muted-foreground sm:text-lg md:text-xl leading-[1.4] sm:leading-[1.45]  lg:leading-7 font-sans px-2 sm:px-4 md:px-0 lg:text-lg font-medium text-sm">
+										<span>Build powerful <span className="text-primary inline font-extrabold capitalize">forms</span> and <span className="text-primary inline font-extrabold capitalize">tables</span> with ease using TanStack
+										technologies</span>
 										<br className="hidden sm:block" />
 										Code generation with 100% Type-Safe.
 									</div>
