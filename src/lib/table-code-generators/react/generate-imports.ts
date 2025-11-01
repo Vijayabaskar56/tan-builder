@@ -9,12 +9,19 @@ export const generateTableImports = (
 
 	// Base imports always needed
 	const reactImports = ["useMemo", "useState"];
-	if (hasFilterableColumns || settings.enableRowDragging || settings.enableColumnDragging) {
+	if (
+		hasFilterableColumns ||
+		settings.enableRowDragging ||
+		settings.enableColumnDragging
+	) {
 		reactImports.push("useCallback");
 	}
 	importSet.add('import { Button } from "@/components/ui/button"');
 	importSet.add('import { Badge } from "@/components/ui/badge"');
 	importSet.add(`import { ${reactImports.join(", ")} } from "react"`);
+	importSet.add(
+			'import { EllipsisIcon , Settings2 , FunnelX} from "lucide-react"',
+	);
 	importSet.add(
 		'import {\n\ttype ColumnDef,\n\tcreateColumnHelper,\n\tgetCoreRowModel,\n\tgetPaginationRowModel,\n\tgetSortedRowModel,\n\ttype PaginationState,\n\ttype SortingState,\n\tuseReactTable,\n} from "@tanstack/react-table"',
 	);
@@ -51,7 +58,6 @@ export const generateTableImports = (
 	}
 
 	if (settings.enableCRUD) {
-		importSet.add('import { EllipsisIcon , Settings2 , FunnelX} from "lucide-react"');
 		importSet.add(
 			'import {\n\tDropdownMenu,\n\tDropdownMenuContent,\n\tDropdownMenuGroup,\n\tDropdownMenuItem,\n\tDropdownMenuSeparator,\n\tDropdownMenuShortcut,\n\tDropdownMenuTrigger,\n} from "@/components/ui/dropdown-menu"',
 		);
@@ -64,9 +70,7 @@ export const generateTableImports = (
 	}
 
 	if (settings.isGlobalSearch) {
-		importSet.add(
-			'import { Input } from "@/components/ui/input"',
-		);
+		importSet.add('import { Input } from "@/components/ui/input"');
 	}
 
 	if (settings.enableRowDragging) {
@@ -98,7 +102,20 @@ export const extractTableImportDependencies = (
 
 		if (modulePath.startsWith("@/components/")) {
 			const component = modulePath.split("/").pop();
-			if (component) registry.add(component);
+			if (component) {
+				// Map data-grid related components to @reui/data-grid-default
+				if (component.startsWith("data-grid")) {
+					registry.add("@reui/data-grid-default");
+				}
+				// Map filters to @reui/filters-default
+				else if (component === "filters") {
+					registry.add("@reui/filters-default");
+				}
+				// Keep other components as is
+				else {
+					registry.add(component);
+				}
+			}
 		} else if (!modulePath.startsWith("./")) {
 			deps.add(modulePath);
 		}

@@ -47,7 +47,11 @@ ${typeCode}
 
 ${componentCode}`;
 
-	const dependencies = extractTableImportDependencies(imports);
+	// const dependencies = extractTableImportDependencies(imports);
+	const dependencies = {
+			dependencies : ["@tanstack/react-table"],
+			registryDependencies: [...extractTableImportDependencies(imports).registryDependencies],
+		};
 
 	return {
 		files: [

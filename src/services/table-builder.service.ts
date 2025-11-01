@@ -582,6 +582,7 @@ export class TableBuilderService {
 			tableBuilderCollection.insert([
 				{
 					id: TableBuilderService.TABLE_ID,
+					tableName : 'draft',
 					settings: defaultSettings,
 					table: {
 						columns: [],

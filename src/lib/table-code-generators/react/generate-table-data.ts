@@ -80,7 +80,8 @@ export const generateTableData = (
 	const constName = customName ? `${customName}Data` : "tableData";
 
 	if (data.length === 0) {
-		return `export const ${toCamelCase(constName)}: ${customName ? `${capitalize(customName)}Data` : "TableData"}[] = [];`;
+		return `import { ${constName} } from "./${customName}";\t\n\n
+export const ${toCamelCase(constName)}: ${customName ? `${capitalize(customName)}Data` : "TableData"}[] = [];`;
 	}
 
 	const dataLines = data.map((row) => {
@@ -93,5 +94,6 @@ export const generateTableData = (
 		return `\t{\n${properties}\n\t}`;
 	});
 
-	return `export const ${toCamelCase(constName)}: ${customName ? `${capitalize(customName)}Data` : "TableData"}[] = [\n${dataLines.join(",\n")}\n];`;
+	return `import { ${constName} } from "./${customName}";\t\n\n
+	export const ${toCamelCase(constName)}: ${customName ? `${capitalize(customName)}Data` : "TableData"}[] = [\n${dataLines.join(",\n")}\n];`;
 };

@@ -1,12 +1,12 @@
-import { useMutation } from "@tanstack/react-query";
-import { useEffect, useId, useState } from "react";
-import * as z from "zod";
 import { GeneratedTableCodeViewer } from "@/components/table-components/table-code-viewer";
 import useTableStore from "@/hooks/use-table-store";
 import { generateTable } from "@/lib/table-code-generators/react/index";
-import { logger } from "@/utils/utils";
 import { TableBuilderService } from "@/services/table-builder.service";
 import type { CreateRegistryResponse } from "@/types/form-types";
+import { logger } from "@/utils/utils";
+import { useMutation } from "@tanstack/react-query";
+import { useEffect, useId, useState } from "react";
+import * as z from "zod";
 import { AnimatedIconButton } from "../ui/animated-icon-button";
 import {
 	InputGroup,
@@ -63,12 +63,18 @@ function TableCodeDialog() {
 		{ id: 1, ...tableData },
 		tableData.tableName,
 	);
-
+	console.log(generatedFiles, dependencies);
 	const files = [
 		{
 			path: `components/${tableData.tableName}.tsx`,
 			content: generatedFiles[0].code,
 			type: "registry:component",
+			target: "",
+		},
+		{
+			path: `constants/data.ts`,
+			content: generatedFiles[1].code,
+			type: "registry:file",
 			target: "",
 		},
 	];
@@ -183,7 +189,7 @@ function TableCodeDialog() {
 					size="sm"
 				/>
 			</ResponsiveDialogTrigger>
-			<ResponsiveDialogContent className="max-w-6xl lg:max-w-4xl max-h-[85vh] p-0">
+			<ResponsiveDialogContent className="sm:max-w-2xl md:max-w-4xl lg:max-w-4xl xl:max-w-6xl max-h-[85vh] p-0">
 				<div className="flex flex-col h-full max-h-[85vh]">
 					<ResponsiveDialogHeader className="p-6 pb-4 border-b">
 						<ResponsiveDialogTitle>Generated Code</ResponsiveDialogTitle>
@@ -202,7 +208,7 @@ function TableCodeDialog() {
 											<field.FieldLabel htmlFor={"tableName"}>
 												Table Name
 											</field.FieldLabel>
-											<InputGroup>
+											<InputGroup className="flex flex-col gap-2 sm:flex-row sm:gap-0">
 												<InputGroupInput
 													name={"tableName"}
 													aria-invalid={!!field.state.meta.errors.length}
@@ -213,12 +219,16 @@ function TableCodeDialog() {
 													onBlur={field.handleBlur}
 													disabled={isGenerateSuccess}
 												/>
-												{/* <InputGroupAddon align="inline-end">
+												<InputGroupAddon
+													align="inline-end"
+													className="w-full sm:w-auto"
+												>
 													{mutation.isPending ? (
 														<InputGroupButton
 															variant="secondary"
 															type="button"
 															disabled
+															className="w-full"
 														>
 															<Spinner className="w-4 h-4 mr-2" />
 															Generating...
@@ -230,11 +240,12 @@ function TableCodeDialog() {
 															disabled={
 																form.state.isSubmitting || isGenerateSuccess
 															}
+															className="w-full"
 														>
 															Generate Command
 														</InputGroupButton>
 													)}
-												</InputGroupAddon> */}
+												</InputGroupAddon>
 											</InputGroup>
 										</field.Field>
 										<field.FieldError />
@@ -244,7 +255,7 @@ function TableCodeDialog() {
 						</form.Form>
 					</form.AppForm>
 					<Separator className="my-4" />
-					<ScrollArea className="flex-1 px-6 py-4">
+					<ScrollArea className="flex-1 px-6 py-4 overflow-x-auto">
 						<GeneratedTableCodeViewer
 							isGenerateSuccess={isGenerateSuccess}
 							generatedId={generatedId}

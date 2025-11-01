@@ -8,7 +8,7 @@ import * as v from "valibot";
 
 export const TableBuilderSchema = v.object({
 	id: v.number(),
-	tableName: v.optional(v.string(), "table"),
+	tableName: v.optional(v.string(), "draft"),
 	settings: v.object({
 		isGlobalSearch: v.optional(v.boolean(), false),
 		enableHiding: v.optional(v.boolean(), false),

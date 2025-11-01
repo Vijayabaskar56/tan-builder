@@ -113,7 +113,7 @@ export const getColumnsString = (
 				filterFn: (row, columnId, filterValue) => {
 					if (!filterValue) return true;
 					const [min, max] = filterValue;
-					const value = row.getValue(columnId);
+					const value = Number(row.getValue(columnId));
 					return value >= min && value <= max;
 				},
 			})`;

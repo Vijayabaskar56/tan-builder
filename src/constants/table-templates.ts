@@ -6,7 +6,7 @@ export interface TableTemplate {
 	description: string;
 	columns: ColumnConfig[];
 	sampleData?: DataRow[];
-	settings: TableBuilder['settings']
+	settings: TableBuilder["settings"];
 }
 
 export const tableTemplates: Record<string, TableTemplate> = {
@@ -94,9 +94,10 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				id: "department",
 				accessor: "department",
 				label: "Department",
-				type: "string",
+				type: "enum",
 				order: 3,
 				hasFacetedFilter: true,
+				possibleValues: ["Engineering", "Marketing", "Sales", "HR", "Finance"],
 			},
 		],
 		sampleData: [
@@ -144,33 +145,35 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				accessor: "id",
 				label: "ID",
 				type: "number",
-				filterable : true,
+				filterable: true,
 				order: 1,
 			},
 			{
 				id: "category",
 				accessor: "category",
 				label: "Category",
-				type: "string",
+				type: "enum",
 				order: 2,
 				hasFacetedFilter: true,
 				filterable: true,
+				possibleValues: ["A", "B", "C"],
 			},
 			{
 				id: "priority",
 				accessor: "priority",
 				label: "Priority",
-				type: "string",
+				type: "enum",
 				order: 3,
 				hasFacetedFilter: true,
 				filterable: true,
+				possibleValues: ["High", "Medium", "Low"],
 			},
 			{
 				id: "date",
 				accessor: "date",
 				label: "Date",
 				type: "date",
-				filterable : true,
+				filterable: true,
 				order: 4,
 			},
 		],
@@ -339,7 +342,7 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				accessor: "id",
 				label: "ID",
 				type: "number",
-				filterable : true,
+				filterable: true,
 				order: 1,
 			},
 			{
@@ -365,7 +368,7 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				accessor: "date",
 				label: "Date",
 				type: "date",
-				filterable : true,
+				filterable: true,
 				order: 4,
 			},
 		],
@@ -531,8 +534,9 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				id: "status",
 				accessor: "status",
 				label: "Status",
-				type: "string",
+				type: "enum",
 				order: 3,
+				possibleValues: ["Active", "Inactive"],
 			},
 		],
 		sampleData: Array.from({ length: 20 }, (_, i) => ({
@@ -621,7 +625,8 @@ export const tableTemplates: Record<string, TableTemplate> = {
 	},
 	stickyHeaderTable: {
 		name: "Sticky Header Table",
-		description: "A table with a sticky header that stays visible while scrolling",
+		description:
+			"A table with a sticky header that stays visible while scrolling",
 		columns: [
 			{
 				id: "id",
@@ -806,9 +811,10 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				id: "status",
 				accessor: "status",
 				label: "Status",
-				type: "string",
+				type: "enum",
 				order: 3,
 				hasFacetedFilter: true,
+				possibleValues: ["Active", "Inactive", "Pending"],
 			},
 			{
 				id: "value",
@@ -844,6 +850,72 @@ export const tableTemplates: Record<string, TableTemplate> = {
 				stripped: true,
 				headerBorder: true,
 				headerSticky: true,
+				width: "fixed",
+			},
+		},
+	},
+	arrayTable: {
+		name: "Table with Array Columns",
+		description: "A table demonstrating array type columns",
+		columns: [
+			{
+				id: "id",
+				accessor: "id",
+				label: "ID",
+				type: "number",
+				order: 1,
+			},
+			{
+				id: "name",
+				accessor: "name",
+				label: "Name",
+				type: "string",
+				order: 2,
+			},
+			{
+				id: "tags",
+				accessor: "tags",
+				label: "Tags",
+				type: "array",
+				order: 3,
+			},
+			{
+				id: "scores",
+				accessor: "scores",
+				label: "Scores",
+				type: "array",
+				order: 4,
+			},
+		],
+		sampleData: Array.from({ length: 10 }, (_, i) => ({
+			id: i + 1,
+			name: `Item ${i + 1}`,
+			tags: ["tag1", "tag2", "tag3"].slice(0, (i % 3) + 1),
+			scores: [
+				Math.floor(Math.random() * 100),
+				Math.floor(Math.random() * 100),
+			],
+		})),
+		settings: {
+			isGlobalSearch: true,
+			enableHiding: false,
+			enableSorting: true,
+			enableResizing: false,
+			enablePinning: false,
+			enableRowSelection: false,
+			enableCRUD: false,
+			enableColumnDragging: false,
+			enableRowDragging: false,
+			enablePagination: true,
+			enableColumnMovable: false,
+			tableLayout: {
+				dense: false,
+				cellBorder: false,
+				rowBorder: true,
+				rowRounded: false,
+				stripped: false,
+				headerBorder: true,
+				headerSticky: false,
 				width: "fixed",
 			},
 		},

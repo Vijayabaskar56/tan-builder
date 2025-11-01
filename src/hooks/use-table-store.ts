@@ -48,7 +48,7 @@ import { createIsomorphicFn } from "@tanstack/react-start";
 // 	);
 // };
 const defaultTableState = {
-	tableName: "table",
+	tableName: "draft",
 	settings: {
 		isGlobalSearch: false,
 		enableHiding: false,
