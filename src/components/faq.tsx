@@ -8,11 +8,6 @@ interface FAQItem {
 
 const faqData: FAQItem[] = [
 	{
-		question: "What is TanStack Form Builder?",
-		answer:
-			"TanStack Form Builder is a powerful form builder application built with TanStack technologies. It allows you to create dynamic, type-safe forms with a drag-and-drop interface, real-time preview, and automatic code generation.",
-	},
-	{
 		question: "How does the drag-and-drop builder work?",
 		answer:
 			"The drag-and-drop interface lets you easily add, rearrange, and configure form fields. Simply drag components from the library onto your canvas, customize their properties, and see changes in real-time preview.",
@@ -23,19 +18,24 @@ const faqData: FAQItem[] = [
 			"It generates fully typed React components with TypeScript support, including automatic schema generation for form validation using libraries like Zod, Valibot, or ArkType. The code is ready to use in your projects.",
 	},
 	{
-		question: "Can I integrate it with my existing projects?",
-		answer:
-			"Yes! The generated code uses standard React and TypeScript patterns, making it easy to integrate with existing projects. It supports TanStack Form and various validation libraries.",
-	},
-	{
 		question: "What validation libraries are supported?",
 		answer:
 			"We support Zod, Valibot, and ArkType for schema validation. You can choose your preferred validation library when generating form code, ensuring compatibility with your existing setup.",
 	},
 	{
-		question: "Is TanStack Form Builder free to use?",
+		question: "What is the Table Builder?",
 		answer:
-			"Yes, TanStack Form Builder is open source and free to use under the MIT License. You can clone the repository, modify it, and use it in your projects without any licensing fees.",
+			"The Table Builder is a drag-and-drop interface for creating dynamic, type-safe tables. It allows you to define columns, apply filters, sort data, and generate performant table components with TanStack Table.",
+	},
+	{
+		question: "How does the Table Builder work?",
+		answer:
+			"Similar to the form builder, you can drag and drop column types, configure sorting and filtering options, and customize table appearance. The builder generates code for tables that integrate seamlessly with your data sources.",
+	},
+	{
+		question: "What features does the Table Builder include?",
+		answer:
+			"It supports advanced filtering, sorting, pagination, column resizing, and data export. You can create tables with virtual scrolling for large datasets and customize them with ShadCN UI components.",
 	},
 ];
 
