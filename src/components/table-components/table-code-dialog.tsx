@@ -63,7 +63,6 @@ function TableCodeDialog() {
 		{ id: 1, ...tableData },
 		tableData.tableName,
 	);
-	console.log(generatedFiles, dependencies);
 	const files = [
 		{
 			path: `components/${tableData.tableName}.tsx`,

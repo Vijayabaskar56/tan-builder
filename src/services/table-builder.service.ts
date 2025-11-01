@@ -318,7 +318,6 @@ export class TableBuilderService {
 			// TableBuilderService.initializeTable();
 			const columnKey = `column_${Date.now()}`;
 			const columns = TableBuilderService.getColumns();
-			console.log(columns, "columns", columns.length);
 			const newColumn: ColumnConfig = {
 				id: columnKey,
 				accessor: columnKey,
@@ -327,7 +326,6 @@ export class TableBuilderService {
 				order: columns.length,
 				filterable: true,
 			};
-			console.log(newColumn);
 			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {
 				draft.table.columns.push(newColumn);
 			});

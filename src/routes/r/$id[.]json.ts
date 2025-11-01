@@ -13,11 +13,9 @@ export const Route = createFileRoute("/r/$id.json")({
 		handlers: {
 			GET: async ({ params }) => {
 				const id = params["id.json"];
-				console.log('id', id);
 				const registryId = id?.endsWith(".json") ? id?.slice(0, -5) : id;
 				try {
 					const registryItem = await env.CACHE.get(registryId);
-					console.log('registryItem', registryItem);
 					if (!registryItem) {
 						return new Response("Registry item not found", {
 							status: 404,
@@ -81,10 +79,9 @@ export const Route = createFileRoute("/r/$id.json")({
 						type: "registry:block",
 						files,
 					};
-					const data = await env.CACHE.put(id, JSON.stringify(registry), {
+					await env.CACHE.put(id, JSON.stringify(registry), {
 						expirationTtl: 60 * 60 * 24, // 1 day
 					});
-					console.log(data ,'id', id);
 					return new Response(
 						JSON.stringify({
 							data: {

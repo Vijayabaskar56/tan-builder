@@ -1,7 +1,24 @@
 import { useLiveQuery } from "@tanstack/react-db";
 import { settingsCollection } from "@/db-collections/settings.collections";
+import { createIsomorphicFn } from "@tanstack/react-start";
 
-const useSettings = () => {
+const defaultSettings =  {
+		activeTab: "builder",
+		defaultRequiredValidation: true,
+		numericInput: false,
+		focusOnError: true,
+		validationMethod: "onDynamic",
+		asyncValidation: 300,
+		id: "user-settings",
+		preferredSchema: "zod",
+		preferredFramework: "react",
+		preferredPackageManager: "pnpm",
+		isCodeSidebarOpen: false,
+		autoSave: true,
+	};
+
+
+const useSettings = createIsomorphicFn().client(() => {
 	const { data } = useLiveQuery((q) =>
 		q.from({ settings: settingsCollection }).select(({ settings }) => ({
 			activeTab: settings.activeTab,
@@ -20,20 +37,9 @@ const useSettings = () => {
 	);
 
 	// Return the first (and only) settings object, or null if no settings exist
-	return data?.[0] || {
-		activeTab: "builder",
-		defaultRequiredValidation: true,
-		numericInput: false,
-		focusOnError: true,
-		validationMethod: "onDynamic",
-		asyncValidation: 300,
-		id: "user-settings",
-		preferredSchema: "zod",
-		preferredFramework: "react",
-		preferredPackageManager: "pnpm",
-		isCodeSidebarOpen: false,
-		autoSave: true,
-	}
-};
+	return data?.[0] || defaultSettings;
+}).server(() => {
+	return defaultSettings;
+})
 
 export default useSettings;
