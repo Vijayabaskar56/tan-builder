@@ -1,11 +1,11 @@
 import type { TableBuilder } from "@/db-collections/table-builder.collections";
+import { generateRowActionCode } from "./generate-coloum-code";
 import {
 	extractTableImportDependencies,
 	generateTableImports,
 } from "./generate-imports";
 import { generateTableCode } from "./generate-table-code";
 import { generateTableData, generateTableType } from "./generate-table-data";
-import { generateRowActionCode } from "./generate-coloum-code";
 
 export const generateTable = (
 	tableBuilder: TableBuilder,
@@ -20,7 +20,12 @@ export const generateTable = (
 		(col) => col.type === "array",
 	);
 
-	const imports = generateTableImports(tableBuilder.settings, hasArrayColumns);
+	// Check if any column has filterable enabled
+	const hasFilterableColumns = tableBuilder.table.columns.some(
+		(col) => col.filterable === true,
+	);
+
+	const imports = generateTableImports(tableBuilder.settings, hasArrayColumns, hasFilterableColumns);
 	if(tableBuilder.settings.enableCRUD) {
 		crudImports = generateRowActionCode();
 	}
@@ -31,6 +36,7 @@ export const generateTable = (
 		customName,
 	);
 	const { file, code: componentCode } = generateTableCode(
+		tableBuilder,
 		customName,
 	);
 

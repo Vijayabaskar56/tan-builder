@@ -325,7 +325,7 @@ export class TableBuilderService {
 				label: `Column ${columns.length + 1}`,
 				type,
 				order: columns.length,
-				filterable: type === "string",
+				filterable: true,
 			};
 			console.log(newColumn);
 			tableBuilderCollection.update(TableBuilderService.TABLE_ID, (draft) => {

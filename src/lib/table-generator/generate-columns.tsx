@@ -170,36 +170,6 @@ function renderCell(
 	}
 }
 
-// Generate cell content as string for code generation
-function renderCellString(
-	valueExpr: string,
-	type: ColumnConfig["type"],
-): string {
-	switch (type) {
-		case "string":
-			return `<div className="font-medium">{String(${valueExpr} || "")}</div>`;
-		case "number":
-			return `<div>{${valueExpr}.toLocaleString()}</div>`;
-		case "boolean":
-			return `<Badge>{${valueExpr} ? "YES" : "NO"}</Badge>`;
-		case "date":
-			return `${valueExpr} ? <div>{new Date(${valueExpr}).toLocaleDateString()}</div> : <div></div>`;
-		case "object":
-			return `<div className="text-xs text-muted-foreground">{${valueExpr} ? JSON.stringify(${valueExpr}) : ""}</div>`;
-		case "array":
-			return `<div className="flex flex-wrap gap-1">
-				{${valueExpr}.slice(0, 2).map((item, index) => {
-					const colors = ["border-blue-500", "border-green-500", "border-yellow-500", "border-purple-500", "border-pink-500", "border-indigo-500", "border-red-500", "border-orange-500", "border-teal-500", "border-cyan-500"];
-					const colorIndex = index % colors.length;
-					return <Badge key={index} variant="outline" className={\`text-xs \${colors[colorIndex]}\`}>{String(item)}</Badge>;
-				})}
-				{${valueExpr}.length > 2 && <Badge variant="outline" className="text-xs">+{${valueExpr}.length - 2}</Badge>}
-			</div>`;
-		default:
-			return `<div>{String(${valueExpr} || "")}</div>`;
-	}
-}
-
 export function generateColumns(
 	columns: ColumnConfig[],
 	settings?: ColumnSettings,
@@ -332,7 +302,7 @@ export function generateFilterFields(
 				const uniqueValues = [
 					...new Set(
 						data
-							.map((row) => String(row[col.accessor] || ""))
+							.map((row) => String(row[col.id] || ""))
 							.filter((val) => val),
 					),
 				];
@@ -352,7 +322,7 @@ export function generateFilterFields(
 					...new Set(
 						data
 							.flatMap((row) => {
-								const value = row[col.accessor];
+								const value = row[col.id];
 								return Array.isArray(value) ? value.map(String) : [];
 							})
 							.filter((val) => val),
@@ -367,7 +337,6 @@ export function generateFilterFields(
 				// Set appropriate width for array fields
 				baseConfig.className = "w-[200px]";
 			}
-
 			return baseConfig;
 		});
 }
@@ -536,193 +505,5 @@ export function applyFilters(
 }
 
 import { detectColumnsConfig } from "@/lib/column-detection";
-import { toCamelCase } from "@/utils/utils";
 
 export const detectColumns = (data: JsonData[]) => detectColumnsConfig(data);
-
-/**
- * Generates the columns array as a string, similar to getDefaultValuesString for forms
- */
-export const getColumnsString = (
-	columns: ColumnConfig[],
-	settings?: ColumnSettings,
-	typeName?: string,
-): string => {
-	const generatedColumns: string[] = columns.map((col) => {
-		const accessor = toCamelCase(col.label);
-		const base = `columnHelper.accessor('${accessor}', {
-			header: ({ column }) => <DataGridColumnHeader title="${col.label}" column={column} />,
-			cell: ({ getValue }) => ${renderCellString("getValue()", col.type)},
-			size: 180,
-			enableSorting: ${settings?.enableSorting ?? true},
-			enableHiding: ${settings?.enableHiding ?? true},
-			enableResizing: ${settings?.enableResizing ?? true},
-			enablePinning: ${settings?.enablePinning ?? true},
-		})`;
-
-		if (col.type === "number") {
-			return `columnHelper.accessor('${accessor}', {
-				header: ({ column }) => <DataGridColumnHeader title="${col.label}" column={column} />,
-				cell: ({ getValue }) => ${renderCellString("getValue()", col.type)},
-				size: 180,
-				enableSorting: ${settings?.enableSorting ?? true},
-				enableHiding: ${settings?.enableHiding ?? true},
-				enableResizing: ${settings?.enableResizing ?? true},
-				enablePinning: ${settings?.enablePinning ?? true},
-				filterFn: (row, columnId, filterValue) => {
-					if (!filterValue) return true;
-					const [min, max] = filterValue;
-					const value = row.getValue(columnId);
-					return value >= min && value <= max;
-				},
-			})`;
-		}
-
-		return base;
-	});
-
-	const resultColumns: string[] = [];
-
-	// Conditionally add select column
-	if (settings?.enableRowSelection) {
-		const selectColumn = `columnHelper.display('select', {
-			header: () => <DataGridTableRowSelectAll />,
-			cell: ({ row }) => <DataGridTableRowSelect row={row} />,
-			size: 35,
-			enableSorting: false,
-			enableHiding: false,
-			enableResizing: false,
-			enablePinning: false,
-		})`;
-		resultColumns.push(selectColumn);
-	}
-
-	// Add generated columns
-	resultColumns.push(...generatedColumns);
-
-	// Conditionally add actions column
-	if (settings?.enableCRUD) {
-		const actionsColumn = `columnHelper.display('actions', {
-			header: () => <span className="sr-only">Actions</span>,
-			cell: ({ row }) => <RowActions row={row} />,
-			size: 60,
-			enableHiding: false,
-			enableSorting: false,
-			enableResizing: false,
-			enablePinning: false,
-		})`;
-		resultColumns.push(actionsColumn);
-	}
-
-	const type = typeName || "TableData";
-	return `const columnHelper = createColumnHelper<${type}>()
-const columns = [
-	${resultColumns.join(",\n\t")}
-]`;
-};
-
-/**
- * Generates the filtering logic as a string, similar to getDefaultValuesString for forms
- */
-export const getFilteredDataString = (columns: ColumnConfig[]): string => {
-	// Ensure columns is used for type checking
-	void columns;
-	const filteringLogic = `let filtered = [...data];
-// Filter out empty filters before applying
-const activeFilters = filters.filter((filter) => {
-	const { operator, values } = filter;
-	// Empty and not_empty operators don't require values
-	if (operator === "empty" || operator === "not_empty") return true;
-	// Check if filter has meaningful values
-	if (!values || values.length === 0) return false;
-	// For text/string values, check if they're not empty strings
-	if (values.every((value) => typeof value === "string" && value.trim() === "")) return false;
-	// For number values, check if they're not null/undefined
-	if (values.every((value) => value === null || value === undefined)) return false;
-	// For arrays, check if they're not empty
-	if (values.every((value) => Array.isArray(value) && value.length === 0)) return false;
-	return true;
-});
-activeFilters.forEach((filter) => {
-	const { field, operator, values } = filter;
-	// Find the column type
-	const column = columns.find((col) => col.accessor === field);
-	const columnType = column?.type || "string";
-	filtered = filtered.filter((item) => {
-		const fieldValue = item[field];
-		switch (operator) {
-			case "is_any_of":
-				if (columnType === "array" && Array.isArray(fieldValue)) {
-					return values.some((selectedValue) => fieldValue.includes(String(selectedValue)));
-				}
-				return values.some((value) => String(value) === String(fieldValue));
-			case "is_not_any_of":
-				if (columnType === "array" && Array.isArray(fieldValue)) {
-					return !values.some((selectedValue) => fieldValue.includes(String(selectedValue)));
-				}
-				return !values.some((value) => String(value) === String(fieldValue));
-			case "includes_all":
-				if (columnType === "array" && Array.isArray(fieldValue)) {
-					return values.every((selectedValue) => fieldValue.includes(String(selectedValue)));
-				}
-				return false;
-			case "excludes_all":
-				if (columnType === "array" && Array.isArray(fieldValue)) {
-					return !values.some((selectedValue) => fieldValue.includes(String(selectedValue)));
-				}
-				return true;
-			case "is":
-				return values.some((value) => String(value) === String(fieldValue));
-			case "is_not":
-				return !values.some((value) => String(value) === String(fieldValue));
-			case "contains":
-				return values.some((value) => String(fieldValue).toLowerCase().includes(String(value).toLowerCase()));
-			case "not_contains":
-				return !values.some((value) => String(fieldValue).toLowerCase().includes(String(value).toLowerCase()));
-			case "starts_with":
-				return values.some((value) => String(fieldValue).toLowerCase().startsWith(String(value).toLowerCase()));
-			case "ends_with":
-				return values.some((value) => String(fieldValue).toLowerCase().endsWith(String(value).toLowerCase()));
-			case "equals":
-				return String(fieldValue) === String(values[0]);
-			case "not_equals":
-				return String(fieldValue) !== String(values[0]);
-			case "greater_than":
-				return Number(fieldValue) > Number(values[0]);
-			case "less_than":
-				return Number(fieldValue) < Number(values[0]);
-			case "greater_than_or_equal":
-				return Number(fieldValue) >= Number(values[0]);
-			case "less_than_or_equal":
-				return Number(fieldValue) <= Number(values[0]);
-			case "between":
-				if (values.length >= 2) {
-					const min = Number(values[0]);
-					const max = Number(values[1]);
-					return Number(fieldValue) >= min && Number(fieldValue) <= max;
-				}
-				return true;
-			case "not_between":
-				if (values.length >= 2) {
-					const min = Number(values[0]);
-					const max = Number(values[1]);
-					return Number(fieldValue) < min || Number(fieldValue) > max;
-				}
-				return true;
-			case "before":
-				return new Date(String(fieldValue)) < new Date(String(values[0]));
-			case "after":
-				return new Date(String(fieldValue)) > new Date(String(values[0]));
-			case "empty":
-				return fieldValue === null || fieldValue === undefined || String(fieldValue).trim() === "";
-			case "not_empty":
-				return fieldValue !== null && fieldValue !== undefined && String(fieldValue).trim() !== "";
-			default:
-				return true;
-		}
-	});
-});
-return filtered;`;
-
-	return filteringLogic;
-};

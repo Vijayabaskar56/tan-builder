@@ -78,6 +78,8 @@ function DataUploadDialog() {
 			fileType: "auto",
 			onSuccess: (data, columns) => {
 				updateTableData(data, columns);
+				setTextareaText("[]");
+				dataForm.reset({ data: [] });
 				setIsProcessing(false);
 				toast.success("Data processed successfully");
 				setOpen(false);

@@ -3,12 +3,13 @@ import type { TableBuilder } from "@/db-collections/table-builder.collections";
 export const generateTableImports = (
 	settings: TableBuilder["settings"],
 	hasArrayColumns: boolean = false,
+	hasFilterableColumns: boolean = false,
 ): Set<string> => {
 	const importSet = new Set<string>();
 
 	// Base imports always needed
 	const reactImports = ["useMemo", "useState"];
-	if (settings.isGlobalSearch || settings.enableRowDragging || settings.enableColumnDragging) {
+	if (hasFilterableColumns || settings.enableRowDragging || settings.enableColumnDragging) {
 		reactImports.push("useCallback");
 	}
 	importSet.add('import { Button } from "@/components/ui/button"');
@@ -19,6 +20,9 @@ export const generateTableImports = (
 	);
 	importSet.add(
 		'import { DataGrid, DataGridContainer } from "@/components/ui/data-grid"',
+	);
+	importSet.add(
+		'import { DataGridColumnVisibility } from "@/components/ui/data-grid-column-visibility"',
 	);
 	importSet.add(
 		'import { DataGridColumnHeader } from "@/components/ui/data-grid-column-header"',
@@ -47,15 +51,21 @@ export const generateTableImports = (
 	}
 
 	if (settings.enableCRUD) {
-		importSet.add('import { EllipsisIcon } from "lucide-react"');
+		importSet.add('import { EllipsisIcon , Settings2 , FunnelX} from "lucide-react"');
 		importSet.add(
 			'import {\n\tDropdownMenu,\n\tDropdownMenuContent,\n\tDropdownMenuGroup,\n\tDropdownMenuItem,\n\tDropdownMenuSeparator,\n\tDropdownMenuShortcut,\n\tDropdownMenuTrigger,\n} from "@/components/ui/dropdown-menu"',
 		);
 	}
 
-	if (settings.isGlobalSearch) {
+	if (hasFilterableColumns) {
 		importSet.add(
 			'import { Filters, type Filter, type FilterFieldConfig } from "@/components/ui/filters"',
+		);
+	}
+
+	if (settings.isGlobalSearch) {
+		importSet.add(
+			'import { Input } from "@/components/ui/input"',
 		);
 	}
 

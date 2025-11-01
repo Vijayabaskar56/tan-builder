@@ -2,12 +2,10 @@
 import type { TableBuilder } from "@/db-collections/table-builder.collections";
 import {
 	generateFilterFields,
-	getFilteredDataString,
-	getColumnsString,
 } from "@/lib/table-generator/generate-columns";
-import { capitalize, toCamelCase, toJSLiteral } from "@/utils/utils";
 import type { JsonData } from "@/types/table-types";
-import useTableStore from "@/hooks/use-table-store";
+import { capitalize, toCamelCase, toJSLiteral } from "@/utils/utils";
+import { getColumnsString, getFilteredDataString } from "./generate-coloum-code";
 
 const getDataName = (customName?: string): string => {
 	return customName ? `${customName}Data` : "tableData";
@@ -17,13 +15,11 @@ const getTypeName = (customName?: string): string => {
 	return customName ? `${capitalize(customName)}Data` : "TableData";
 };
 
-const getComponentName = (): string => {
-	const tableData = useTableStore();
-	return `${capitalize(tableData.tableName)}Table`;
+const getComponentName = (tableName: string, customName?: string): string => {
+	return customName ? `${capitalize(customName)}Table` : `${capitalize(tableName)}Table`;
 };
 
-const generateTableLayoutProps = (): string => {
-	const tableData = useTableStore();
+const generateTableLayoutProps = (tableData: TableBuilder): string => {
 	const props: Record<string, any> = {};
 
 	if (tableData.settings.tableLayout?.dense) {
@@ -69,28 +65,29 @@ const generateTableLayoutProps = (): string => {
 	if (tableData.settings.enableHiding) {
 		props.columnsVisibility = true;
 	}
-	if (tableData.settings.enableSorting) {
-		props.columnsSortable = true;
-	}
 	return Object.keys(props).length > 0
 		? ` tableLayout={${toJSLiteral(props)}}`
 		: "";
 };
 
 const generateFilterFieldsCode = (
-	table: TableBuilder["table`"],
-	settings: TableBuilder["settings"],
+	tableData: TableBuilder,
 	dataName: string,
+	typeName: string,
 ): string => {
-	if (!settings.isGlobalSearch) return "";
-	const modifyiedDataFormat = table.columns.map((col) => ({
+	// Check if any column has filterable enabled
+	const hasFilterableColumns = tableData.table.columns.some((col) => col.filterable === true);
+	if (!hasFilterableColumns) return "";
+
+	const modifiedDataFormat = tableData.table.columns.map((col) => ({
 		...col,
 		accessor: toCamelCase(col.label),
 		label: toCamelCase(col.label),
 	}));
+
 	const generatedFields = generateFilterFields(
-		modifyiedDataFormat,
-		table.data as JsonData[],
+		modifiedDataFormat,
+		tableData.table.data as JsonData[],
 	);
 	const fieldsCode = generatedFields
 		.map(
@@ -101,7 +98,7 @@ const generateFilterFieldsCode = (
 		)
 		.join(",");
 
-	const filteringCode = getFilteredDataString(table.columns);
+	const filteringCode = getFilteredDataString(tableData.table.columns, typeName);
 
 	return `const filterFields = useMemo<FilterFieldConfig[]>(() => [
 		${fieldsCode}
@@ -114,19 +111,20 @@ const generateFilterFieldsCode = (
 };
 
 export const generateTableCode = (
+	tableData: TableBuilder,
 	customName?: string,
 ): { file: string; code: string } => {
-	const tableData = useTableStore();
-	const componentName = getComponentName(tableData, customName);
+	const componentName = getComponentName(tableData.tableName, customName);
 	const dataName = getDataName(customName);
 	const typeName = getTypeName(customName);
+	const FilterCode = generateFilterFieldsCode(tableData, dataName, typeName);
 
-	// Check if there are any array columns
-	const hasArrayColumns = tableData.table.columns.some(
-		(col) => col.type === "array",
+	// Check if any column has filterable enabled
+	const hasFilterableColumns = tableData.table.columns.some(
+		(col) => col.filterable === true,
 	);
 
-	const dataVar = tableData.settings.isGlobalSearch
+	const dataVar = hasFilterableColumns
 		? "filteredData"
 		: toCamelCase(dataName);
 
@@ -137,7 +135,7 @@ export const generateTableCode = (
 		pageSize: 10,
 	});
 	const [sorting, setSorting] = useState<SortingState>([]);
-	${tableData.settings.isGlobalSearch ? "const [filters, setFilters] = useState<Filter[]>([]);" : ""}
+	${hasFilterableColumns ? "const [filters, setFilters] = useState<Filter[]>([]);" : ""}
 	${
 		tableData.table.columns.some((col) => col.type === "array")
 			? `const [expandedArrayRows, setExpandedArrayRows] = useState<Set<string>>(new Set());
@@ -169,8 +167,8 @@ export const generateTableCode = (
 	}, []);`
 			: ""
 	}
-	const columns = useMemo<ColumnDef<${typeName}>[]>(
-		() => ${getColumnsString(
+
+	${getColumnsString(
 			tableData.table.columns,
 			{
 				enableSorting: tableData.settings.enableSorting,
@@ -180,13 +178,11 @@ export const generateTableCode = (
 				enableRowSelection: tableData.settings.enableRowSelection,
 				enableCRUD: tableData.settings.enableCRUD,
 			},
-			`${typeName}`,
-		)},
-		[],
-	);
-	${
-		tableData.settings.isGlobalSearch
-			? `${generateFilterFieldsCode(tableData.table, tableData.settings, dataName)}
+			`${typeName}`
+		)}
+
+	${hasFilterableColumns
+			? `${FilterCode}
 	const handleFiltersChange = useCallback((filters: Filter[]) => {
 		setFilters(filters);
 		setPagination((prev) => ({ ...prev, pageIndex: 0 }));
@@ -201,6 +197,8 @@ export const generateTableCode = (
 			pagination,
 			sorting,
 		},
+		enableSorting: ${tableData.settings.enableSorting},
+		enableSortingRemoval: false,
 		onPaginationChange: setPagination,
 		onSortingChange: setSorting,
 		getCoreRowModel: getCoreRowModel(),
@@ -211,7 +209,7 @@ export const generateTableCode = (
 		<DataGrid table={table} recordCount={` +
 		dataVar +
 		`?.length || 0}` +
-		generateTableLayoutProps(tableData.settings.tableLayout) +
+		generateTableLayoutProps(tableData) +
 		`>
 			<div className="w-full space-y-2.5">
 			` +
@@ -219,10 +217,7 @@ export const generateTableCode = (
 			? `
 					<div>
 						<Input
-							className={cn(
-								"peer min-w-60 h-8",
-								Boolean(table.getState().globalFilter) && "pe-9",
-							)}
+							className="peer min-w-60 h-8"
 							value={(table.getState().globalFilter ?? "") as string}
 							onChange={(e) => table.setGlobalFilter(e.target.value)}
 							placeholder="Search all columns..."
@@ -244,7 +239,7 @@ export const generateTableCode = (
 			: "") +
 		`
 			` +
-		(tableData.settings.isGlobalSearch
+		(hasFilterableColumns
 			? `<div className="flex-1"><Filters
 					filters={filters}
 					fields={filterFields}
