@@ -409,7 +409,7 @@ function RouteComponent() {
 							>
 								<div className="p-4">
 									<ScrollArea className="w-full">
-										<div className="flex gap-2 mb-3">
+										<div className="flex gap-2 mb-3 justify-center">
 											<AnimatedIconButton
 												icon={
 													<BlocksIcon

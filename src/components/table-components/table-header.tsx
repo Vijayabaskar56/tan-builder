@@ -90,10 +90,10 @@ export default function TableHeader() {
 
 	return (
 		<header className="w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-			<div className="flex h-auto lg:h-14 border-b items-center mx-3 flex-col lg:flex-row justify-end">
+			<div className="flex h-auto lg:h-14 border-b items-center mx-3 flex-col lg:flex-row md:justify-end justify-center">
 				{/* Actions section */}
 				<ScrollArea className="md:w-fit w-full py-2 order-1 lg:order-2">
-					<div className="flex items-center gap-2">
+					<div className="flex items-center gap-2 justify-center">
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<AnimatedIconButton
@@ -134,13 +134,13 @@ export default function TableHeader() {
 							onClick={resetTable}
 						/>
 						<div className="h-4 w-px bg-border" />
-						<AnimatedIconButton
+						{/* <AnimatedIconButton
 							icon={<ShareIcon className="w-4 h-4 mr-1" />}
 							text={<span className="hidden xl:block ml-1">Share</span>}
 							variant="ghost"
 							disabled={true}
 							onClick={handleShare}
-						/>
+						/> */}
 						<div className="h-4 w-px bg-border" />
 						{/* <AnimatedIconButton
 						//TODO: Infinite scroll Feature
