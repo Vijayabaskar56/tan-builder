@@ -2,13 +2,13 @@ export const seo = ({
 	title = "TanCN - Form and Table Builder",
 	description = "Help you Quickly Scaffold Forms and Tables using TanStack Libraries",
 	keywords = "form builder, table builder, tanstack, react",
-	image = "https://tancn.dev/assets/og-image.avif",
+	image = "https://tancn.dev/assets/twitter-image.jpg",
 	url = "https://tancn.dev/",
 	siteName = "tancn",
 	twitterSite = "@vijayabaskar56",
 	twitterCreator = "@vijayabaskar56",
 }: {
-	title: string;
+	title?: string;
 	description?: string;
 	image?: string;
 	keywords?: string;
@@ -25,6 +25,7 @@ export const seo = ({
 		{ name: "twitter:description", content: description },
 		{ name: "twitter:creator", content: twitterCreator },
 		{ name: "twitter:site", content: twitterSite },
+		{ name: "twitter:url", content: url },
 		{ name: "og:type", content: "website" },
 		{ name: "og:title", content: title },
 		{ name: "og:description", content: description },
