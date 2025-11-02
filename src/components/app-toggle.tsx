@@ -17,13 +17,6 @@ export default function AppToggle() {
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	const isFormBuilder = location.pathname.startsWith("/form-builder");
-	const isTableBuilder = location.pathname.startsWith("/table-builder");
-
-	if (!isFormBuilder && !isTableBuilder) {
-		return null;
-	}
-
 	const [isLabelHidden, setIsLabelHidden] = useState(false);
 
 	useEffect(() => {
@@ -33,6 +26,13 @@ export default function AppToggle() {
 		setIsLabelHidden(mql.matches);
 		return () => mql.removeEventListener("change", onChange);
 	}, []);
+
+	const isFormBuilder = location.pathname.startsWith("/form-builder");
+	const isTableBuilder = location.pathname.startsWith("/table-builder");
+
+	if (!isFormBuilder && !isTableBuilder) {
+		return null;
+	}
 
 	const selectedValue = isFormBuilder ? "off" : isTableBuilder ? "on" : "none";
 
