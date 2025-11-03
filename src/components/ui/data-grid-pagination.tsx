@@ -82,7 +82,7 @@ function DataGridPagination(props: DataGridPaginationProps) {
 		for (let i = currentGroupStart; i < currentGroupEnd; i++) {
 			buttons.push(
 				<Button
-					key={i}
+					key={`page-${i}`}
 					size="sm"
 					mode="icon"
 					variant="ghost"

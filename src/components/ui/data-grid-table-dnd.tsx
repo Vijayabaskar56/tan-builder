@@ -79,9 +79,8 @@ function DataGridTableDndHeader<TData>({
 		>
 			<div className="flex items-center justify-start gap-0.5">
 				<Button
-					mode="icon"
 					size="sm"
-					variant="dim"
+					variant="ghost"
 					className="-ms-2 size-6"
 					{...attributes}
 					{...listeners}
@@ -128,6 +127,7 @@ function DataGridTableDnd<TData>({
 }) {
 	const { table, isLoading, props } = useDataGrid();
 	const pagination = table.getState().pagination;
+	const columnOrder = table.getState().columnOrder;
 
 	const sensors = useSensors(
 		useSensor(MouseSensor, {}),
@@ -146,22 +146,29 @@ function DataGridTableDnd<TData>({
 			<div className="relative">
 				<DataGridTableBase>
 					<DataGridTableHead>
-						{table
-							.getHeaderGroups()
-							.map((headerGroup: HeaderGroup<TData>, index) => {
-								return (
-									<DataGridTableHeadRow headerGroup={headerGroup} key={index}>
-										<SortableContext
-											items={table.getState().columnOrder}
-											strategy={horizontalListSortingStrategy}
-										>
-											{headerGroup.headers.map((header, index) => (
-												<DataGridTableDndHeader header={header} key={index} />
-											))}
-										</SortableContext>
-									</DataGridTableHeadRow>
-								);
-							})}
+						{table.getHeaderGroups().map((headerGroup: HeaderGroup<TData>) => {
+							return (
+								<DataGridTableHeadRow
+									headerGroup={headerGroup}
+									key={headerGroup.id}
+								>
+									<SortableContext
+										items={columnOrder}
+										strategy={horizontalListSortingStrategy}
+									>
+										{headerGroup.headers.map((header) => {
+											const position = columnOrder.indexOf(header.column.id);
+											return (
+												<DataGridTableDndHeader
+													header={header}
+													key={`${header.id}-${position}`}
+												/>
+											);
+										})}
+									</SortableContext>
+								</DataGridTableHeadRow>
+							);
+						})}
 					</DataGridTableHead>
 
 					{(props.tableLayout?.stripped || !props.tableLayout?.rowBorder) && (
@@ -174,11 +181,11 @@ function DataGridTableDnd<TData>({
 						pagination?.pageSize ? (
 							Array.from({ length: pagination.pageSize }).map((_, rowIndex) => (
 								<DataGridTableBodyRowSkeleton key={rowIndex}>
-									{table.getVisibleFlatColumns().map((column, colIndex) => {
+									{table.getVisibleFlatColumns().map((column) => {
 										return (
 											<DataGridTableBodyRowSkeletonCell
 												column={column}
-												key={colIndex}
+												key={column.id}
 											>
 												{column.columnDef.meta?.skeleton}
 											</DataGridTableBodyRowSkeletonCell>
@@ -187,10 +194,10 @@ function DataGridTableDnd<TData>({
 								</DataGridTableBodyRowSkeleton>
 							))
 						) : table.getRowModel().rows.length ? (
-							table.getRowModel().rows.map((row: Row<TData>, index) => {
+							table.getRowModel().rows.map((row: Row<TData>) => {
 								return (
 									<Fragment key={row.id}>
-										<DataGridTableBodyRow row={row} key={index}>
+										<DataGridTableBodyRow row={row}>
 											{row
 												.getVisibleCells()
 												.map((cell: Cell<TData, unknown>) => {

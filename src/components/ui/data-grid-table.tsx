@@ -1,5 +1,3 @@
-"use no memo";
-
 import {
 	type Cell,
 	type Column,
@@ -497,14 +495,14 @@ function DataGridTable<TData>() {
 			<DataGridTableHead>
 				{table
 					.getHeaderGroups()
-					.map((headerGroup: HeaderGroup<TData>, index) => {
+					.map((headerGroup: HeaderGroup<TData>) => {
 						return (
-							<DataGridTableHeadRow headerGroup={headerGroup} key={index}>
-								{headerGroup.headers.map((header, index) => {
+							<DataGridTableHeadRow headerGroup={headerGroup} key={headerGroup.id}>
+								{headerGroup.headers.map((header) => {
 									const { column } = header;
 
 									return (
-										<DataGridTableHeadRowCell header={header} key={index}>
+										<DataGridTableHeadRowCell header={header} key={header.id}>
 											{header.isPlaceholder
 												? null
 												: flexRender(
@@ -534,11 +532,11 @@ function DataGridTable<TData>() {
 					// Show skeleton loading immediately
 					Array.from({ length: pagination.pageSize }).map((_, rowIndex) => (
 						<DataGridTableBodyRowSkeleton key={rowIndex}>
-							{table.getVisibleFlatColumns().map((column, colIndex) => {
+							{table.getVisibleFlatColumns().map((column) => {
 								return (
 									<DataGridTableBodyRowSkeletonCell
 										column={column}
-										key={colIndex}
+										key={column.id}
 									>
 										{column.columnDef.meta?.skeleton}
 									</DataGridTableBodyRowSkeletonCell>
@@ -580,15 +578,15 @@ function DataGridTable<TData>() {
 					// Show actual data when not loading
 					table
 						.getRowModel()
-						.rows.map((row: Row<TData>, index) => {
+						.rows.map((row: Row<TData>) => {
 							return (
 								<Fragment key={row.id}>
-									<DataGridTableBodyRow row={row} key={index}>
+									<DataGridTableBodyRow row={row}>
 										{row
 											.getVisibleCells()
-											.map((cell: Cell<TData, unknown>, colIndex) => {
+											.map((cell: Cell<TData, unknown>) => {
 												return (
-													<DataGridTableBodyRowCell cell={cell} key={colIndex}>
+													<DataGridTableBodyRowCell cell={cell} key={cell.id}>
 														{flexRender(
 															cell.column.columnDef.cell,
 															cell.getContext(),
