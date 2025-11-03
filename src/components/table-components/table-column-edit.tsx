@@ -1,4 +1,20 @@
 import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { DeleteIcon } from "@/components/ui/delete";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAppForm } from "@/components/ui/tanstack-form";
+import type { TableBuilder } from "@/db-collections/table-builder.collections";
+import { useForcedTransition } from "@/hooks/use-force-transition";
+import useTableStore from "@/hooks/use-table-store";
+import { TableBuilderService } from "@/services/table-builder.service";
+import type { Column } from "@/workers/data-processor.worker";
+import {
 	closestCenter,
 	DndContext,
 	type DragOverEvent,
@@ -16,33 +32,10 @@ import {
 } from "@dnd-kit/sortable";
 import { LucideGripVertical } from "lucide-react";
 import { useEffect, useOptimistic, useState, useTransition } from "react";
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { DeleteIcon } from "@/components/ui/delete";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import { useAppForm } from "@/components/ui/tanstack-form";
-import type { TableBuilder } from "@/db-collections/table-builder.collections";
-import { useForcedTransition } from "@/hooks/use-force-transition";
-import useTableStore from "@/hooks/use-table-store";
-import { TableBuilderService } from "@/services/table-builder.service";
-import type { Column } from "@/workers/data-processor.worker";
-import { ScrollArea } from "../ui/scroll-area";
-import { TableColumnDropdown } from "./table-column-dropdown";
 import { Badge } from "../ui/badge";
 import { Checkbox } from "../ui/checkbox";
+import { ScrollArea } from "../ui/scroll-area";
+import { TableColumnDropdown } from "./table-column-dropdown";
 
 export function TableColumnEdit() {
 	const [localColumns, setLocalColumns] = useState<

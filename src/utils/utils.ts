@@ -162,14 +162,14 @@ export const updatePreferredPackageManager = createClientOnlyFn(
 );
 
 export const logger = createIsomorphicFn()
-	.server((msg: string, data?: any) => console.log(`[SERVER]: ${msg}`, data))
-	.client((msg: string, data?: any) => {
+	.server((msg: string, data?: unknown) => console.log(`[SERVER]: ${msg}`, data))
+	.client((msg: string, data?: unknown) => {
 		if (import.meta.env.DEV) {
 			console.log(`[CLIENT]: ${msg}`, data);
 		}
 	});
 
-export const toJSLiteral = (value: any): string => {
+export const toJSLiteral = (value: unknown): string => {
 	if (typeof value === "string") return JSON.stringify(value);
 	if (typeof value === "number" || typeof value === "boolean")
 		return String(value);

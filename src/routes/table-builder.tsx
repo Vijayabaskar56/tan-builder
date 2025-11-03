@@ -1,17 +1,16 @@
 /** biome-ignore-all lint/a11y/noLabelWithoutControl: no needed */
 
-import { TableSettingsSidebar } from "@/components/table-components/table-settings";
-import { ErrorBoundary } from "@/components/error-boundary";
 import { createFileRoute, Outlet, useSearch } from "@tanstack/react-router";
 import { createClientOnlyFn } from "@tanstack/react-start";
 import { Database, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-
+import { ErrorBoundary } from "@/components/error-boundary";
 import Loader from "@/components/loader";
 import { NotFound } from "@/components/not-found";
 import { TableColumnEdit } from "@/components/table-components/table-column-edit";
-import { TableTemplates } from "@/components/table-components/table-templates";
 import TableHeader from "@/components/table-components/table-header";
+import { TableSettingsSidebar } from "@/components/table-components/table-settings";
+import { TableTemplates } from "@/components/table-components/table-templates";
 import { AnimatedIconButton } from "@/components/ui/animated-icon-button";
 import { BlocksIcon } from "@/components/ui/blocks";
 import { Button } from "@/components/ui/button";
@@ -28,12 +27,15 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { SettingsGearIcon } from "@/components/ui/settings-gear";
 import { Spinner } from "@/components/ui/spinner";
-import { tableBuilderCollection } from "@/db-collections/table-builder.collections";
+import {
+	type TableBuilder,
+	tableBuilderCollection,
+} from "@/db-collections/table-builder.collections";
 import { useScreenSize } from "@/hooks/use-screen-size";
 import useTableStore from "@/hooks/use-table-store";
-import { cn } from "@/utils/utils";
 import { TableBuilderService } from "@/services/table-builder.service";
 import { seo } from "@/utils/seo";
+import { cn } from "@/utils/utils";
 
 const initializeTableStore = createClientOnlyFn(async () => {
 	TableBuilderService.initializeTable();
@@ -41,14 +43,12 @@ const initializeTableStore = createClientOnlyFn(async () => {
 
 export const Route = createFileRoute("/table-builder")({
 	head: () => ({
-		meta : [
-						...seo({title: "Table Builder | TanCN - Form and Table Builder"}),
-		],
+		meta: [...seo({ title: "Table Builder | TanCN - Form and Table Builder" })],
 	}),
 	component: RouteComponent,
 	errorComponent: ErrorBoundary,
 	notFoundComponent: NotFound,
-	pendingComponent : Loader,
+	pendingComponent: Loader,
 	validateSearch: (search) => ({
 		share: search.share as string | undefined,
 	}),
@@ -68,7 +68,7 @@ function RouteComponent() {
 		useState(false);
 	const [activeTab, setActiveTab] = useState("columns");
 	const [shareDialogOpen, setShareDialogOpen] = useState(false);
-	const [sharedData, setSharedData] = useState<any>(null);
+	const [sharedData, setSharedData] = useState<TableBuilder | null>(null);
 	useEffect(() => {
 		initializeTableStore();
 		setIsTableBuilderInitialized(true);
@@ -105,10 +105,11 @@ function RouteComponent() {
 		window.history.replaceState({}, "", "/table-builder");
 	};
 	// Handle share parameter
+	// biome-ignore lint/correctness/useExhaustiveDependencies: handleReplace doesn't needed
 	useEffect(() => {
 		if (share && isTableBuilderInitialized) {
 			try {
-				const parsed = JSON.parse(decodeURIComponent(share));
+				const parsed = JSON.parse(decodeURIComponent(share)) as TableBuilder;
 				setSharedData(parsed);
 				// Show dialog if there's existing data
 				if (
@@ -129,9 +130,7 @@ function RouteComponent() {
 		isTableBuilderInitialized,
 		tableBuilder.table.columns.length,
 		tableBuilder.table.data.length, // Load directly if no existing data
-		handleReplace,
 	]);
-
 
 	const handleCancel = () => {
 		setShareDialogOpen(false);

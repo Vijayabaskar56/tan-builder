@@ -1,19 +1,15 @@
-/** biome-ignore-all lint/correctness/useUniqueElementIds: Need this for Focus State */
 import { FormArrayPreview } from "@/components/form-components/form-array-preview";
 import { MultiStepFormPreview } from "@/components/form-components/multi-step-preview";
 import { RenderFormElement } from "@/components/form-components/render-form-element";
-import { Button } from "@/components/ui/button";
-import type { AppForm } from "@/hooks/use-form-builder";
-import { useFormStore, useIsMultiStep } from "@/hooks/use-form-store";
-import type { FormArray, FormElement, FormStep } from "@/types/form-types";
 import NoFieldPlaceholder from "@/components/no-field-placeholder";
+import { Button } from "@/components/ui/button";
+import { useFormBuilder } from "@/hooks/use-form-builder";
+import { useFormStore, useIsMultiStep } from "@/hooks/use-form-store";
+import type { FormArray, FormElement } from "@/types/form-types";
 
-interface FormPreviewProps {
-	form: AppForm;
-}
-
-export function SingleStepFormPreview({ form }: FormPreviewProps) {
+export function SingleStepFormPreview() {
 	const { formElements, formName } = useFormStore();
+	const { form } = useFormBuilder();
 	const isMS = useIsMultiStep();
 	if (formElements.length < 1)
 		return (
@@ -28,10 +24,7 @@ export function SingleStepFormPreview({ form }: FormPreviewProps) {
 			<form.AppForm>
 				<form.Form id={formName} noValidate>
 					{isMS ? (
-						<MultiStepFormPreview
-							formElements={formElements as unknown as FormStep[]}
-							form={form}
-						/>
+						<MultiStepFormPreview />
 					) : (
 						formElements.map((element, i) => {
 							// Check if element is a FormArray
@@ -44,7 +37,6 @@ export function SingleStepFormPreview({ form }: FormPreviewProps) {
 									<div key={element.id} className="w-full">
 										<FormArrayPreview
 											formArray={element as FormArray}
-											form={form}
 											index={i}
 										/>
 									</div>

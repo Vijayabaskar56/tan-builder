@@ -9,27 +9,17 @@ import {
 	Circle,
 	Clock,
 	Code,
-	Database,
 	Eye,
-	FileText,
 	Layers,
 	Move,
 	Palette,
 	Share2,
-	Shield,
-	ShieldCheck,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import Loader from "@/components/loader";
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { seo } from "@/utils/seo";
 
 export const Route = createFileRoute("/")({

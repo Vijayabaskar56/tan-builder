@@ -1,3 +1,18 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { DataGrid, DataGridContainer } from "@/components/ui/data-grid";
+import { DataGridColumnHeader } from "@/components/ui/data-grid-column-header";
+import { DataGridPagination } from "@/components/ui/data-grid-pagination";
+import {
+	createFilter,
+	type Filter,
+	type FilterFieldConfig,
+	Filters,
+} from "@/components/ui/filters";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import type { DragEndEvent } from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
 import {
 	type ColumnDef,
 	getCoreRowModel,
@@ -18,22 +33,6 @@ import {
 	User,
 } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { DataGrid, DataGridContainer } from "@/components/ui/data-grid";
-import { DataGridColumnHeader } from "@/components/ui/data-grid-column-header";
-import { DataGridPagination } from "@/components/ui/data-grid-pagination";
-import { DataGridTable } from "@/components/ui/data-grid-table";
-import {
-	createFilter,
-	type Filter,
-	type FilterFieldConfig,
-	Filters,
-} from "@/components/ui/filters";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { DragEndEvent } from "@dnd-kit/core";
-import { arrayMove } from "@dnd-kit/sortable";
 import { DataGridTableDnd } from "../ui/data-grid-table-dnd";
 
 interface IData {

@@ -1,13 +1,14 @@
 // multi-step-form-preview.tsx
-import { AnimatePresence, motion } from "motion/react";
 import { FormArrayPreview } from "@/components/form-components/form-array-preview";
 import { RenderFormElement } from "@/components/form-components/render-form-element";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import type { AppForm } from "@/hooks/use-form-builder";
+import { useFormBuilder } from "@/hooks/use-form-builder";
+import { useFormStore } from "@/hooks/use-form-store";
 import { useMultiStepForm } from "@/hooks/use-multi-step-form";
 import useSettings from "@/hooks/use-settings";
 import type { FormArray, FormElement, FormStep } from "@/types/form-types";
+import { AnimatePresence, motion } from "motion/react";
 
 function collectFieldNames(items: any[]): string[] {
 	const names: string[] = [];
@@ -33,13 +34,9 @@ function collectFieldNames(items: any[]): string[] {
 	}
 	return names;
 }
-export function MultiStepFormPreview({
-	form,
-	formElements,
-}: {
-	form: AppForm;
-	formElements: FormStep[];
-}) {
+export function MultiStepFormPreview() {
+		const { formElements,  } = useFormStore();
+	const { form } = useFormBuilder();
 	const { validationMethod } = useSettings();
 	const validate =
 		validationMethod === "onBlur"
@@ -97,7 +94,6 @@ export function MultiStepFormPreview({
 								>
 									<FormArrayPreview
 										formArray={field as unknown as FormArray}
-										form={form}
 										index={i}
 									/>
 								</div>

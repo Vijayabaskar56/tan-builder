@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SquarePenIcon } from "@/components/ui/square-pen";
 import { useAppForm } from "@/components/ui/tanstack-form";
-import { AppForm } from "@/hooks/use-form-builder";
+import type { AppForm } from "@/hooks/use-form-builder";
 import type { FormBuilderActions } from "@/hooks/use-form-store";
 import { useFormStore, useIsMultiStep } from "@/hooks/use-form-store";
 import type {
