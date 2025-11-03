@@ -1,9 +1,7 @@
-import { Check, CircleX, LucideGripVertical, PlusCircle } from "lucide-react";
-import { Reorder, useDragControls } from "motion/react";
-import { useEffect, useRef, useState } from "react";
 import { FormElementsDropdown } from "@/components/form-components/form-elements-dropdown";
 import { RenderFormElement } from "@/components/form-components/render-form-element";
 import { StepContainer } from "@/components/form-components/step-container";
+import NoFieldPlaceholder from "@/components/no-field-placeholder";
 import {
 	Accordion,
 	AccordionContent,
@@ -11,12 +9,14 @@ import {
 	AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { DeleteIcon } from "@/components/ui/delete";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { SquarePenIcon } from "@/components/ui/square-pen";
 import { useAppForm } from "@/components/ui/tanstack-form";
+import { AppForm } from "@/hooks/use-form-builder";
 import type { FormBuilderActions } from "@/hooks/use-form-store";
 import { useFormStore, useIsMultiStep } from "@/hooks/use-form-store";
-import { isStatic, logger } from "@/utils/utils";
 import type {
 	FormArray,
 	FormElement,
@@ -24,9 +24,10 @@ import type {
 	FormStep,
 	Option,
 } from "@/types/form-types";
-import { DeleteIcon } from "@/components/ui/delete";
-import { SquarePenIcon } from "@/components/ui/square-pen";
-import NoFieldPlaceholder from "@/components/no-field-placeholder";
+import { isStatic, logger } from "@/utils/utils";
+import { Check, CircleX, LucideGripVertical, PlusCircle } from "lucide-react";
+import { Reorder, useDragControls } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 
 const getTransitionProps = (isLayoutTransitioning: boolean) => ({
 	transition: isLayoutTransitioning
@@ -297,7 +298,7 @@ const FormElementEditor = ({
 	const { fieldType } = formElement;
 
 	const form = useAppForm({
-		defaultValues: formElement as any,
+		defaultValues: formElement as FormElement,
 		onSubmit: ({ value }) => {
 			if (isFormArrayField && arrayId) {
 				// Use updateTemplate: false for property-only updates
@@ -384,7 +385,7 @@ const FormElementEditor = ({
 								required: true,
 								className: "border-secondary",
 							}}
-							form={form as any}
+							form={form  as unknown as AppForm}
 						/>
 					</div>
 				) : (
@@ -398,7 +399,7 @@ const FormElementEditor = ({
 								type: "text",
 								required: true,
 							}}
-							form={form as any}
+							form={form  as unknown as AppForm}
 						/>
 						<div className="flex items-center justify-between gap-4 w-full">
 							<RenderFormElement
@@ -411,7 +412,7 @@ const FormElementEditor = ({
 									required: true,
 									className: "outline-secondary",
 								}}
-								form={form as any}
+								form={form  as unknown as AppForm}
 							/>
 							<RenderFormElement
 								formElement={{
@@ -422,7 +423,7 @@ const FormElementEditor = ({
 									type: "text",
 									required: true,
 								}}
-								form={form as any}
+								form={form  as unknown as AppForm}
 							/>
 						</div>
 						<RenderFormElement
@@ -433,7 +434,7 @@ const FormElementEditor = ({
 								fieldType: "Input",
 								placeholder: "Add a description",
 							}}
-							form={form as any}
+							form={form  as unknown as AppForm}
 						/>
 						{fieldType === "Input" && (
 							<RenderFormElement
@@ -447,7 +448,7 @@ const FormElementEditor = ({
 									placeholder: "Placeholder",
 									value: formElement.type,
 								}}
-								form={form as any}
+								form={form  as unknown as AppForm}
 							/>
 						)}
 						{fieldType === "Slider" && (
@@ -462,7 +463,7 @@ const FormElementEditor = ({
 										defaultValue: formElement.min,
 										required: true,
 									}}
-									form={form as any}
+									form={form  as unknown as AppForm}
 								/>
 								<RenderFormElement
 									formElement={{
@@ -474,7 +475,7 @@ const FormElementEditor = ({
 										defaultValue: formElement.max,
 										required: true,
 									}}
-									form={form as any}
+									form={form  as unknown as AppForm}
 								/>
 								<RenderFormElement
 									formElement={{
@@ -486,7 +487,7 @@ const FormElementEditor = ({
 										defaultValue: formElement.step,
 										required: true,
 									}}
-									form={form as any}
+									form={form  as unknown as AppForm}
 								/>
 							</div>
 						)}
@@ -505,7 +506,7 @@ const FormElementEditor = ({
 									required: true,
 									type: "single",
 								}}
-								form={form as any}
+								form={form  as unknown as AppForm}
 							/>
 						)}
 						{isFieldWithOptions && (
@@ -523,7 +524,7 @@ const FormElementEditor = ({
 										label: "Required",
 										fieldType: "Checkbox",
 									}}
-									form={form as any}
+									form={form  as unknown as AppForm}
 								/>
 							</div>
 							<RenderFormElement
@@ -533,7 +534,7 @@ const FormElementEditor = ({
 									label: "Disabled",
 									fieldType: "Checkbox",
 								}}
-								form={form as any}
+								form={form as unknown as AppForm}
 							/>
 						</div>
 					</div>
@@ -892,6 +893,74 @@ const FormArrayItemContainer = ({
 		</Reorder.Item>
 	);
 };
+
+// Component for horizontal reordering with proper drag controls
+const HorizontalReorderItem = ({
+	element,
+	fieldIndex,
+	isLayoutTransitioning,
+	stepIndex,
+}: {
+	element: FormElement[];
+	fieldIndex: number;
+	isLayoutTransitioning: boolean;
+	stepIndex?: number;
+}) => {
+	const { actions } = useFormStore();
+	const dragControls = useDragControls();
+
+	return (
+		<Reorder.Item
+			value={element}
+			key={element[0].id}
+			className="flex items-center justify-start gap-2 pl-2"
+			layout
+			dragListener={false}
+			dragControls={dragControls}
+			{...getTransitionProps(isLayoutTransitioning)}
+		>
+			<button
+				type="button"
+				onPointerDown={(e) => dragControls.start(e)}
+				className="cursor-grab active:cursor-grabbing p-1 hover:bg-muted rounded"
+			>
+				<LucideGripVertical
+					size={20}
+					className="dark:text-muted-foreground text-muted-foreground"
+				/>
+			</button>
+			<Reorder.Group
+				axis="x"
+				onReorder={(newOrder) => {
+					actions.reorder({ newOrder, fieldIndex, stepIndex });
+				}}
+				values={element}
+				className="flex items-center justify-start gap-2 w-full relative"
+				tabIndex={-1}
+				{...getTransitionProps(isLayoutTransitioning)}
+			>
+				{element.map((el: FormElement, j: number) => (
+					<Reorder.Item
+						key={el.id}
+						value={el}
+						className="w-full rounded-xl border border-dashed py-1.5 bg-background"
+						layout
+						{...getTransitionProps(isLayoutTransitioning)}
+					>
+						<EditFormItem
+							key={el.id}
+							fieldIndex={fieldIndex}
+							j={j}
+							element={el}
+							stepIndex={stepIndex}
+						/>
+					</Reorder.Item>
+				))}
+			</Reorder.Group>
+		</Reorder.Item>
+	);
+};
+
 //======================================
 export function FormEdit() {
 	const isMultiStep = useIsMultiStep();
@@ -1110,45 +1179,13 @@ export function FormEdit() {
 
 												if (Array.isArray(element)) {
 													return (
-														<Reorder.Item
+														<HorizontalReorderItem
 															key={element[0].id}
-															value={element}
-															className="flex items-center justify-start gap-2 pl-2"
-															layout
-															{...getTransitionProps(isLayoutTransitioning)}
-														>
-															<LucideGripVertical
-																size={20}
-																className="dark:text-muted-foreground text-muted-foreground"
-															/>
-															<Reorder.Group
-																onReorder={(newOrder) => {
-																	actions.reorder({ newOrder, fieldIndex });
-																}}
-																values={element}
-																className="w-full flex items-center justify-start gap-2 relative"
-																{...getTransitionProps(isLayoutTransitioning)}
-															>
-																{element.map((el, j) => (
-																	<Reorder.Item
-																		value={el}
-																		key={el.id}
-																		className="w-full rounded-xl border border-dashed py-1.5 bg-background"
-																		layout
-																		{...getTransitionProps(
-																			isLayoutTransitioning,
-																		)}
-																	>
-																		<EditFormItem
-																			fieldIndex={fieldIndex}
-																			j={j}
-																			element={el}
-																			stepIndex={stepIndex}
-																		/>
-																	</Reorder.Item>
-																))}
-															</Reorder.Group>
-														</Reorder.Item>
+															element={element}
+															fieldIndex={fieldIndex}
+															stepIndex={stepIndex}
+															isLayoutTransitioning={isLayoutTransitioning}
+														/>
 													);
 												}
 												return (
@@ -1211,45 +1248,12 @@ export function FormEdit() {
 
 							if (Array.isArray(element)) {
 								return (
-									<Reorder.Item
-										value={element}
+									<HorizontalReorderItem
 										key={element[0].id}
-										className="flex items-center justify-start gap-2 pl-2"
-										layout
-										{...getTransitionProps(isLayoutTransitioning)}
-									>
-										<LucideGripVertical
-											size={20}
-											className="dark:text-muted-foreground text-muted-foreground"
-										/>
-										<Reorder.Group
-											axis="x"
-											onReorder={(newOrder) => {
-												actions.reorder({ newOrder, fieldIndex: i });
-											}}
-											values={element}
-											className="flex items-center justify-start gap-2 w-full relative"
-											tabIndex={-1}
-											{...getTransitionProps(isLayoutTransitioning)}
-										>
-											{element.map((el: FormElement, j: number) => (
-												<Reorder.Item
-													key={el.id}
-													value={el}
-													className="w-full rounded-xl border border-dashed py-1.5 bg-background"
-													layout
-													{...getTransitionProps(isLayoutTransitioning)}
-												>
-													<EditFormItem
-														key={el.id}
-														fieldIndex={i}
-														j={j}
-														element={el}
-													/>
-												</Reorder.Item>
-											))}
-										</Reorder.Group>
-									</Reorder.Item>
+										element={element}
+										fieldIndex={i}
+										isLayoutTransitioning={isLayoutTransitioning}
+									/>
 								);
 							}
 							return (
