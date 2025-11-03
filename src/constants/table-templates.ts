@@ -1,4 +1,4 @@
-import { TableBuilder } from "@/db-collections/table-builder.collections";
+import type { TableBuilder } from "@/db-collections/table-builder.collections";
 import type { ColumnConfig, DataRow } from "@/types/table-types";
 
 export interface TableTemplate {

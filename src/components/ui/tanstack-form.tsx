@@ -109,33 +109,37 @@ const useFieldContext = () => {
 };
 
 function Field({
-	children,
-	...props
+  children,
+  ...props
 }: React.ComponentProps<"div"> & VariantProps<typeof fieldVariants>) {
-	const { errors, formItemId, formDescriptionId, formMessageId } =
-		useFieldContext();
+  const { errors, formItemId, formDescriptionId, formMessageId, handleBlur, store } =
+    useFieldContext();
+  const isTouched = useStore(store, (state) => state.meta.isTouched);
+  const hasVisibleErrors = !!errors.length && isTouched;
 
-	return (
-		<DefaultField
-			data-invalid={!!errors.length}
-			id={formItemId}
-			aria-describedby={
-				!errors.length
-					? `${formDescriptionId}`
-					: `${formDescriptionId} ${formMessageId}`
-			}
-			aria-invalid={!!errors.length}
-			{...props}
-		>
-			{children}
-		</DefaultField>
-	);
+  return (
+    <DefaultField
+      data-invalid={hasVisibleErrors}
+      id={formItemId}
+      onBlur={handleBlur}
+      aria-describedby={
+        !hasVisibleErrors
+          ? `${formDescriptionId}`
+          : `${formDescriptionId} ${formMessageId}`
+      }
+      aria-invalid={hasVisibleErrors}
+      {...props}
+    >
+      {children}
+    </DefaultField>
+  );
 }
 
 function FieldError({ className, ...props }: React.ComponentProps<"p">) {
-	const { errors, formMessageId } = useFieldContext();
-	const body = errors.length ? String(errors.at(0)?.message ?? "") : "";
-	if (!body) return null;
+  const { errors, formMessageId , store } = useFieldContext();
+  const isTouched = useStore(store, (state) => state.meta.isTouched);
+  const body = errors.length ? String(errors.at(0)?.message ?? "") : "";
+  if (!body || !isTouched) return null;
 	return (
 		<DefaultFieldError
 			data-slot="form-message"

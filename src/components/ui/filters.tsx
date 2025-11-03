@@ -2168,6 +2168,7 @@ export function Filters<T = unknown>({
 										}),
 										addButtonClassName,
 									)}
+									type="button"
 									title={mergedI18n.addFilterTitle}
 								>
 									{addButtonIcon || <Plus />}

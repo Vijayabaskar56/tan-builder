@@ -1,8 +1,7 @@
-import { Plus, Trash2 } from "lucide-react";
 import { RenderFormElement } from "@/components/form-components/render-form-element";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import type { AppForm } from "@/hooks/use-form-builder";
+import { useFormBuilder } from "@/hooks/use-form-builder";
 import { useFormStore } from "@/hooks/use-form-store";
 import { getDefaultFormElement } from "@/lib/form-code-generators/react/generate-default-value";
 import type {
@@ -10,14 +9,14 @@ import type {
 	FormElement,
 	FormElementOrList,
 } from "@/types/form-types";
+import { Plus, Trash2 } from "lucide-react";
 
 interface FormArrayPreviewProps {
 	formArray: FormArray;
-	form: AppForm;
 	index: number;
 }
 
-export function FormArrayPreview({ formArray, form }: FormArrayPreviewProps) {
+export function FormArrayPreview({ formArray }: FormArrayPreviewProps) {
 	const { formElements, actions } = useFormStore();
 
 	// Get the latest FormArray from the store to ensure reactivity
@@ -28,7 +27,7 @@ export function FormArrayPreview({ formArray, form }: FormArrayPreviewProps) {
 			"arrayField" in el &&
 			el.id === formArray.id,
 	) as FormArray | undefined;
-
+	const { form } = useFormBuilder();
 	const arrayToUse = currentFormArray || formArray;
 	const defaultValue = getDefaultFormElement(arrayToUse.arrayField);
 	return (

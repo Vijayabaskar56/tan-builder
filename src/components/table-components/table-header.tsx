@@ -31,7 +31,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { AnimatedIconButton } from "../ui/animated-icon-button";
 import { RotateCWIcon } from "../ui/rotate-cw";
-import { ShareIcon } from "../ui/share";
 import TableCodeDialog from "./table-code-dialog";
 import DataUploadDialog from "./table-data-upload-dialog";
 
@@ -73,7 +72,7 @@ export default function TableHeader() {
 		TableBuilderService.updateTableLayoutSetting(key, value);
 	};
 
-	const handleShare = () => {
+	const _handleShare = () => {
 		const shareData = {
 			tableName: tableData.tableName,
 			settings: tableData.settings,

@@ -1,15 +1,14 @@
-import { FormEdit } from "@/components/form-components/form-edit";
-import { SingleStepFormPreview } from "@/components/form-components/form-preview";
 import { ErrorBoundary } from "@/components/error-boundary";
+import { FormEdit } from "@/components/form-components/form-edit";
+import { FieldTab } from "@/components/form-components/form-field-library";
+import { SingleStepFormPreview } from "@/components/form-components/form-preview";
+import { SettingsSidebar } from "@/components/form-components/form-settings";
+import { TemplateSidebar } from "@/components/form-components/form-templates";
 import Loader from "@/components/loader";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { type AppForm, useFormBuilder } from "@/hooks/use-form-builder";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useSettings from "@/hooks/use-settings";
 import { createFileRoute } from "@tanstack/react-router";
-import { FieldTab } from "../../components/form-components/form-field-library";
-import { SettingsSidebar } from "../../components/form-components/form-settings";
-import { TemplateSidebar } from "../../components/form-components/form-templates";
 
 export const Route = createFileRoute("/form-builder/")({
 	head: () => ({
@@ -21,7 +20,6 @@ export const Route = createFileRoute("/form-builder/")({
 });
 
 function FormBuilderComponent() {
-	const { form } = useFormBuilder();
 	const isMobile = useIsMobile();
 	const settings = useSettings();
 	const activeTab = settings?.activeTab;
@@ -69,7 +67,7 @@ function FormBuilderComponent() {
 										See how your form looks
 									</p>
 								</div>
-								<SingleStepFormPreview form={form as unknown as AppForm} />
+								<SingleStepFormPreview />
 							</div>
 						</div>
 					</ScrollArea>
@@ -116,7 +114,7 @@ function FormBuilderComponent() {
 												See how your form looks
 											</p>
 										</div>
-										<SingleStepFormPreview form={form as unknown as AppForm} />
+										<SingleStepFormPreview />
 									</div>
 								</ScrollArea>
 							</div>
@@ -163,7 +161,7 @@ function FormBuilderComponent() {
 									</p>
 								</div>
 								<ScrollArea className="h-full  md:h-180">
-									<SingleStepFormPreview form={form as unknown as AppForm} />
+									<SingleStepFormPreview />
 								</ScrollArea>
 							</div>
 						</div>

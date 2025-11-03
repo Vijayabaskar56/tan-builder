@@ -1,6 +1,6 @@
 export type JsonData = Record<
 	string,
-	string | number | boolean | null | undefined | object | any[]
+	string | number | boolean | null | undefined | object | unknown[]
 >;
 
 export interface ColumnConfig {
@@ -17,5 +17,5 @@ export interface ColumnConfig {
 }
 
 export interface DataRow {
-	[key: string]: string | number | boolean | null | undefined | object | any[];
+	[key: string]: string | number | boolean | null | undefined | object | unknown[];
 }

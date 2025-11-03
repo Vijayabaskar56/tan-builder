@@ -353,7 +353,9 @@ const getSystemTheme = (
   next-themes can be found at https://github.com/pacocoursey/next-themes under the MIT license.
 */
 
-export const script: (...args: any[]) => void = (
+
+// biome-ignore lint/suspicious/noExplicitAny: Avoid using any
+export  const script: (...args: any[]) => void = (
 	attribute,
 	storageKey,
 	defaultTheme,

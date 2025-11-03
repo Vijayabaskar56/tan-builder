@@ -425,6 +425,7 @@ function DataGridTableLoader() {
 					fill="none"
 					viewBox="0 0 24 24"
 				>
+					<title>data grid loader</title>
 					<circle
 						className="opacity-25"
 						cx="12"
@@ -556,6 +557,7 @@ function DataGridTable<TData>() {
 									fill="none"
 									viewBox="0 0 24 24"
 								>
+									<title>Data-grid table</title>
 									<circle
 										className="opacity-25"
 										cx="12"

@@ -30,7 +30,7 @@ export const getFormElementCode = (
                           value={(field.state.value as string | undefined) ?? ""}
                           onBlur={field.handleBlur}
                           onChange={(e) => field.handleChange(e.target.value${field.type === "number" || field.type === "tel" ? "AsNumber" : ""})}
-                          aria-invalid={!!field.state.meta.errors.length}
+                          aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
                         />
                       </field.Field>
                       ${field.description ? `<field.FieldDescription>${field.description}</field.FieldDescription>` : ""}
@@ -53,7 +53,7 @@ export const getFormElementCode = (
                   onChange={field.handleChange}
                   required={${field.required ?? false}}
                   disabled={${field.disabled ?? false}}
-                  aria-invalid={!!field.state.meta.errors.length}
+                  aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
                 >
                   <InputOTPGroup>
                     <InputOTPSlot index={0} />
@@ -90,7 +90,7 @@ export const getFormElementCode = (
                   onChange={(e) => field.handleChange(e.target.value)}
                   onBlur={field.handleBlur}
                   className="resize-none"
-                  aria-invalid={!!field.state.meta.errors.length}
+                  aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
                 />
                 ${field.description ? `<field.FieldDescription>${field.description}</field.FieldDescription>` : ""}
               </field.Field>
@@ -117,7 +117,7 @@ export const getFormElementCode = (
                     value={(field.state.value as string | undefined) ?? ""}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={!!field.state.meta.errors.length}
+                    aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
                   />
                   <field.InputGroupAddon align="inline-end">
                     <button
@@ -156,7 +156,7 @@ export const getFormElementCode = (
 											field.handleChange(checked as boolean)
 										}
                   disabled={${field.disabled ?? false}}
-                  aria-invalid={!!field.state.meta.errors.length}
+                  aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
                 />
                 <field.FieldContent>
                   <field.FieldLabel
@@ -183,7 +183,7 @@ export const getFormElementCode = (
               <field.Field>
                 ${field.label && `<field.FieldLabel htmlFor={${formatFieldName(field.name)}}>${field.label} ${field.required ? "*" : ""}</field.FieldLabel>`}
                 <Popover>
-                  <PopoverTrigger asChild disabled={${field.disabled ?? false}} aria-invalid={!!field.state.meta.errors.length}>
+                  <PopoverTrigger asChild disabled={${field.disabled ?? false}} aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}>
                     <Button
                       variant={"outline"}
                       className={cn(
@@ -206,7 +206,7 @@ export const getFormElementCode = (
                       onSelect={(newDate) => {
                         field.handleChange(newDate?.toISOString() as string);
                       }}
-                      aria-invalid={!!field.state.meta.errors.length}
+                      aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
                     />
                   </PopoverContent>
                 </Popover>
@@ -238,9 +238,9 @@ export const getFormElementCode = (
                     <MultiSelect
                       disabled={${field.disabled ?? false}}
                       onValueChange={field.handleChange}
-                      aria-invalid={!!field.state.meta.errors.length}
+                      aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
                     >
-                      <MultiSelectTrigger aria-invalid={!!field.state.meta.errors.length}>
+                      <MultiSelectTrigger aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}>
                         <MultiSelectValue
                           placeholder="${field.placeholder === "" ? "Select item" : field.placeholder}"
                         />
@@ -286,7 +286,7 @@ export const getFormElementCode = (
                 onValueChange={field.handleChange}
                 defaultValue={String(field?.state.value ?? "")}
                 disabled={${field.disabled ?? false}}
-                aria-invalid={!!field.state.meta.errors.length}
+                aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
               >
                 <field.Field>
                   <SelectTrigger className="w-full">
@@ -338,7 +338,7 @@ export const getFormElementCode = (
                         disabled={${field.disabled ?? false}}
                         step={step}
                         value={sliderValue}
-                        aria-invalid={!!field.state.meta.errors.length}
+                        aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
                         onValueChange={(newValue) => {
                           field.handleChange(newValue[0]);
                           field.handleBlur();
@@ -374,7 +374,7 @@ export const getFormElementCode = (
                         field.handleBlur();
                       }}
                       disabled={${field.disabled ?? false}}
-                      aria-invalid={!!field.state.meta.errors.length}
+                      aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
                     />
                   </field.Field>
                 </field.FieldSet>
@@ -405,7 +405,7 @@ export const getFormElementCode = (
                       name={${formatFieldName(field.name)}}
                       value={(field.state.value as string | undefined) ?? ""}
                       disabled={${field.disabled ?? false}}
-                      aria-invalid={!!field.state.meta.errors.length}
+                      aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
                     >
                       {options.map(({ label, value }) => (
                         <div key={value} className="flex items-center gap-x-2">
@@ -455,7 +455,7 @@ export const getFormElementCode = (
                       onValueChange={field.handleChange}
                       defaultValue={${field.defaultValue}}
                       className="flex justify-start items-center w-full"
-                      aria-invalid={!!field.state.meta.errors.length}
+                      aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
                     >
                       {options.map(({ label, value }) => (
                         <ToggleGroupItem
@@ -476,7 +476,7 @@ export const getFormElementCode = (
                       variant="outline"
                       onValueChange={field.handleChange}
                       className="flex justify-start items-center w-full"
-                      aria-invalid={!!field.state.meta.errors.length}
+                      aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
                     >
                       {options.map(({ label, value }) => (
                         <ToggleGroupItem
