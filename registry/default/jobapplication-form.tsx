@@ -87,7 +87,7 @@ export function JobApplicationForm() {
 											value={(field.state.value as string | undefined) ?? ""}
 											onBlur={field.handleBlur}
 											onChange={(e) => field.handleChange(e.target.value)}
-											aria-invalid={!!field.state.meta.errors.length}
+											aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 										/>
 									</field.Field>
 
@@ -109,7 +109,7 @@ export function JobApplicationForm() {
 											value={(field.state.value as string | undefined) ?? ""}
 											onBlur={field.handleBlur}
 											onChange={(e) => field.handleChange(e.target.value)}
-											aria-invalid={!!field.state.meta.errors.length}
+											aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 										/>
 									</field.Field>
 
@@ -132,7 +132,7 @@ export function JobApplicationForm() {
 										value={(field.state.value as string | undefined) ?? ""}
 										onBlur={field.handleBlur}
 										onChange={(e) => field.handleChange(e.target.value)}
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									/>
 								</field.Field>
 
@@ -154,7 +154,7 @@ export function JobApplicationForm() {
 										value={(field.state.value as string | undefined) ?? ""}
 										onBlur={field.handleBlur}
 										onChange={(e) => field.handleChange(e.target.value)}
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									/>
 								</field.Field>
 
@@ -176,7 +176,7 @@ export function JobApplicationForm() {
 										value={(field.state.value as string | undefined) ?? ""}
 										onBlur={field.handleBlur}
 										onChange={(e) => field.handleChange(e.target.value)}
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									/>
 								</field.Field>
 
@@ -205,7 +205,7 @@ export function JobApplicationForm() {
 											name={"position"}
 											value={(field.state.value as string | undefined) ?? ""}
 											disabled={false}
-											aria-invalid={!!field.state.meta.errors.length}
+											aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 										>
 											{options.map(({ label, value }) => (
 												<div key={value} className="flex items-center gap-x-2">
@@ -249,7 +249,7 @@ export function JobApplicationForm() {
 										onValueChange={field.handleChange}
 										defaultValue={String(field?.state.value ?? "")}
 										disabled={false}
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									>
 										<field.Field>
 											<SelectTrigger className="w-full">
@@ -286,7 +286,7 @@ export function JobApplicationForm() {
 										onChange={(e) => field.handleChange(e.target.value)}
 										onBlur={field.handleBlur}
 										className="resize-none"
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									/>
 								</field.Field>
 								<field.FieldError />

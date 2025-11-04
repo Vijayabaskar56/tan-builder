@@ -63,7 +63,7 @@ export function LoginForm() {
 										value={(field.state.value as string | undefined) ?? ""}
 										onBlur={field.handleBlur}
 										onChange={(e) => field.handleChange(e.target.value)}
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									/>
 								</field.Field>
 
@@ -87,7 +87,7 @@ export function LoginForm() {
 											value={(field.state.value as string | undefined) ?? ""}
 											onBlur={field.handleBlur}
 											onChange={(e) => field.handleChange(e.target.value)}
-											aria-invalid={!!field.state.meta.errors.length}
+											aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 										/>
 										<field.InputGroupAddon align="inline-end">
 											<button

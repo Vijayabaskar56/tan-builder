@@ -48,10 +48,10 @@ export function MultiSelectForm() {
 										<MultiSelect
 											disabled={false}
 											onValueChange={field.handleChange}
-											aria-invalid={!!field.state.meta.errors.length}
+											aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 										>
 											<MultiSelectTrigger
-												aria-invalid={!!field.state.meta.errors.length}
+												aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 											>
 												<MultiSelectValue placeholder="Select item" />
 											</MultiSelectTrigger>

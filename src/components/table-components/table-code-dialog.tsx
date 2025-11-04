@@ -202,7 +202,7 @@ function TableCodeDialog() {
 								{(field) => (
 									<field.FieldSet className="w-full">
 										<field.Field
-											aria-invalid={!!field.state.meta.errors.length}
+											aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 										>
 											<field.FieldLabel htmlFor={"tableName"}>
 												Table Name
@@ -210,7 +210,7 @@ function TableCodeDialog() {
 											<InputGroup className="flex flex-col gap-2 sm:flex-row sm:gap-0">
 												<InputGroupInput
 													name={"tableName"}
-													aria-invalid={!!field.state.meta.errors.length}
+													aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 													placeholder="Enter your table name eg:- UserTable"
 													type="string"
 													value={field.state.value as string}

@@ -55,7 +55,7 @@ export function SliderForm() {
 											disabled={false}
 											step={step}
 											value={sliderValue}
-											aria-invalid={!!field.state.meta.errors.length}
+											aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 											onValueChange={(newValue) => {
 												field.handleChange(newValue[0]);
 												// Trigger validation by simulating blur
