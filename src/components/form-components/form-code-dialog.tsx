@@ -226,7 +226,7 @@ function CodeDialog() {
 								{(field) => (
 									<field.FieldSet className="w-full">
 										<field.Field
-											aria-invalid={!!field.state.meta.errors.length}
+											aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 										>
 											<field.FieldLabel htmlFor={"formName"}>
 												Form Name
@@ -234,7 +234,7 @@ function CodeDialog() {
 											<InputGroup>
 												<InputGroupInput
 													name={"formName"}
-													aria-invalid={!!field.state.meta.errors.length}
+													aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 													placeholder="Enter your form name eg:- ContactUs"
 													type="string"
 													value={field.state.value as string}

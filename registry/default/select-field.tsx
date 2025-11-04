@@ -53,7 +53,7 @@ export function SelectForm() {
 									onValueChange={field.handleChange}
 									defaultValue={String(field?.state.value ?? "")}
 									disabled={false}
-									aria-invalid={!!field.state.meta.errors.length}
+									aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 								>
 									<field.Field>
 										<SelectTrigger className="w-full">

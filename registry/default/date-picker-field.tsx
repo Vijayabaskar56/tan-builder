@@ -50,7 +50,7 @@ export function DatePickerForm() {
 											<PopoverTrigger
 												asChild
 												disabled={false}
-												aria-invalid={!!field.state.meta.errors.length}
+												aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 											>
 												<Button
 													variant={"outline"}
@@ -76,7 +76,7 @@ export function DatePickerForm() {
 															newDate ? newDate.toISOString() : "",
 														);
 													}}
-													aria-invalid={!!field.state.meta.errors.length}
+													aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 												/>
 											</PopoverContent>
 										</Popover>

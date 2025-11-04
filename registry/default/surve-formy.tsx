@@ -64,7 +64,7 @@ const Step1Group = withFieldGroup({
 									value={(field.state.value as string | undefined) ?? ""}
 									onBlur={field.handleBlur}
 									onChange={(e) => field.handleChange(e.target.value)}
-									aria-invalid={!!field.state.meta.errors.length}
+									aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 								/>
 							</field.Field>
 
@@ -87,7 +87,7 @@ const Step1Group = withFieldGroup({
 									value={(field.state.value as string | undefined) ?? ""}
 									onBlur={field.handleBlur}
 									onChange={(e) => field.handleChange(e.target.value)}
-									aria-invalid={!!field.state.meta.errors.length}
+									aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 								/>
 							</field.Field>
 
@@ -128,7 +128,7 @@ const Step2Group = withFieldGroup({
 									value={(field.state.value as string | undefined) ?? ""}
 									onBlur={field.handleBlur}
 									onChange={(e) => field.handleChange(e.target.value)}
-									aria-invalid={!!field.state.meta.errors.length}
+									aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 								/>
 							</field.Field>
 
@@ -152,7 +152,7 @@ const Step2Group = withFieldGroup({
 									value={field.state.value}
 									onBlur={field.handleBlur}
 									onChange={(e) => field.handleChange(e.target.valueAsNumber)}
-									aria-invalid={!!field.state.meta.errors.length}
+									aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 								/>
 							</field.Field>
 
@@ -199,7 +199,7 @@ const Step3Group = withFieldGroup({
 										variant="outline"
 										onValueChange={field.handleChange}
 										className="flex justify-start items-center w-full"
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									>
 										{options.map(({ label, value }) => (
 											<ToggleGroupItem
@@ -237,7 +237,7 @@ const Step3Group = withFieldGroup({
 									onChange={(e) => field.handleChange(e.target.value)}
 									onBlur={field.handleBlur}
 									className="resize-none"
-									aria-invalid={!!field.state.meta.errors.length}
+									aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 								/>
 							</field.Field>
 							<field.FieldError />

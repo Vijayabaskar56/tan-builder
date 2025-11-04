@@ -76,7 +76,7 @@ export function EventRegistrationForm() {
 											value={(field.state.value as string | undefined) ?? ""}
 											onBlur={field.handleBlur}
 											onChange={(e) => field.handleChange(e.target.value)}
-											aria-invalid={!!field.state.meta.errors.length}
+											aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 										/>
 									</field.Field>
 
@@ -98,7 +98,7 @@ export function EventRegistrationForm() {
 											value={(field.state.value as string | undefined) ?? ""}
 											onBlur={field.handleBlur}
 											onChange={(e) => field.handleChange(e.target.value)}
-											aria-invalid={!!field.state.meta.errors.length}
+											aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 										/>
 									</field.Field>
 
@@ -121,7 +121,7 @@ export function EventRegistrationForm() {
 										value={(field.state.value as string | undefined) ?? ""}
 										onBlur={field.handleBlur}
 										onChange={(e) => field.handleChange(e.target.value)}
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									/>
 								</field.Field>
 
@@ -143,7 +143,7 @@ export function EventRegistrationForm() {
 										value={(field.state.value as string | undefined) ?? ""}
 										onBlur={field.handleBlur}
 										onChange={(e) => field.handleChange(e.target.value)}
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									/>
 								</field.Field>
 
@@ -170,7 +170,7 @@ export function EventRegistrationForm() {
 											name={"ticketType"}
 											value={(field.state.value as string | undefined) ?? ""}
 											disabled={false}
-											aria-invalid={!!field.state.meta.errors.length}
+											aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 										>
 											{options.map(({ label, value }) => (
 												<div key={value} className="flex items-center gap-x-2">
@@ -205,7 +205,7 @@ export function EventRegistrationForm() {
 										onChange={(e) => field.handleChange(e.target.value)}
 										onBlur={field.handleBlur}
 										className="resize-none"
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									/>
 								</field.Field>
 								<field.FieldError />

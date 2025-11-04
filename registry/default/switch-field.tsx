@@ -47,7 +47,7 @@ export function SwitchForm() {
 											field.handleBlur();
 										}}
 										disabled={false}
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									/>
 								</field.Field>
 							</field.FieldSet>

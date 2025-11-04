@@ -68,7 +68,7 @@ export function ContacUsForm() {
 											value={(field.state.value as string | undefined) ?? ""}
 											onBlur={field.handleBlur}
 											onChange={(e) => field.handleChange(e.target.value)}
-											aria-invalid={!!field.state.meta.errors.length}
+											aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 										/>
 									</field.Field>
 
@@ -90,7 +90,7 @@ export function ContacUsForm() {
 											value={(field.state.value as string | undefined) ?? ""}
 											onBlur={field.handleBlur}
 											onChange={(e) => field.handleChange(e.target.value)}
-											aria-invalid={!!field.state.meta.errors.length}
+											aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 										/>
 									</field.Field>
 
@@ -115,7 +115,7 @@ export function ContacUsForm() {
 										onChange={(e) => field.handleChange(e.target.value)}
 										onBlur={field.handleBlur}
 										className="resize-none"
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									/>
 								</field.Field>
 								<field.FieldError />
@@ -132,7 +132,7 @@ export function ContacUsForm() {
 											field.handleChange(checked as boolean)
 										}
 										disabled={false}
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									/>
 									<field.FieldContent>
 										<field.FieldLabel

@@ -46,7 +46,7 @@ export function RadioGroupForm() {
 										name={"radio"}
 										value={(field.state.value as string | undefined) ?? ""}
 										disabled={false}
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									>
 										{options.map(({ label, value }) => (
 											<div key={value} className="flex items-center gap-x-2">

@@ -85,7 +85,7 @@ export function PurchaseOrderForm() {
 										value={(field.state.value as string | undefined) ?? ""}
 										onBlur={field.handleBlur}
 										onChange={(e) => field.handleChange(e.target.value)}
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									/>
 								</field.Field>
 
@@ -107,7 +107,7 @@ export function PurchaseOrderForm() {
 										value={(field.state.value as string | undefined) ?? ""}
 										onBlur={field.handleBlur}
 										onChange={(e) => field.handleChange(e.target.value)}
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									/>
 								</field.Field>
 
@@ -143,7 +143,7 @@ export function PurchaseOrderForm() {
 															onChange={(e) =>
 																field.handleChange(e.target.value)
 															}
-															aria-invalid={!!field.state.meta.errors.length}
+															aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 														/>
 													</field.Field>
 
@@ -182,7 +182,7 @@ export function PurchaseOrderForm() {
 																disabled={false}
 																step={step}
 																value={sliderValue}
-																aria-invalid={!!field.state.meta.errors.length}
+																aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 																onValueChange={(newValue) => {
 																	field.handleChange(newValue[0]);
 																	field.handleBlur();

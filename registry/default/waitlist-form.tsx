@@ -62,7 +62,7 @@ export function WaitlistForm() {
 										value={(field.state.value as string | undefined) ?? ""}
 										onBlur={field.handleBlur}
 										onChange={(e) => field.handleChange(e.target.value)}
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									/>
 								</field.Field>
 

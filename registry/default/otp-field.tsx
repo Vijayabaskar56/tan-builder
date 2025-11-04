@@ -43,7 +43,7 @@ export function OTPForm() {
 										onChange={field.handleChange}
 										required={true}
 										disabled={false}
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									>
 										<InputOTPGroup>
 											<InputOTPSlot index={0} />
