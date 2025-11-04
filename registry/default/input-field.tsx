@@ -43,7 +43,7 @@ export function InputForm() {
 											field.handleChange(e.target.value);
 										}}
 										onBlur={field.handleBlur}
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									/>
 								</field.Field>
 								<field.FieldDescription>

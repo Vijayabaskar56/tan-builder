@@ -36,7 +36,7 @@ export function CheckboxForm() {
 											field.handleChange(checked as boolean)
 										}
 										disabled={false}
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									/>
 									<field.FieldContent>
 										<field.FieldLabel

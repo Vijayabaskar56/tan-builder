@@ -54,7 +54,7 @@ export function ToggleGroupForm() {
 										onValueChange={field.handleChange}
 										defaultValue={[]}
 										className="flex justify-start items-center w-full"
-										aria-invalid={!!field.state.meta.errors.length}
+										aria-invalid={!!field.state.meta.errors.length && field.state.meta.isTouched}
 									>
 										{toggleOptions}
 									</ToggleGroup>
