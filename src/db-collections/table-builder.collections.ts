@@ -21,6 +21,7 @@ export const TableBuilderSchema = v.object({
 		enableRowDragging: v.optional(v.boolean(), false),
 		enablePagination: v.optional(v.boolean(), true),
 		enableColumnMovable : v.optional(v.boolean(), false),
+		enableUrlFiltering: v.optional(v.boolean(), false),
 		tableLayout: v.optional(
 			v.object({
 				dense: v.optional(v.boolean(), false),

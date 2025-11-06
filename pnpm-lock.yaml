@@ -143,6 +143,9 @@ importers:
       '@tanstack/react-form-devtools':
         specifier: ^0.1.5
         version: 0.1.8(csstype@3.1.3)(react@19.2.0)(solid-js@1.9.9)
+      '@tanstack/react-pacer':
+        specifier: ^0.17.0
+        version: 0.17.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@tanstack/react-query':
         specifier: ^5.90.2
         version: 5.90.5(react@19.2.0)
@@ -2295,6 +2298,10 @@ packages:
     resolution: {integrity: sha512-vGY+CWsFZeac3dELgB6UZ4c7OacwsLb8hvL2gLS6hTgy8Fl0Bm/aLokHaeDIP+q9F9HUZTnp360z9uv78eg8pg==}
     engines: {node: '>=18'}
 
+  '@tanstack/pacer@0.16.0':
+    resolution: {integrity: sha512-0tvLUQcUW2bqdsjf2IUeBgYgxWMjC+XNDpN2kovcfrOAv5baFBaenUtsMxi0QxhWmnjdrMPyuTAI0ZIzpkcmpw==}
+    engines: {node: '>=18'}
+
   '@tanstack/query-core@5.90.5':
     resolution: {integrity: sha512-wLamYp7FaDq6ZnNehypKI5fNvxHPfTYylE0m/ZpuuzJfJqhR5Pxg9gvGBHZx4n7J+V5Rg5mZxHHTlv25Zt5u+w==}
 
@@ -2334,6 +2341,13 @@ packages:
     peerDependenciesMeta:
       '@tanstack/react-start':
         optional: true
+
+  '@tanstack/react-pacer@0.17.0':
+    resolution: {integrity: sha512-zJE6BJ61R1xVvVIlv3XFf9bVWXtuF84Mst3kX8IbCKhWyYvju0B3fvKUHsdQBncK88nKM8KuLGdzmOxgUt/PUQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      react: '>=16.8'
+      react-dom: '>=16.8'
 
   '@tanstack/react-query-devtools@5.90.2':
     resolution: {integrity: sha512-vAXJzZuBXtCQtrY3F/yUNJCV4obT/A/n81kb3+YqLbro5Z2+phdAbceO+deU3ywPw8B42oyJlp4FhO0SoivDFQ==}
@@ -6983,6 +6997,11 @@ snapshots:
       '@tanstack/devtools-event-client': 0.3.3
       '@tanstack/store': 0.7.7
 
+  '@tanstack/pacer@0.16.0':
+    dependencies:
+      '@tanstack/devtools-event-client': 0.3.3
+      '@tanstack/store': 0.7.7
+
   '@tanstack/query-core@5.90.5': {}
 
   '@tanstack/query-db-collection@0.2.34(@tanstack/query-core@5.90.5)(typescript@5.9.3)':
@@ -7034,6 +7053,13 @@ snapshots:
       '@tanstack/react-start': 1.133.22(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(vite@7.1.12(@types/node@22.18.12)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.8.1))
     transitivePeerDependencies:
       - react-dom
+
+  '@tanstack/react-pacer@0.17.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+    dependencies:
+      '@tanstack/pacer': 0.16.0
+      '@tanstack/react-store': 0.7.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
 
   '@tanstack/react-query-devtools@5.90.2(@tanstack/react-query@5.90.5(react@19.2.0))(react@19.2.0)':
     dependencies:

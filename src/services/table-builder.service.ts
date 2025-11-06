@@ -138,6 +138,7 @@ export class TableBuilderService {
 						enableColumnDragging: false,
 						enableRowDragging: false,
 						enablePagination: false,
+						enableUrlFiltering: false,
 						tableLayout: {
 							dense: false,
 							cellBorder: false,
@@ -190,6 +191,7 @@ export class TableBuilderService {
 						enableColumnDragging: false,
 						enableRowDragging: false,
 						enablePagination: false,
+						enableUrlFiltering: false,
 					};
 				}
 				Object.assign(draft.settings, settings);
@@ -239,6 +241,7 @@ export class TableBuilderService {
 				enableColumnDragging: false,
 				enableRowDragging: false,
 				enablePagination: true,
+				enableUrlFiltering: false,
 				tableLayout: {
 					dense: false,
 					cellBorder: false,
@@ -565,6 +568,7 @@ export class TableBuilderService {
 				enableColumnDragging: false,
 				enableRowDragging: false,
 				enablePagination: true,
+				enableUrlFiltering: false,
 				tableLayout: {
 					dense: false,
 					cellBorder: false,

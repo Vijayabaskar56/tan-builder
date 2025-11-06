@@ -16,6 +16,7 @@ const defaultTableState = {
 		enableRowDragging: false,
 		enablePagination: false,
 		enableColumnMovable : false,
+		enableUrlFiltering: false,
 		tableLayout: {
 			dense: false,
 			cellBorder: false,

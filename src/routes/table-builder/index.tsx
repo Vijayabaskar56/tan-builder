@@ -40,6 +40,9 @@ export const Route = createFileRoute("/table-builder/")({
 	head: () => ({
 		meta : [],
 	}),
+	validateSearch : () => ({
+		//TODO: add url filtering validation
+	 }),
 	component: RouteComponent,
 	pendingComponent: Loader,
 });
