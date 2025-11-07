@@ -49,9 +49,9 @@ export const Route = createFileRoute("/table-builder")({
 	errorComponent: ErrorBoundary,
 	notFoundComponent: NotFound,
 	pendingComponent: Loader,
-	validateSearch: (search) => ({
-		share: search.share as string | undefined,
-	}),
+	// validateSearch: (search) => ({
+	// 	share: search.share as string | undefined,
+	// }),
 });
 
 function RouteComponent() {
@@ -62,7 +62,7 @@ function RouteComponent() {
 	const screenSize = useScreenSize();
 	const isMdUp = screenSize.greaterThanOrEqual("md");
 	const tableBuilder = useTableStore();
-	const { share } = useSearch({ from: "/table-builder" });
+	// const { share } = useSearch({ from: "/table-builder" });
 
 	const [isTableBuilderInitialized, setIsTableBuilderInitialized] =
 		useState(false);
@@ -105,32 +105,31 @@ function RouteComponent() {
 		window.history.replaceState({}, "", "/table-builder");
 	};
 	// Handle share parameter
-	// biome-ignore lint/correctness/useExhaustiveDependencies: handleReplace doesn't needed
-	useEffect(() => {
-		if (share && isTableBuilderInitialized) {
-			try {
-				const parsed = JSON.parse(decodeURIComponent(share)) as TableBuilder;
-				setSharedData(parsed);
-				// Show dialog if there's existing data
-				if (
-					tableBuilder.table.columns.length > 0 ||
-					tableBuilder.table.data.length > 0
-				) {
-					setShareDialogOpen(true);
-				} else {
-					// Load directly if no existing data
-					handleReplace();
-				}
-			} catch (error) {
-				console.error("Invalid share data:", error);
-			}
-		}
-	}, [
-		share,
-		isTableBuilderInitialized,
-		tableBuilder.table.columns.length,
-		tableBuilder.table.data.length, // Load directly if no existing data
-	]);
+	// useEffect(() => {
+	// 	if (share && isTableBuilderInitialized) {
+	// 		try {
+	// 			const parsed = JSON.parse(decodeURIComponent(share)) as TableBuilder;
+	// 			setSharedData(parsed);
+	// 			// Show dialog if there's existing data
+	// 			if (
+	// 				tableBuilder.table.columns.length > 0 ||
+	// 				tableBuilder.table.data.length > 0
+	// 			) {
+	// 				setShareDialogOpen(true);
+	// 			} else {
+	// 				// Load directly if no existing data
+	// 				handleReplace();
+	// 			}
+	// 		} catch (error) {
+	// 			console.error("Invalid share data:", error);
+	// 		}
+	// 	}
+	// }, [
+	// 	share,
+	// 	isTableBuilderInitialized,
+	// 	tableBuilder.table.columns.length,
+	// 	tableBuilder.table.data.length, // Load directly if no existing data
+	// ]);
 
 	const handleCancel = () => {
 		setShareDialogOpen(false);
