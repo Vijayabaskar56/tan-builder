@@ -1,5 +1,3 @@
-"use no memo";
-
 import {
 	type Cell,
 	type Column,

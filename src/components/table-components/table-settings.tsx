@@ -167,7 +167,7 @@ export function TableSettingsSidebar() {
 											</div>
 										)}
 									</form.AppField>
-									<form.AppField name="enableUrlFiltering" mode="value">
+									{/* <form.AppField name="enableUrlFiltering" mode="value">
 										{(field) => (
 											<div className=" border-b mx-2">
 												<div className="flex items-center justify-between p-3">
@@ -201,7 +201,7 @@ export function TableSettingsSidebar() {
 												</field.FieldDescription>
 											</div>
 										)}
-									</form.AppField>
+									</form.AppField> */}
 									<form.AppField name="enableSorting" mode="value">
 										{(field) => (
 											<div className="p-3 border-b mx-2">

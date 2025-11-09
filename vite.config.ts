@@ -14,7 +14,11 @@ const config = defineConfig({
 			projects: ["./tsconfig.json"],
 		}),
 		tailwindcss(),
-		tanstackStart(),
+		tanstackStart({
+			sitemap : {
+				enabled : true,
+			},
+		}),
 		viteReact({
 		}),
 		devtools({
