@@ -16,6 +16,7 @@ const defaultTableState = {
 		enableRowDragging: false,
 		enablePagination: false,
 		enableColumnMovable : false,
+		enableUrlFiltering: false,
 		tableLayout: {
 			dense: false,
 			cellBorder: false,
@@ -33,7 +34,9 @@ const defaultTableState = {
 	},
 };
 
-const useTableStore = createIsomorphicFn().client(() => {
+const useTableStore = createIsomorphicFn().server(() => {
+	return defaultTableState;
+}).client(() => {
 
 	const { data } = useLiveQuery((q) =>
 		q
@@ -48,7 +51,5 @@ const useTableStore = createIsomorphicFn().client(() => {
 	return (
 		data?.[0] || defaultTableState
 	);
-}).server(() => {
-	return defaultTableState;
-});
+})
 export default useTableStore;

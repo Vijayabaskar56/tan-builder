@@ -13,14 +13,12 @@ import type * as v from "valibot";
 export const Route = createFileRoute("/form-builder")({
 	head: () => ({
 		meta : [
-									...seo({title: "Form Builder | TanCN - Form and Table Builder"}),
-
+			...seo({title: "Form Builder | TanCN - Form and Table Builder"}),
 		],
 	}),
 	component: FormBuilderLayout,
 	errorComponent: ErrorBoundary,
 	notFoundComponent: NotFound,
-	ssr: true,
 	loader: ({
 		location,
 	}): v.InferOutput<typeof FormElementsSchema> | undefined => {

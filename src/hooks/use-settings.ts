@@ -18,7 +18,9 @@ const defaultSettings =  {
 	};
 
 
-const useSettings = createIsomorphicFn().client(() => {
+const useSettings = createIsomorphicFn().server(() => {
+	return defaultSettings;
+}).client(() => {
 	const { data } = useLiveQuery((q) =>
 		q.from({ settings: settingsCollection }).select(({ settings }) => ({
 			activeTab: settings.activeTab,
@@ -38,8 +40,6 @@ const useSettings = createIsomorphicFn().client(() => {
 
 	// Return the first (and only) settings object, or null if no settings exist
 	return data?.[0] || defaultSettings;
-}).server(() => {
-	return defaultSettings;
 })
 
 export default useSettings;

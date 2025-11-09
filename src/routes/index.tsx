@@ -15,10 +15,9 @@ import {
 	Palette,
 	Share2,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import Loader from "@/components/loader";
-import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import { seo } from "@/utils/seo";
 
@@ -118,21 +117,6 @@ const features = [
 		),
 	},
 ];
-
-const assets = {
-	one: {
-		dark: "/assets/slide-1-dark.avif",
-		light: "/assets/slide-1-light.avif",
-	},
-	two: {
-		dark: "/assets/slide-2-dark.avif",
-		light: "/assets/slide-2-light.avif",
-	},
-	three: {
-		dark: "/assets/slide-3-dark.avif",
-		light: "/assets/slide-3-light.avif",
-	},
-};
 
 const roadmapItems = [
 	// Completed Features
@@ -236,16 +220,6 @@ const roadmapItems = [
 function HomePage() {
 	const [activeCard, setActiveCard] = useState(0);
 	const [progress, setProgress] = useState(0);
-	const { theme, systemTheme } = useTheme();
-	const resolvedTheme = useMemo(
-		() =>
-			(theme === "system"
-				? systemTheme === "dark"
-					? "dark"
-					: "light"
-				: theme || "light") as "dark" | "light",
-		[theme, systemTheme],
-	);
 	useEffect(() => {
 		const progressInterval = setInterval(() => {
 			setProgress((prev) => {
@@ -373,7 +347,7 @@ function HomePage() {
 									className="w-32 rounded"
 									asChild
 								>
-									<Link to="/form-builder">Start Building</Link>
+									<Link to="/form-builder" preload='intent'>Start Building</Link>
 								</Button>
 								<Button
 									variant="default"
@@ -384,18 +358,6 @@ function HomePage() {
 									<Link to="/form-registry">Form Registry</Link>
 								</Button>
 							</div>
-
-							<div className="absolute top-[232px] sm:top-[248px] md:top-[264px] lg:top-80 left-1/2 transform -translate-x-1/2 z-0 pointer-events-none">
-								<img
-									src="/mask-group-pattern.svg"
-									alt=""
-									className="w-[936px] sm:w-[1404px] md:w-[2106px] lg:w-[2808px] h-auto opacity-30 sm:opacity-40 md:opacity-50 mix-blend-multiply"
-									style={{
-										filter: "hue-rotate(15deg) saturate(0.7) brightness(1.2)",
-									}}
-								/>
-							</div>
-
 							<div className="w-full max-w-[960px] lg:w-[960px] pt-2 sm:pt-4 pb-6 sm:pb-8 md:pb-10 px-2 sm:px-4 md:px-6 lg:px-11 flex flex-col justify-center items-center gap-2 relative z-5 my-8 sm:my-12 md:my-16 lg:my-16 mb-0 lg:pb-0">
 								<div className="w-full max-w-[960px] lg:w-[960px] h-[200px] sm:h-[280px] md:h-[450px] lg:h-[550px] bg-white shadow-[0px_0px_0px_0.9056603908538818px_rgba(0,0,0,0.08)] overflow-hidden rounded-[6px] sm:rounded-xl lg:rounded-[9.06px] flex flex-col justify-start items-start">
 									<div className="self-stretch flex-1 flex justify-start items-start">
@@ -406,12 +368,17 @@ function HomePage() {
 														activeCard === 0 ? "opacity-100" : "opacity-0"
 													}`}
 												>
-													<img
-														key={resolvedTheme}
-														src={assets.one[resolvedTheme]}
-														alt="Form Builder Interface"
-														className="w-full h-full object-cover"
-													/>
+													<picture>
+														<source
+															srcSet="/assets/slide-1-dark.avif"
+															media="(prefers-color-scheme: dark)"
+														/>
+														<img
+															src="/assets/slide-1-light.avif"
+															alt="Form Builder Interface"
+															className="w-full h-full object-cover"
+														/>
+													</picture>
 												</div>
 
 												<div
@@ -419,12 +386,17 @@ function HomePage() {
 														activeCard === 1 ? "opacity-100" : "opacity-0"
 													}`}
 												>
-													<img
-														key={resolvedTheme}
-														src={assets.two[resolvedTheme]}
-														alt="Analytics Dashboard"
-														className="w-full h-full object-cover"
-													/>
+													<picture>
+														<source
+															srcSet="/assets/slide-2-dark.avif"
+															media="(prefers-color-scheme: dark)"
+														/>
+														<img
+															src="/assets/slide-2-light.avif"
+															alt="Analytics Dashboard"
+															className="w-full h-full object-cover"
+														/>
+													</picture>
 												</div>
 
 												<div
@@ -432,12 +404,17 @@ function HomePage() {
 														activeCard === 2 ? "opacity-100" : "opacity-0"
 													}`}
 												>
-													<img
-														key={resolvedTheme}
-														src={assets.three[resolvedTheme]}
-														alt="Data Visualization Dashboard"
-														className="w-full h-full object-cover"
-													/>
+													<picture>
+														<source
+															srcSet="/assets/slide-3-dark.avif"
+															media="(prefers-color-scheme: dark)"
+														/>
+														<img
+															src="/assets/slide-3-light.avif"
+															alt="Data Visualization Dashboard"
+															className="w-full h-full object-cover"
+														/>
+													</picture>
 												</div>
 											</div>
 										</div>

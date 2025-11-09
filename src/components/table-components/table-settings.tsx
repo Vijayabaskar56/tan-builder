@@ -8,6 +8,7 @@ import {
 	CheckSquare,
 	Eye,
 	GripVertical,
+	Link,
 	MoreHorizontal,
 	MoveHorizontal,
 	Pin,
@@ -30,6 +31,7 @@ const TableSettingsSchema = v.object({
 	enableColumnDragging: v.optional(v.boolean(), false),
 	enableRowDragging: v.optional(v.boolean(), false),
 	enableColumnMovable : v.optional(v.boolean(), false),
+	enableUrlFiltering: v.optional(v.boolean(), false),
 });
 
 export function TableSettingsSidebar() {
@@ -41,6 +43,7 @@ export function TableSettingsSidebar() {
 	const rowSelectionId = useId();
 	const rowActionsId = useId();
 	const draggableId = useId();
+	const urlFilteringId = useId();
 	const data = useTableStore();
 
 	const form = useAppForm({
@@ -55,6 +58,7 @@ export function TableSettingsSidebar() {
 			enableColumnDragging: data?.settings?.enableColumnDragging ?? false,
 			enableRowDragging: data?.settings?.enableRowDragging ?? false,
 			enableColumnMovable : data?.settings?.enableColumnMovable ?? false,
+			enableUrlFiltering: data?.settings?.enableUrlFiltering ?? false,
 		} as v.InferInput<typeof TableSettingsSchema>,
 		validators: {
 			onChange: TableSettingsSchema,
@@ -109,7 +113,7 @@ export function TableSettingsSidebar() {
 														id={focusOnErrorId}
 														checked={field.state.value}
 														onCheckedChange={field.handleChange}
-														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none"
 													/>
 												</div>
 												<Separator className="my-2" />
@@ -145,7 +149,7 @@ export function TableSettingsSidebar() {
 														id={focusOnErrorId}
 														checked={field.state.value}
 														onCheckedChange={field.handleChange}
-														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none"
 													/>
 												</div>
 												<Separator className="my-2" />
@@ -163,6 +167,41 @@ export function TableSettingsSidebar() {
 											</div>
 										)}
 									</form.AppField>
+									{/* <form.AppField name="enableUrlFiltering" mode="value">
+										{(field) => (
+											<div className=" border-b mx-2">
+												<div className="flex items-center justify-between p-3">
+													<div className="flex items-center gap-2">
+														<Link className="w-4 h-4 text-muted-foreground" />
+														<field.FieldLabel
+															htmlFor={urlFilteringId}
+															className="text-sm"
+														>
+															URL Filtering
+														</field.FieldLabel>
+													</div>
+													<Switch
+														id={urlFilteringId}
+														checked={field.state.value}
+														onCheckedChange={field.handleChange}
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none"
+													/>
+												</div>
+												<Separator className="my-2" />
+												<field.FieldDescription className="pb-2">
+													Enable filtering table data based on URL parameters. For more info check the TanStack Table docs:{" "}
+													<a
+														className="text-primary"
+														href="https://tanstack.com/table/latest/docs/guide/global-filtering"
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														Global Filtering
+													</a>
+												</field.FieldDescription>
+											</div>
+										)}
+									</form.AppField> */}
 									<form.AppField name="enableSorting" mode="value">
 										{(field) => (
 											<div className="p-3 border-b mx-2">
@@ -180,7 +219,7 @@ export function TableSettingsSidebar() {
 														id={validationMethodId}
 														checked={field.state.value}
 														onCheckedChange={field.handleChange}
-														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none"
 													/>
 												</div>
 												<Separator className="my-2" />
@@ -218,7 +257,7 @@ export function TableSettingsSidebar() {
 														id={asyncValidationId}
 														checked={field.state.value}
 														onCheckedChange={field.handleChange}
-														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none"
 													/>
 												</div>
 												<Separator className="my-2" />
@@ -255,7 +294,7 @@ export function TableSettingsSidebar() {
 														id={preferredSchemaId}
 														checked={field.state.value}
 														onCheckedChange={field.handleChange}
-														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none"
 													/>
 												</div>
 												<Separator className="my-2" />
@@ -293,7 +332,7 @@ export function TableSettingsSidebar() {
 														id={preferredFrameworkId}
 														checked={field.state.value}
 														onCheckedChange={field.handleChange}
-														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none"
 													/>
 												</div>
 												<Separator className="my-2" />
@@ -330,7 +369,7 @@ export function TableSettingsSidebar() {
 														id={draggableId}
 														checked={field.state.value}
 														onCheckedChange={field.handleChange}
-														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none"
 													/>
 												</div>
 												<Separator className="my-2" />
@@ -367,7 +406,7 @@ export function TableSettingsSidebar() {
 														id={rowSelectionId}
 														checked={field.state.value}
 														onCheckedChange={field.handleChange}
-														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none"
 													/>
 												</div>
 												<Separator className="my-2" />
@@ -405,7 +444,7 @@ export function TableSettingsSidebar() {
 														id={rowActionsId}
 														checked={field.state.value}
 														onCheckedChange={field.handleChange}
-														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none data-[state=unchecked]:[&_span]:rtl:translate-x-0.5"
+														className="data-[state=unchecked]:border-input data-[state=unchecked]:[&_span]:bg-input data-[state=unchecked]:bg-transparent [&_span]:transition-all data-[state=unchecked]:[&_span]:size-4 data-[state=unchecked]:[&_span]:translate-x-0.5 data-[state=unchecked]:[&_span]:rtl:-translate-x-0.5 data-[state=unchecked]:[&_span]:shadow-none"
 													/>
 												</div>
 												<Separator className="my-2" />
